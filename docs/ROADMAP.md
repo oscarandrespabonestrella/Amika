@@ -70,3 +70,14 @@
 | Editar y borrar juegos propios (con limpieza de sus fotos) | Hecho |
 | Lista de deseos, etiquetas personales | **Fuera de alcance por decisión** |
 | Pruebas | 171 unitarias, 62 RLS/SQL, 93 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+
+## Estado de la Fase 4 (actualizado 2026-11-16)
+| Entrega | Estado |
+|---|---|
+| Migración 0006 (recursos, reglas, imágenes, FAQ + sugerencias) | Hecho y aplicado en dev; 20 tests de RLS |
+| Reglas (enlaces por idioma + resumen propio), vídeos, FAQ, galería en la ficha | Hecho (es/en/fr, con respaldo en inglés) |
+| Editor de administrador en la ficha | Hecho |
+| Sugerir preguntas, revisión (aprobar/rechazar), retirar | Hecho |
+| Añadir al catálogo una expansión que falta | Hecho en la interfaz; **requiere el token de BGG** (sin verificar) |
+| Pruebas | 223 unitarias, 82 RLS/SQL, 120 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+| Conceder el rol de administrador a tu cuenta | **Pendiente de ti**: `npm run admin:grant -- tu@correo` |

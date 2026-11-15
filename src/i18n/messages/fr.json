@@ -263,5 +263,108 @@
     "noMatchTitle": "Aucun jeu ne correspond",
     "noMatchBody": "Essayez un autre nom ou filtre.",
     "browse": "Parcourir les jeux"
+  },
+  "GameCenter": {
+    "nav": {
+      "label": "Sections du Game Center",
+      "rules": "Règles",
+      "videos": "Vidéos",
+      "faq": "FAQ",
+      "gallery": "Galerie"
+    },
+    "rules": {
+      "title": "Règles",
+      "empty": "Aucune règle n'a encore été ajoutée.",
+      "official": "Officiel",
+      "summary": "Résumé des règles"
+    },
+    "links": {
+      "title": "Autres liens"
+    },
+    "videos": {
+      "title": "Vidéos",
+      "empty": "Aucune vidéo pour l'instant.",
+      "play": "Lire la vidéo : {title}"
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "empty": "Aucune question fréquente pour l'instant.",
+      "mine": "Vos suggestions",
+      "status": {
+        "pending": "En attente de validation",
+        "rejected": "Non retenue"
+      },
+      "withdraw": "Retirer",
+      "suggestTitle": "Suggérer une question",
+      "addTitle": "Ajouter une question",
+      "suggestHint": "Un administrateur la valide avant publication. D'ici là, vous seul et les administrateurs pouvez la voir.",
+      "question": "Question",
+      "answer": "Réponse",
+      "send": "Envoyer la suggestion",
+      "publish": "Publier",
+      "sending": "Envoi…",
+      "sent": "Envoyée pour validation. Merci !",
+      "published": "Publiée.",
+      "review": "En attente de validation ({count})",
+      "approve": "Approuver",
+      "reject": "Refuser"
+    },
+    "gallery": {
+      "title": "Galerie",
+      "empty": "Aucune image pour l'instant.",
+      "alt": "Image {number}",
+      "credit": "Crédit : {attribution}",
+      "license": "Licence : {license}"
+    },
+    "admin": {
+      "title": "Gérer le Game Center",
+      "hint": "Seuls les administrateurs voient cette section.",
+      "remove": "Retirer",
+      "confirm": "Oui, retirer",
+      "cancel": "Annuler",
+      "saved": "Enregistré",
+      "anyLanguage": "Toutes les langues",
+      "resource": {
+        "title": "Ajouter un lien ou une vidéo",
+        "kind": "Type",
+        "kinds": {
+          "rules": "Lien vers les règles",
+          "video": "Vidéo YouTube",
+          "link": "Autre lien"
+        },
+        "language": "Langue",
+        "titleLabel": "Titre",
+        "targetUrl": "Adresse (https://…)",
+        "targetVideo": "Lien YouTube ou identifiant de la vidéo",
+        "official": "Source officielle",
+        "add": "Ajouter"
+      },
+      "rules": {
+        "title": "Résumé des règles",
+        "hint": "Rédigez-le avec vos propres mots. Ne collez pas de texte issu de manuels protégés.",
+        "language": "Langue",
+        "body": "Résumé",
+        "save": "Enregistrer le résumé"
+      },
+      "image": {
+        "title": "Ajouter une image",
+        "url": "Adresse de l'image (https://…)",
+        "attribution": "Crédit (obligatoire)",
+        "license": "Licence",
+        "caption": "Légende",
+        "add": "Ajouter l'image"
+      }
+    },
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Veuillez vous reconnecter.",
+      "forbidden": "Vous n'avez pas la permission de faire cela.",
+      "invalid": "Vérifiez les champs.",
+      "limit": "Vous avez déjà 5 suggestions en attente de validation pour ce jeu.",
+      "failed": "Une erreur s'est produite. Veuillez réessayer.",
+      "required": "Ce champ est obligatoire.",
+      "tooLong": "C'est trop long.",
+      "invalidUrl": "Saisissez une adresse https:// valide.",
+      "invalidVideo": "Saisissez un lien YouTube ou un identifiant de vidéo."
+    }
   }
 }

@@ -63,6 +63,90 @@ export type Database = {
         };
         Relationships: [];
       };
+      faq_entries: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          game_id: string;
+          id: string;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          sort: number;
+          status: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          game_id: string;
+          id?: string;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          sort?: number;
+          status?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          game_id?: string;
+          id?: string;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          sort?: number;
+          status?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "faq_entries_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "faq_entries_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "faq_entries_reviewed_by_fkey";
+            columns: ["reviewed_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      faq_translations: {
+        Row: {
+          answer: string;
+          faq_id: string;
+          locale: string;
+          question: string;
+        };
+        Insert: {
+          answer: string;
+          faq_id: string;
+          locale: string;
+          question: string;
+        };
+        Update: {
+          answer?: string;
+          faq_id?: string;
+          locale?: string;
+          question?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "faq_translations_faq_id_fkey";
+            columns: ["faq_id"];
+            isOneToOne: false;
+            referencedRelation: "faq_entries";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       game_external_ids: {
         Row: {
           external_id: string;
@@ -82,6 +166,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "game_external_ids_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_images: {
+        Row: {
+          attribution: string;
+          caption: string | null;
+          created_at: string;
+          game_id: string;
+          id: string;
+          license: string | null;
+          sort: number;
+          url: string;
+        };
+        Insert: {
+          attribution: string;
+          caption?: string | null;
+          created_at?: string;
+          game_id: string;
+          id?: string;
+          license?: string | null;
+          sort?: number;
+          url: string;
+        };
+        Update: {
+          attribution?: string;
+          caption?: string | null;
+          created_at?: string;
+          game_id?: string;
+          id?: string;
+          license?: string | null;
+          sort?: number;
+          url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_images_game_id_fkey";
             columns: ["game_id"];
             isOneToOne: false;
             referencedRelation: "games";
@@ -167,6 +292,63 @@ export type Database = {
           {
             foreignKeyName: "game_relations_related_game_id_fkey";
             columns: ["related_game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_resources: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          game_id: string;
+          id: string;
+          is_official: boolean;
+          kind: string;
+          locale: string | null;
+          sort: number;
+          title: string;
+          url: string | null;
+          youtube_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          game_id: string;
+          id?: string;
+          is_official?: boolean;
+          kind: string;
+          locale?: string | null;
+          sort?: number;
+          title: string;
+          url?: string | null;
+          youtube_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          game_id?: string;
+          id?: string;
+          is_official?: boolean;
+          kind?: string;
+          locale?: string | null;
+          sort?: number;
+          title?: string;
+          url?: string | null;
+          youtube_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_resources_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_resources_game_id_fkey";
+            columns: ["game_id"];
             isOneToOne: false;
             referencedRelation: "games";
             referencedColumns: ["id"];
@@ -383,6 +565,45 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [];
+      };
+      rules_content: {
+        Row: {
+          body: string;
+          game_id: string;
+          locale: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          body: string;
+          game_id: string;
+          locale: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          body?: string;
+          game_id?: string;
+          locale?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "rules_content_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "rules_content_updated_by_fkey";
+            columns: ["updated_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       term_translations: {
         Row: {

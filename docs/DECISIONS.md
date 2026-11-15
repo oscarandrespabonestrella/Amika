@@ -85,3 +85,15 @@ La biblioteca admite solo `owned` («lo tengo») y `previously_owned` («lo tuve
 
 ## ADR-025 Aviso conocido, benigno: «Failed to set initial Realtime auth token»
 Durante `next build`, supabase-js (al recibir `accessToken`) intenta fijar el token de Realtime en una promesa que él mismo captura y llama a `auth()` de Clerk fuera de una petición, lo que registra «Dynamic server usage». No afecta al resultado (las rutas son dinámicas y los tests pasan). Si molestara, la salida es hacer asíncrona `createSupabaseServerClient()` para obtener el token antes de crear el cliente.
+
+## ADR-026 Quién crea el contenido del Game Center *(decisión del usuario, Fase 4)*
+Lo crea el **administrador** (contenido global compartido). Los usuarios normales pueden **proponer preguntas frecuentes**, que quedan privadas y pendientes hasta que un administrador las aprueba o rechaza. No hay contenido personal por usuario ni moderación de otros tipos (reglas, vídeos, galería) por ahora. Un editor sencillo, visible solo para administradores, vive en la propia ficha; no hay panel de administración aparte (Fase 8).
+
+## ADR-027 Vídeos con «fachada»: nada de YouTube hasta pulsar reproducir
+Se guarda solo el id del vídeo y se muestra un botón; el `iframe` de `youtube-nocookie.com` (con `sandbox`) se crea al pulsar. Evita peticiones y cookies de terceros al cargar la ficha y acelera la página. Sin miniaturas de YouTube por la misma razón.
+
+## ADR-028 El rol de administrador se concede fuera de la aplicación
+`scripts/grant-admin.mjs <correo>` (y `--revoke`) lo hace con credenciales de servidor y exige correo verificado en Clerk. Así ninguna ruta web puede escalar privilegios. Un asistente automático no debe ejecutarlo por su cuenta: lo lanza la propia persona. El contenido del Game Center se prueba con un usuario de test al que se concede y retira el rol dentro de la suite.
+
+## ADR-029 Color de error en tema oscuro
+`--destructive` pasa de L=0,70 a 0,74 porque la etiqueta «No aceptada» sobre su fondo teñido medía 4,47:1 (AA exige 4,5). Lo detectó axe en E2E; mejora todos los textos de error del tema oscuro.

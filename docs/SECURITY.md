@@ -30,7 +30,9 @@ Todas las políticas usan `(select auth.jwt()->>'sub')` (≡ `current_user_id()`
 | Storage `game-photos` | solo dueño (primera carpeta = su id) | solo dueño |
 | `catalog_imports` | nadie | solo `service_role` |
 | `terms`, `game_terms`, `game_external_ids`, `game_relations` | según la visibilidad del juego | solo `service_role` |
-| `game_resources`, `faq_*`, `rules_content` | todos (publicados) | admin |
+| `game_resources`, `rules_content`, `game_images` | quien ve el juego | solo administradores, y solo sobre juegos globales |
+| `faq_entries` | publicadas: todos; pendientes/rechazadas: su autor y administradores | sugerir: cualquiera (siempre `pending` y como sí mismo); editar/retirar: el autor mientras esté pendiente; publicar/rechazar/borrar cualquiera: administradores |
+| `faq_translations` | igual que su entrada | igual que su entrada |
 | `scoring_configs` | publicadas: todos; draft: admin | admin; inmutables al publicar |
 | `library_items` | solo dueño | solo dueño; solo sobre juegos que puede ver; `user_id` no se puede cambiar ni falsificar |
 | `plays` y tablas hijas | solo `created_by` | solo `created_by` |
@@ -88,3 +90,13 @@ Logger central sin PII ni tokens; sin trazas al cliente. Monitorización (Sentry
 - **Entradas validadas** con Zod estricto (`.strict()`: sin asignación masiva), también en el servidor; la UI solo ofrece los estados permitidos y la base de datos los refuerza con un CHECK.
 - **Editar/borrar juegos propios**: solo el dueño de un juego `manual` (RLS + comprobación explícita); un juego importado da 404. Al borrar, los **archivos** de sus fotos se eliminan antes que la fila (las filas se borran en cascada, los archivos no) y usando la sesión del propio usuario, sin necesitar la clave de servicio.
 - **Borrado en dos pasos** en la interfaz (sin clics accidentales).
+
+## 13. Fase 4: Game Center
+- **Roles**: el contenido global solo lo escribe un administrador (`user_roles`, `is_admin()`); las acciones del servidor lo comprueban para dar un error claro, y **la RLS es la barrera real** (20 tests: usuario, otro usuario, anónimo, administrador, publicación propia, suplantación, límites).
+- **Un usuario no puede publicar** su propia sugerencia: ni al insertar (`status` debe ser `pending` y `created_by` ser él) ni al actualizar; tras publicarse deja de poder editarla.
+- **Vídeos**: solo se guarda el **id** de YouTube, extraído por `parseYoutubeId` (hosts permitidos, rechaza falsificaciones como `youtube.com.evil.com`, `youtube.com@evil.com`, `javascript:`, `data:`); la URL del reproductor se construye únicamente desde el id y siempre es `youtube-nocookie.com`.
+- **Privacidad del reproductor**: no se pide nada a YouTube hasta que el usuario pulsa «reproducir» (comprobado en E2E); el `iframe` va con `sandbox`.
+- **Enlaces y imágenes**: solo `https`, sin credenciales incrustadas; los enlaces externos abren con `rel="noopener noreferrer"`; las imágenes enlazadas con `referrerPolicy="no-referrer"` y con crédito obligatorio.
+- **Texto plano**: resúmenes, preguntas y respuestas se muestran como texto (nunca HTML).
+- **Rol de administrador**: se concede con `scripts/grant-admin.mjs`, que exige un correo **verificado** en Clerk y rechaza los usuarios de prueba. No hay ninguna pantalla ni acción de la app que cambie roles.
+- **Datos personales**: el borrado de cuenta elimina las sugerencias pendientes y deja anonimizadas las publicadas (`created_by` pasa a null).

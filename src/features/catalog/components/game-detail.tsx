@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { formatMinutes, formatPlayers } from "../format";
 import type { GameDetail } from "../services/game-service";
 import { TERM_TYPES } from "../types";
+import { ImportRelationButton } from "./import-relation-button";
 import { OwnerActions } from "./owner-actions";
 import { PhotoGallery } from "./photo-gallery";
 
@@ -13,9 +14,18 @@ type Props = {
   game: GameDetail;
   /** Slot for the user's library controls (owned by the library module). */
   libraryPanel?: ReactNode;
+  /** Slot for rules, videos, FAQ and gallery (owned by the game-center module). */
+  gameCenter?: ReactNode;
+  /** Whether adding a game from the external source is possible right now. */
+  bggAvailable?: boolean;
 };
 
-export function GameDetailView({ game, libraryPanel }: Props) {
+export function GameDetailView({
+  game,
+  libraryPanel,
+  gameCenter,
+  bggAvailable = false,
+}: Props) {
   const t = useTranslations("Game");
   const tg = useTranslations("Games");
   const meta = (
@@ -172,11 +182,19 @@ export function GameDetailView({ game, libraryPanel }: Props) {
                       {relation.name}
                     </Link>
                   ) : (
-                    <span>
-                      {relation.name}{" "}
-                      <span className="text-sm text-muted-foreground">
-                        ({t("notInCatalog")})
+                    <span className="inline-flex flex-wrap items-center gap-2">
+                      <span>
+                        {relation.name}{" "}
+                        <span className="text-sm text-muted-foreground">
+                          ({t("notInCatalog")})
+                        </span>
                       </span>
+                      {relation.externalId && (
+                        <ImportRelationButton
+                          externalId={relation.externalId}
+                          available={bggAvailable}
+                        />
+                      )}
                     </span>
                   )}
                 </li>
@@ -200,6 +218,8 @@ export function GameDetailView({ game, libraryPanel }: Props) {
           <span className="text-muted-foreground">{t("attribution")}</span>
         </p>
       )}
+
+      {gameCenter}
 
       <PhotoGallery
         gameId={game.id}

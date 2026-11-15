@@ -263,5 +263,108 @@
     "noMatchTitle": "No games match",
     "noMatchBody": "Try another name or filter.",
     "browse": "Browse games"
+  },
+  "GameCenter": {
+    "nav": {
+      "label": "Game Center sections",
+      "rules": "Rules",
+      "videos": "Videos",
+      "faq": "FAQ",
+      "gallery": "Gallery"
+    },
+    "rules": {
+      "title": "Rules",
+      "empty": "No rules have been added yet.",
+      "official": "Official",
+      "summary": "Rules summary"
+    },
+    "links": {
+      "title": "More links"
+    },
+    "videos": {
+      "title": "Videos",
+      "empty": "No videos yet.",
+      "play": "Play video: {title}"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "empty": "No frequently asked questions yet.",
+      "mine": "Your suggestions",
+      "status": {
+        "pending": "Pending review",
+        "rejected": "Not accepted"
+      },
+      "withdraw": "Withdraw",
+      "suggestTitle": "Suggest a question",
+      "addTitle": "Add a question",
+      "suggestHint": "An administrator reviews it before it is published. Until then only you and the administrators can see it.",
+      "question": "Question",
+      "answer": "Answer",
+      "send": "Send suggestion",
+      "publish": "Publish",
+      "sending": "Sending…",
+      "sent": "Sent for review. Thank you!",
+      "published": "Published.",
+      "review": "Waiting for review ({count})",
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "gallery": {
+      "title": "Gallery",
+      "empty": "No images yet.",
+      "alt": "Image {number}",
+      "credit": "Credit: {attribution}",
+      "license": "License: {license}"
+    },
+    "admin": {
+      "title": "Manage Game Center",
+      "hint": "Only administrators see this section.",
+      "remove": "Remove",
+      "confirm": "Yes, remove",
+      "cancel": "Cancel",
+      "saved": "Saved",
+      "anyLanguage": "Any language",
+      "resource": {
+        "title": "Add a link or video",
+        "kind": "Type",
+        "kinds": {
+          "rules": "Rules link",
+          "video": "YouTube video",
+          "link": "Other link"
+        },
+        "language": "Language",
+        "titleLabel": "Title",
+        "targetUrl": "Address (https://…)",
+        "targetVideo": "YouTube link or video id",
+        "official": "Official source",
+        "add": "Add"
+      },
+      "rules": {
+        "title": "Rules summary",
+        "hint": "Write it in your own words. Do not paste text from copyrighted manuals.",
+        "language": "Language",
+        "body": "Summary",
+        "save": "Save summary"
+      },
+      "image": {
+        "title": "Add an image",
+        "url": "Image address (https://…)",
+        "attribution": "Credit (required)",
+        "license": "License",
+        "caption": "Caption",
+        "add": "Add image"
+      }
+    },
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "forbidden": "You don't have permission to do that.",
+      "invalid": "Please check the fields.",
+      "limit": "You already have 5 suggestions waiting for review for this game.",
+      "failed": "Something went wrong. Please try again.",
+      "required": "This field is required.",
+      "tooLong": "This is too long.",
+      "invalidUrl": "Enter a valid https:// address.",
+      "invalidVideo": "Enter a YouTube link or a video id."
+    }
   }
 }

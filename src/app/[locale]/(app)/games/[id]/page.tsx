@@ -1,7 +1,13 @@
 import { assertLocale } from "@/i18n/locale";
+import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { GameDetailView, getGameDetail } from "@/features/catalog";
+import {
+  GameDetailView,
+  getGameDetail,
+  getGameSource,
+} from "@/features/catalog";
+import { GameCenter, getGameCenter } from "@/features/game-center";
 import { getLibraryItem, LibraryPanel } from "@/features/library";
 
 export default async function GamePage({
@@ -11,16 +17,25 @@ export default async function GamePage({
   const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
+  const { userId } = await auth();
   const [game, item] = await Promise.all([
     getGameDetail(id, locale),
     getLibraryItem(id),
   ]);
   if (!game) notFound();
 
+  // Game Center content exists only for catalog games, never for private custom ones.
+  const center =
+    !game.isCustom && userId
+      ? await getGameCenter(game.id, locale, userId)
+      : null;
+
   return (
     <GameDetailView
       game={game}
+      bggAvailable={getGameSource().isConfigured()}
       libraryPanel={<LibraryPanel gameId={game.id} item={item} />}
+      gameCenter={center && <GameCenter gameId={game.id} data={center} />}
     />
   );
 }

@@ -263,5 +263,108 @@
     "noMatchTitle": "Ningún juego coincide",
     "noMatchBody": "Prueba con otro nombre o filtro.",
     "browse": "Explorar juegos"
+  },
+  "GameCenter": {
+    "nav": {
+      "label": "Secciones del Game Center",
+      "rules": "Reglas",
+      "videos": "Vídeos",
+      "faq": "FAQ",
+      "gallery": "Galería"
+    },
+    "rules": {
+      "title": "Reglas",
+      "empty": "Aún no se han añadido reglas.",
+      "official": "Oficial",
+      "summary": "Resumen de las reglas"
+    },
+    "links": {
+      "title": "Más enlaces"
+    },
+    "videos": {
+      "title": "Vídeos",
+      "empty": "Aún no hay vídeos.",
+      "play": "Reproducir vídeo: {title}"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "empty": "Aún no hay preguntas frecuentes.",
+      "mine": "Tus sugerencias",
+      "status": {
+        "pending": "Pendiente de revisión",
+        "rejected": "No aceptada"
+      },
+      "withdraw": "Retirar",
+      "suggestTitle": "Sugerir una pregunta",
+      "addTitle": "Añadir una pregunta",
+      "suggestHint": "Un administrador la revisa antes de publicarla. Hasta entonces solo la ves tú y los administradores.",
+      "question": "Pregunta",
+      "answer": "Respuesta",
+      "send": "Enviar sugerencia",
+      "publish": "Publicar",
+      "sending": "Enviando…",
+      "sent": "Enviada para revisión. ¡Gracias!",
+      "published": "Publicada.",
+      "review": "Pendientes de revisión ({count})",
+      "approve": "Aprobar",
+      "reject": "Rechazar"
+    },
+    "gallery": {
+      "title": "Galería",
+      "empty": "Aún no hay imágenes.",
+      "alt": "Imagen {number}",
+      "credit": "Crédito: {attribution}",
+      "license": "Licencia: {license}"
+    },
+    "admin": {
+      "title": "Gestionar Game Center",
+      "hint": "Solo los administradores ven esta sección.",
+      "remove": "Quitar",
+      "confirm": "Sí, quitar",
+      "cancel": "Cancelar",
+      "saved": "Guardado",
+      "anyLanguage": "Cualquier idioma",
+      "resource": {
+        "title": "Añadir un enlace o vídeo",
+        "kind": "Tipo",
+        "kinds": {
+          "rules": "Enlace a reglas",
+          "video": "Vídeo de YouTube",
+          "link": "Otro enlace"
+        },
+        "language": "Idioma",
+        "titleLabel": "Título",
+        "targetUrl": "Dirección (https://…)",
+        "targetVideo": "Enlace de YouTube o id del vídeo",
+        "official": "Fuente oficial",
+        "add": "Añadir"
+      },
+      "rules": {
+        "title": "Resumen de las reglas",
+        "hint": "Escríbelo con tus propias palabras. No pegues texto de manuales con copyright.",
+        "language": "Idioma",
+        "body": "Resumen",
+        "save": "Guardar resumen"
+      },
+      "image": {
+        "title": "Añadir una imagen",
+        "url": "Dirección de la imagen (https://…)",
+        "attribution": "Crédito (obligatorio)",
+        "license": "Licencia",
+        "caption": "Pie de foto",
+        "add": "Añadir imagen"
+      }
+    },
+    "errors": {
+      "unauthenticated": "Tu sesión caducó. Inicia sesión de nuevo.",
+      "forbidden": "No tienes permiso para hacer eso.",
+      "invalid": "Revisa los campos.",
+      "limit": "Ya tienes 5 sugerencias pendientes de revisión para este juego.",
+      "failed": "Algo salió mal. Inténtalo de nuevo.",
+      "required": "Este campo es obligatorio.",
+      "tooLong": "Es demasiado largo.",
+      "invalidUrl": "Introduce una dirección https:// válida.",
+      "invalidVideo": "Introduce un enlace de YouTube o un id de vídeo."
+    }
   }
 }

@@ -16,6 +16,9 @@ export const TEST_USERS = {
   c: { email: "bglib-e2e-c+clerk_test@example.com", firstName: "E2E Carol" },
   // Library flows (app-library.spec.ts).
   d: { email: "bglib-e2e-d+clerk_test@example.com", firstName: "E2E Dave" },
+  // Game Center flows (app-game-center.spec.ts): an administrator and a regular user.
+  e: { email: "bglib-e2e-e+clerk_test@example.com", firstName: "E2E Erin" },
+  f: { email: "bglib-e2e-f+clerk_test@example.com", firstName: "E2E Frank" },
 } as const;
 
 export const STATE_FILE = {
@@ -23,6 +26,8 @@ export const STATE_FILE = {
   b: "playwright/.clerk/user-b.json",
   c: "playwright/.clerk/user-c.json",
   d: "playwright/.clerk/user-d.json",
+  e: "playwright/.clerk/user-e.json",
+  f: "playwright/.clerk/user-f.json",
 } as const;
 
 function clerk() {

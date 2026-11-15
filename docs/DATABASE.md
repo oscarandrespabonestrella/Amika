@@ -67,12 +67,19 @@ El catálogo **no se precarga**: un servicio de servidor consulta la fuente exte
 
 **Pendiente (BGG)**: qué campos e imágenes se pueden guardar/mostrar según sus términos; mientras tanto solo metadatos básicos + ID, portada enlazada con atribución.
 
-## 5. Game Center
+## 5. Game Center — implementado en 0006
+Solo para juegos **globales**: un juego propio y privado no tiene Game Center. El contenido lo escribe un **administrador**; los usuarios solo pueden **proponer preguntas frecuentes** (decisión del usuario, ADR-026).
+
 | Tabla | Notas |
 |---|---|
-| `game_resources` | `game_id`, `kind` (`rules\|video\|link\|manual`), `locale`, `url`, `title`, `is_official`, `source_locale`. Reglas: siempre `en` + los idiomas que existan, cada uno como fila. Vídeos = ID de YouTube. Manuales solo como enlace oficial. |
-| `rules_content` | Resumen propio de reglas: `game_id`, `locale`, `body_md`, `source_locale`, `is_machine_translated`. |
-| `faq_entries` / `faq_translations` | Preguntas por juego e idioma. |
+| `game_resources` | `kind` (`rules\|video\|link`), `locale` (null = cualquier idioma), `title`, `url` (solo `https://`) o `youtube_id` (11 caracteres), `is_official`, `sort`. CHECK de forma: un vídeo es **solo** un id de YouTube; el resto, **solo** una URL https. Los manuales con copyright **no se alojan**: solo enlaces. |
+| `rules_content` | Resumen de reglas con palabras propias, una fila por idioma (`game_id`,`locale`,`body` ≤20 000). Texto plano. |
+| `game_images` | Galería de imágenes **enlazadas** con `attribution` obligatoria (+ licencia y pie opcionales). No se copian archivos. |
+| `faq_entries` | `status` (`pending\|published\|rejected`), `created_by`, `reviewed_by/at`. Máximo **5 sugerencias pendientes** por usuario y juego (trigger). |
+| `faq_translations` | (`faq_id`,`locale`): `question` ≤300, `answer` ≤3000. |
+
+Visibilidad de FAQ: lo publicado lo ve todo el mundo; una sugerencia pendiente o rechazada solo su autor y los administradores. El autor puede editar o retirar la suya **mientras esté pendiente**; nunca puede publicarla él mismo.
+Idiomas: se muestra el del usuario, luego el inglés y luego cualquiera, con una etiqueta cuando difiere.
 
 ## 6. Biblioteca (privada) — implementado en 0005
 `library_items`: `user_id` (por defecto el `sub` del token), `game_id`, `status` (**`owned` | `previously_owned`**; la lista de deseos queda fuera por decisión del usuario del 2026-11-15, añadirla es ampliar el CHECK), `is_favorite`, `rating` (1–10, opcional), `notes` (≤2000), timestamps. Único (`user_id`,`game_id`). RLS: solo el dueño lee, edita y borra; solo puede añadir juegos que **puede ver** (no los privados de otro). Se borra en cascada con el juego y con la cuenta.
@@ -109,5 +116,5 @@ Vistas/funciones SQL con `security_invoker = true`. Índices: `plays(game_id, pl
 Al borrar la cuenta, `deleteUserData` elimina primero los archivos (las filas se borran en cascada, los archivos no) y después el perfil.
 
 ## 11. Migraciones aplicadas
-`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos) · `20261115230000_library` (biblioteca + `search_library`).
-Pendientes: Game Center (4), partidas y puntuación (5), vistas de estadísticas (6).
+`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos) · `20261115230000_library` (biblioteca + `search_library`) · `20261116000000_game_center` (recursos, reglas, imágenes, FAQ).
+Pendientes: partidas y puntuación (5), vistas de estadísticas (6).

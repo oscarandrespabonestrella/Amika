@@ -40,7 +40,7 @@
 ## Estado de la Fase 1 (actualizado 2026-11-15)
 | Tarea | Estado |
 |---|---|
-| 1 Scaffold + CI | Hecho (CI escrito, sin ejecutar aún: el repo no tiene remoto) |
+| 1 Scaffold + CI | Hecho. Repo privado `Amika` en GitHub; la CI (format, lint, tipos, tests, build) pasa en verde |
 | 2 shadcn/ui (Radix) + tokens + tema | Hecho |
 | 3 next-intl en/es/fr | Hecho |
 | 4 Clerk (`ClerkProvider`, sign-in/up, `proxy.ts`) | Hecho y probado con sesión real (usuarios de prueba) |
@@ -48,4 +48,4 @@
 | 6 Migración 0001 + perfiles + webhook | Migración aplicada y probada; webhook escrito, **falta registrarlo en Clerk** |
 | 7 Shell responsive y estados | Hecho (home vacío, ajustes, 404) |
 | 8 Tests | 30 unitarios + 14 RLS + 42 E2E (público, sesión, layout, a11y) verdes |
-| 9 Preview en Vercel | Pendiente (requiere remoto GitHub y proyecto Vercel) |
+| 9 Preview en Vercel | Pendiente (el remoto ya existe; falta el proyecto Vercel y sus variables de entorno) |

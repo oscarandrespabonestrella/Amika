@@ -59,3 +59,14 @@
 | Fotos propias con cámara | Hecho (subida, borrado, tope 10, EXIF eliminado) |
 | Importar un juego real de BGG de extremo a extremo | **Pendiente del token** |
 | Borrado de datos al eliminar cuenta (webhook) | Código y tests unitarios hechos; **falta registrar el webhook en Clerk** |
+
+## Estado de la Fase 3 (actualizado 2026-11-15)
+| Entrega | Estado |
+|---|---|
+| Migración 0005 (`library_items`, `search_library`) | Hecho y aplicado en dev; 15 tests de RLS |
+| Añadir/quitar juegos como «lo tengo» o «lo tuve»; favorito, valoración 1–10, notas | Hecho |
+| Pantalla «Biblioteca» con filtros (estado, favoritos) y búsqueda sin acentos | Hecho |
+| Resumen en Inicio | Hecho |
+| Editar y borrar juegos propios (con limpieza de sus fotos) | Hecho |
+| Lista de deseos, etiquetas personales | **Fuera de alcance por decisión** |
+| Pruebas | 171 unitarias, 62 RLS/SQL, 93 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |

@@ -14,12 +14,15 @@ export const TEST_USERS = {
   b: { email: "bglib-e2e-b+clerk_test@example.com", firstName: "E2E Bob" },
   // Creates games/photos in app-games.spec.ts, so it must not be shared.
   c: { email: "bglib-e2e-c+clerk_test@example.com", firstName: "E2E Carol" },
+  // Library flows (app-library.spec.ts).
+  d: { email: "bglib-e2e-d+clerk_test@example.com", firstName: "E2E Dave" },
 } as const;
 
 export const STATE_FILE = {
   a: "playwright/.clerk/user-a.json",
   b: "playwright/.clerk/user-b.json",
   c: "playwright/.clerk/user-c.json",
+  d: "playwright/.clerk/user-d.json",
 } as const;
 
 function clerk() {
@@ -93,17 +96,20 @@ export async function insertImportedGame(
 }
 
 /** Removes every E2E fixture game (global ones by reserved id, custom ones by owner). */
-export async function cleanupCatalogFixtures(ownerIds: string[]) {
+export async function cleanupCatalogFixtures(
+  ownerIds: string[],
+  externalPrefix: string = E2E_EXTERNAL_PREFIX,
+) {
   await withDb(async (c) => {
     await c.query(
       `delete from public.games where id in (
          select game_id from public.game_external_ids
          where source = 'bgg' and external_id like $1)`,
-      [`${E2E_EXTERNAL_PREFIX}%`],
+      [`${externalPrefix}%`],
     );
     await c.query(
       "delete from public.terms where source = 'bgg' and external_id like $1",
-      [`${E2E_EXTERNAL_PREFIX}%`],
+      [`${externalPrefix}%`],
     );
     if (ownerIds.length > 0) {
       await c.query("delete from public.games where owner_id = any($1)", [

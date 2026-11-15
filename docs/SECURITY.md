@@ -32,7 +32,7 @@ Todas las políticas usan `(select auth.jwt()->>'sub')` (≡ `current_user_id()`
 | `terms`, `game_terms`, `game_external_ids`, `game_relations` | según la visibilidad del juego | solo `service_role` |
 | `game_resources`, `faq_*`, `rules_content` | todos (publicados) | admin |
 | `scoring_configs` | publicadas: todos; draft: admin | admin; inmutables al publicar |
-| `library_items` | solo dueño | solo dueño |
+| `library_items` | solo dueño | solo dueño; solo sobre juegos que puede ver; `user_id` no se puede cambiar ni falsificar |
 | `plays` y tablas hijas | solo `created_by` | solo `created_by` |
 
 Importación al catálogo global: función de servidor con service_role, con rate limit por usuario y validación de lo recibido de la fuente. Los usuarios no pueden insertar en el catálogo global.
@@ -82,3 +82,9 @@ Logger central sin PII ni tokens; sin trazas al cliente. Monitorización (Sentry
 - **Fotos**: privadas por defecto, tipo y tamaño limitados en el bucket, EXIF eliminado en el cliente, URLs firmadas efímeras y borrado completo con la cuenta.
 - **Claves de Supabase**: la clave `service_role` debe ser la JWT clásica o una `sb_secret_` **completa**. La CLI y el panel **enmascaran** las secretas nuevas tras crearlas; pegar la máscara produce «Invalid API key» lejos de la causa. `serviceRoleKeySchema` lo detecta al arrancar y lo explica. Cada secreto se valida por separado (un problema con uno no rompe lo que no lo usa).
 - **Errores de Next**: los `catch` que envuelven `auth()` llaman a `unstable_rethrow`; si no, se tragan las señales internas de Next (rutas dinámicas, redirecciones).
+
+## 12. Fase 3: biblioteca y juegos propios
+- **Biblioteca privada**: 15 tests de RLS (aislamiento, `user_id` no falsificable ni transferible, no se pueden añadir juegos privados ajenos, único por usuario, rangos de valoración y notas, cascada al borrar juego/cuenta).
+- **Entradas validadas** con Zod estricto (`.strict()`: sin asignación masiva), también en el servidor; la UI solo ofrece los estados permitidos y la base de datos los refuerza con un CHECK.
+- **Editar/borrar juegos propios**: solo el dueño de un juego `manual` (RLS + comprobación explícita); un juego importado da 404. Al borrar, los **archivos** de sus fotos se eliminan antes que la fila (las filas se borran en cascada, los archivos no) y usando la sesión del propio usuario, sin necesitar la clave de servicio.
+- **Borrado en dos pasos** en la interfaz (sin clics accidentales).

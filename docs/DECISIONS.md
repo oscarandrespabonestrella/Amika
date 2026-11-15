@@ -79,3 +79,9 @@ La app solo conoce la interfaz `GameSource` (`search`, `fetchGame`, `isConfigure
 - **`loading.tsx` solo en el listado** (grupo de rutas `(list)`): si envuelve la ficha, un id inexistente responde 200 en vez de 404 porque la respuesta ya empezó a enviarse.
 - **El botón de borrar foto espera a Clerk** (como los de subida): sin token la petición sale anónima.
 - **Prettier no debe formatear artefactos** de test (`test-results/`).
+
+## ADR-024 Biblioteca sin lista de deseos *(decisión del usuario, Fase 3)*
+La biblioteca admite solo `owned` («lo tengo») y `previously_owned` («lo tuve»). Los deseados se dejan fuera por ahora; si se añaden, bastará ampliar el CHECK de `library_items.status` y las traducciones. No hay etiquetas ni fecha de adquisición hasta que hagan falta. La biblioteca se compone con el catálogo por *slots* (`libraryPanel`, `extra`) en lugar de que `catalog` importe `library`, para mantener la dependencia en un solo sentido.
+
+## ADR-025 Aviso conocido, benigno: «Failed to set initial Realtime auth token»
+Durante `next build`, supabase-js (al recibir `accessToken`) intenta fijar el token de Realtime en una promesa que él mismo captura y llama a `auth()` de Clerk fuera de una petición, lo que registra «Dynamic server usage». No afecta al resultado (las rutas son dinámicas y los tests pasan). Si molestara, la salida es hacer asíncrona `createSupabaseServerClient()` para obtener el token antes de crear el cliente.

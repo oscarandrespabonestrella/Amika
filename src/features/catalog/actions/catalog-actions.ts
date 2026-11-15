@@ -1,10 +1,16 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { unstable_rethrow } from "next/navigation";
+import { z } from "zod";
 import { logger } from "@/lib/logger";
 import { bggQuerySchema, customGameSchema, externalIdSchema } from "../schemas";
-import { createCustomGame } from "../services/game-service";
+import {
+  createCustomGame,
+  deleteCustomGame,
+  updateCustomGame,
+} from "../services/game-service";
 import {
   type ExternalSearchResult,
   type ImportResult,
@@ -47,6 +53,16 @@ export type CreateCustomGameResult =
   | { ok: false; error: "invalid"; fieldErrors: Record<string, string> }
   | { ok: false; error: "failed" };
 
+/** First message per field: the form shows one error under each input. */
+function fieldErrorsOf(issues: { path: PropertyKey[]; message: string }[]) {
+  const fieldErrors: Record<string, string> = {};
+  for (const issue of issues) {
+    const field = String(issue.path[0] ?? "form");
+    fieldErrors[field] ??= issue.message;
+  }
+  return fieldErrors;
+}
+
 export async function createCustomGameAction(
   input: unknown,
 ): Promise<CreateCustomGameResult> {
@@ -55,19 +71,77 @@ export async function createCustomGameAction(
 
   const parsed = customGameSchema.safeParse(input);
   if (!parsed.success) {
-    const fieldErrors: Record<string, string> = {};
-    for (const issue of parsed.error.issues) {
-      const field = String(issue.path[0] ?? "form");
-      fieldErrors[field] ??= issue.message;
-    }
-    return { ok: false, error: "invalid", fieldErrors };
+    return {
+      ok: false,
+      error: "invalid",
+      fieldErrors: fieldErrorsOf(parsed.error.issues),
+    };
   }
 
   try {
-    return { ok: true, id: await createCustomGame(userId, parsed.data) };
+    const id = await createCustomGame(userId, parsed.data);
+    revalidatePath("/", "layout");
+    return { ok: true, id };
   } catch (error) {
     unstable_rethrow(error);
     logger.error("createCustomGame failed", error);
+    return { ok: false, error: "failed" };
+  }
+}
+
+export type UpdateCustomGameResult =
+  | { ok: true }
+  | Unauthenticated
+  | { ok: false; error: "invalid"; fieldErrors: Record<string, string> }
+  | { ok: false; error: "not_found" | "failed" };
+
+export async function updateCustomGameAction(
+  id: unknown,
+  input: unknown,
+): Promise<UpdateCustomGameResult> {
+  const { userId } = await auth();
+  if (!userId) return { ok: false, error: "unauthenticated" };
+
+  const gameId = z.uuid().safeParse(id);
+  if (!gameId.success) return { ok: false, error: "not_found" };
+  const parsed = customGameSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: "invalid",
+      fieldErrors: fieldErrorsOf(parsed.error.issues),
+    };
+  }
+
+  try {
+    const outcome = await updateCustomGame(gameId.data, parsed.data);
+    if (outcome === "not_found") return { ok: false, error: "not_found" };
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (error) {
+    unstable_rethrow(error);
+    logger.error("updateCustomGame failed", error);
+    return { ok: false, error: "failed" };
+  }
+}
+
+export type DeleteCustomGameResult =
+  { ok: true } | Unauthenticated | { ok: false; error: "not_found" | "failed" };
+
+export async function deleteCustomGameAction(
+  id: unknown,
+): Promise<DeleteCustomGameResult> {
+  const { userId } = await auth();
+  if (!userId) return { ok: false, error: "unauthenticated" };
+
+  try {
+    const outcome = await deleteCustomGame(userId, String(id));
+    if (outcome === "not_found") return { ok: false, error: "not_found" };
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (error) {
+    unstable_rethrow(error);
+    logger.error("deleteCustomGame failed", error);
     return { ok: false, error: "failed" };
   }
 }

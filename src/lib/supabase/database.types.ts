@@ -300,6 +300,57 @@ export type Database = {
           },
         ];
       };
+      library_items: {
+        Row: {
+          created_at: string;
+          game_id: string;
+          id: string;
+          is_favorite: boolean;
+          notes: string | null;
+          rating: number | null;
+          status: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          game_id: string;
+          id?: string;
+          is_favorite?: boolean;
+          notes?: string | null;
+          rating?: number | null;
+          status: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          game_id?: string;
+          id?: string;
+          is_favorite?: boolean;
+          notes?: string | null;
+          rating?: number | null;
+          status?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "library_items_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "library_items_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_path: string | null;
@@ -450,6 +501,30 @@ export type Database = {
           isOneToOne: false;
           isSetofReturn: true;
         };
+      };
+      search_library: {
+        Args: {
+          p_favorites?: boolean;
+          p_limit?: number;
+          p_status?: string;
+          q?: string;
+        };
+        Returns: {
+          cover_url: string;
+          game_id: string;
+          is_favorite: boolean;
+          item_id: string;
+          kind: string;
+          max_players: number;
+          max_playtime: number;
+          min_players: number;
+          min_playtime: number;
+          name: string;
+          rating: number;
+          source: string;
+          status: string;
+          year_published: number;
+        }[];
       };
       upsert_external_game: { Args: { p: Json }; Returns: string };
     };

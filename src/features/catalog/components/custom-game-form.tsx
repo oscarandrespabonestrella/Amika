@@ -12,26 +12,36 @@ import { Textarea } from "@/components/ui/textarea";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
-import { createCustomGameAction } from "../actions/catalog-actions";
+import {
+  createCustomGameAction,
+  updateCustomGameAction,
+} from "../actions/catalog-actions";
 import {
   type CustomGameData,
   type CustomGameInput,
   customGameSchema,
 } from "../schemas";
 
-export function CustomGameForm() {
+type Props = {
+  /** Edit an existing game: its current values and id. Omit to create a new one. */
+  edit?: { id: string; values: CustomGameInput };
+};
+
+export function CustomGameForm({ edit }: Props = {}) {
   const t = useTranslations("NewGame");
   const tKind = useTranslations("Games.kind");
-  const locale = useLocale() as AppLocale;
+  const uiLocale = useLocale() as AppLocale;
+  // An existing game keeps the language it was written in.
+  const locale = edit?.values.locale ?? uiLocale;
   const router = useRouter();
   const [formError, setFormError] = useState<
-    "unauthenticated" | "failed" | null
+    "unauthenticated" | "failed" | "not_found" | null
   >(null);
   const [pending, startTransition] = useTransition();
 
   const form = useForm<CustomGameInput, unknown, CustomGameData>({
     resolver: zodResolver(customGameSchema),
-    defaultValues: {
+    defaultValues: edit?.values ?? {
       name: "",
       kind: "base",
       yearPublished: "",
@@ -59,12 +69,12 @@ export function CustomGameForm() {
     setFormError(null);
     startTransition(async () => {
       // Send the raw strings: the server validates them again with the same schema.
-      const result = await createCustomGameAction({
-        ...form.getValues(),
-        locale,
-      });
+      const values = { ...form.getValues(), locale };
+      const result = edit
+        ? await updateCustomGameAction(edit.id, values)
+        : await createCustomGameAction(values);
       if (result.ok) {
-        router.push(`/games/${result.id}`);
+        router.push(`/games/${"id" in result ? result.id : edit?.id}`);
       } else if (result.error === "invalid") {
         for (const [field, code] of Object.entries(result.fieldErrors)) {
           form.setError(field as keyof CustomGameInput, { message: code });
@@ -176,10 +186,16 @@ export function CustomGameForm() {
           className="h-11 px-6"
           disabled={pending}
         >
-          {pending ? t("submitting") : t("submit")}
+          {edit
+            ? pending
+              ? t("saving")
+              : t("save")
+            : pending
+              ? t("submitting")
+              : t("submit")}
         </Button>
         <Link
-          href="/games"
+          href={edit ? `/games/${edit.id}` : "/games"}
           className={cn(
             buttonVariants({ variant: "outline", size: "lg" }),
             "h-11 px-6",

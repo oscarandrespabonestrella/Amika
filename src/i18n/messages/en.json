@@ -21,14 +21,18 @@
     "label": "Main navigation",
     "home": "Home",
     "games": "Games",
-    "settings": "Settings"
+    "settings": "Settings",
+    "library": "Library"
   },
   "Home": {
     "title": "Welcome back",
     "titleNamed": "Welcome back, {name}",
     "emptyTitle": "Your shelf is empty",
     "emptyBody": "Search for games to explore the catalog. Your personal library is coming next.",
-    "browse": "Browse games"
+    "browse": "Browse games",
+    "libraryTitle": "Your library",
+    "libraryCount": "{count, plural, one {# game} other {# games}} in your library.",
+    "openLibrary": "Open library"
   },
   "Settings": {
     "title": "Settings",
@@ -154,6 +158,47 @@
         "limit": "You've reached the limit of 10 photos for this game.",
         "delete": "The photo couldn't be deleted. Please try again."
       }
+    },
+    "library": {
+      "title": "In my library",
+      "addTitle": "Add to my library",
+      "add": {
+        "owned": "I own it",
+        "previously_owned": "I used to own it"
+      },
+      "status": "Status",
+      "statusOption": {
+        "owned": "Own it",
+        "previously_owned": "Used to own"
+      },
+      "favorite": "Favorite",
+      "rating": "My rating",
+      "noRating": "No rating",
+      "ratingValue": "{n}/10",
+      "notes": "My notes",
+      "notesPlaceholder": "Private notes about this game",
+      "saveNotes": "Save notes",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "remove": "Remove from library",
+      "removeConfirm": "Remove it? Your rating and notes will be lost.",
+      "removeYes": "Yes, remove",
+      "removeNo": "Keep it",
+      "errors": {
+        "unauthenticated": "Your session expired. Please sign in again.",
+        "invalid": "That change isn't valid.",
+        "not_found": "That game isn't available.",
+        "failed": "Something went wrong. Please try again."
+      }
+    },
+    "owner": {
+      "edit": "Edit game",
+      "delete": "Delete game",
+      "deleteConfirm": "Delete this game? Its photos and library entry will be deleted too.",
+      "deleteYes": "Yes, delete",
+      "deleteNo": "Cancel",
+      "deleting": "Deleting…",
+      "deleteError": "The game couldn't be deleted. Please try again."
     }
   },
   "NewGame": {
@@ -179,12 +224,44 @@
       "range": "Enter a valid number.",
       "order": "The maximum can't be lower than the minimum.",
       "unauthenticated": "Your session expired. Please sign in again.",
-      "failed": "The game couldn't be created. Please try again."
-    }
+      "failed": "The game couldn't be created. Please try again.",
+      "not_found": "That game isn't available."
+    },
+    "editTitle": "Edit game",
+    "save": "Save changes",
+    "saving": "Saving…"
   },
   "NotFound": {
     "title": "Page not found",
     "body": "The page you are looking for does not exist.",
     "back": "Back to start"
+  },
+  "Library": {
+    "title": "My library",
+    "subtitle": "The games you own or used to own.",
+    "search": {
+      "label": "Search my library",
+      "placeholder": "Search by name…",
+      "submit": "Search"
+    },
+    "filters": {
+      "label": "Filter library",
+      "all": "All",
+      "owned": "Owned",
+      "previouslyOwned": "Previously owned",
+      "favorites": "Favorites"
+    },
+    "badge": {
+      "owned": "Owned",
+      "previously_owned": "Previously owned",
+      "favorite": "Favorite",
+      "rating": "{rating}/10"
+    },
+    "count": "{count, plural, one {# game} other {# games}}",
+    "emptyTitle": "Your library is empty",
+    "emptyBody": "Open a game and mark the ones you own or used to own.",
+    "noMatchTitle": "No games match",
+    "noMatchBody": "Try another name or filter.",
+    "browse": "Browse games"
   }
 }

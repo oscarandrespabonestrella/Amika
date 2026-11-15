@@ -1,11 +1,18 @@
 import { Dices } from "lucide-react";
+import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
 import { formatMinutes, formatPlayers } from "../format";
 import type { GameSummary } from "../types";
 
-export function GameCard({ game }: { game: GameSummary }) {
+type GameCardProps = {
+  game: GameSummary;
+  /** Extra chips (e.g. library status) rendered after the built-in ones. */
+  extra?: ReactNode;
+};
+
+export function GameCard({ game, extra }: GameCardProps) {
   const t = useTranslations("Games");
   const meta = (
     key: "players" | "playersRange" | "minutes" | "minutesRange",
@@ -53,6 +60,7 @@ export function GameCard({ game }: { game: GameSummary }) {
             {game.isCustom && (
               <Badge variant="outline">{t("badge.custom")}</Badge>
             )}
+            {extra}
           </span>
         </span>
       </Link>

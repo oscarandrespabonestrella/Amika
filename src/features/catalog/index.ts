@@ -12,7 +12,11 @@ export { GameDetailView } from "./components/game-detail";
 export { SearchForm } from "./components/search-form";
 export { customGameSchema, parseSearchParams } from "./schemas";
 export type { CustomGameInput, SearchParams } from "./schemas";
-export { getGameDetail, type GameDetail } from "./services/game-service";
+export {
+  getGameDetail,
+  getGameForEdit,
+  type GameDetail,
+} from "./services/game-service";
 export type {
   ExternalSearchResult,
   ImportResult,

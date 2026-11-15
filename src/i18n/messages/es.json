@@ -21,14 +21,18 @@
     "label": "Navegación principal",
     "home": "Inicio",
     "games": "Juegos",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "library": "Biblioteca"
   },
   "Home": {
     "title": "Te damos la bienvenida",
     "titleNamed": "Te damos la bienvenida, {name}",
     "emptyTitle": "Tu estantería está vacía",
     "emptyBody": "Busca juegos para explorar el catálogo. Tu biblioteca personal llegará pronto.",
-    "browse": "Explorar juegos"
+    "browse": "Explorar juegos",
+    "libraryTitle": "Tu biblioteca",
+    "libraryCount": "{count, plural, one {# juego} other {# juegos}} en tu biblioteca.",
+    "openLibrary": "Abrir biblioteca"
   },
   "Settings": {
     "title": "Ajustes",
@@ -154,6 +158,47 @@
         "limit": "Has alcanzado el límite de 10 fotos para este juego.",
         "delete": "No se pudo eliminar la foto. Inténtalo de nuevo."
       }
+    },
+    "library": {
+      "title": "En mi biblioteca",
+      "addTitle": "Añadir a mi biblioteca",
+      "add": {
+        "owned": "Lo tengo",
+        "previously_owned": "Lo tuve"
+      },
+      "status": "Estado",
+      "statusOption": {
+        "owned": "Lo tengo",
+        "previously_owned": "Lo tuve"
+      },
+      "favorite": "Favorito",
+      "rating": "Mi valoración",
+      "noRating": "Sin valorar",
+      "ratingValue": "{n}/10",
+      "notes": "Mis notas",
+      "notesPlaceholder": "Notas privadas sobre este juego",
+      "saveNotes": "Guardar notas",
+      "saving": "Guardando…",
+      "saved": "Guardado",
+      "remove": "Quitar de la biblioteca",
+      "removeConfirm": "¿Quitarlo? Se perderán tu valoración y tus notas.",
+      "removeYes": "Sí, quitar",
+      "removeNo": "Conservar",
+      "errors": {
+        "unauthenticated": "Tu sesión caducó. Inicia sesión de nuevo.",
+        "invalid": "Ese cambio no es válido.",
+        "not_found": "Ese juego no está disponible.",
+        "failed": "Algo salió mal. Inténtalo de nuevo."
+      }
+    },
+    "owner": {
+      "edit": "Editar juego",
+      "delete": "Eliminar juego",
+      "deleteConfirm": "¿Eliminar este juego? También se eliminarán sus fotos y su entrada en la biblioteca.",
+      "deleteYes": "Sí, eliminar",
+      "deleteNo": "Cancelar",
+      "deleting": "Eliminando…",
+      "deleteError": "No se pudo eliminar el juego. Inténtalo de nuevo."
     }
   },
   "NewGame": {
@@ -179,12 +224,44 @@
       "range": "Introduce un número válido.",
       "order": "El máximo no puede ser menor que el mínimo.",
       "unauthenticated": "Tu sesión caducó. Inicia sesión de nuevo.",
-      "failed": "No se pudo crear el juego. Inténtalo de nuevo."
-    }
+      "failed": "No se pudo crear el juego. Inténtalo de nuevo.",
+      "not_found": "Ese juego no está disponible."
+    },
+    "editTitle": "Editar juego",
+    "save": "Guardar cambios",
+    "saving": "Guardando…"
   },
   "NotFound": {
     "title": "Página no encontrada",
     "body": "La página que buscas no existe.",
     "back": "Volver al inicio"
+  },
+  "Library": {
+    "title": "Mi biblioteca",
+    "subtitle": "Los juegos que tienes o que tuviste.",
+    "search": {
+      "label": "Buscar en mi biblioteca",
+      "placeholder": "Buscar por nombre…",
+      "submit": "Buscar"
+    },
+    "filters": {
+      "label": "Filtrar biblioteca",
+      "all": "Todos",
+      "owned": "Los tengo",
+      "previouslyOwned": "Los tuve",
+      "favorites": "Favoritos"
+    },
+    "badge": {
+      "owned": "Lo tengo",
+      "previously_owned": "Lo tuve",
+      "favorite": "Favorito",
+      "rating": "{rating}/10"
+    },
+    "count": "{count, plural, one {# juego} other {# juegos}}",
+    "emptyTitle": "Tu biblioteca está vacía",
+    "emptyBody": "Abre un juego y marca los que tienes o que tuviste.",
+    "noMatchTitle": "Ningún juego coincide",
+    "noMatchBody": "Prueba con otro nombre o filtro.",
+    "browse": "Explorar juegos"
   }
 }

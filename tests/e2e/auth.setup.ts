@@ -14,7 +14,7 @@ setup("configure Clerk testing", async () => {
   await clerkSetup();
 });
 
-for (const key of ["a", "b", "c"] as const) {
+for (const key of ["a", "b", "c", "d"] as const) {
   const user = TEST_USERS[key];
   setup(`sign in test user ${key.toUpperCase()}`, async ({ page }) => {
     await ensureTestUser(user.email, user.firstName);

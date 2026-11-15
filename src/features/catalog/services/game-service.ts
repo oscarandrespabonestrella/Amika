@@ -2,7 +2,8 @@ import "server-only";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import type { CustomGameData } from "../schemas";
+import type { AppLocale } from "@/i18n/routing";
+import type { CustomGameData, CustomGameInput } from "../schemas";
 import type { GameKind, RelationType, TermType } from "../types";
 
 export type GameDetail = {
@@ -214,4 +215,144 @@ export async function createCustomGame(
     }
   }
   return game.id;
+}
+
+const text = (value: number | null) => (value === null ? "" : String(value));
+
+/** The raw values for the edit form. Only the owner's custom games qualify (RLS + source). */
+export async function getGameForEdit(
+  id: string,
+): Promise<{ id: string; values: CustomGameInput } | null> {
+  if (!z.uuid().safeParse(id).success) return null;
+  const supabase = createSupabaseServerClient();
+
+  const { data: game, error } = await supabase
+    .from("games")
+    .select("*")
+    .eq("id", id)
+    .eq("source", "manual")
+    .maybeSingle();
+  if (error) throw error;
+  if (!game) return null;
+
+  const { data: translation, error: translationError } = await supabase
+    .from("game_translations")
+    .select("description")
+    .eq("game_id", id)
+    .eq("locale", game.original_language)
+    .maybeSingle();
+  if (translationError) throw translationError;
+
+  return {
+    id: game.id,
+    values: {
+      name: game.name,
+      kind: game.kind as GameKind,
+      yearPublished: text(game.year_published),
+      minPlayers: text(game.min_players),
+      maxPlayers: text(game.max_players),
+      minPlaytime: text(game.min_playtime),
+      maxPlaytime: text(game.max_playtime),
+      minAge: text(game.min_age),
+      description: translation?.description ?? "",
+      locale: game.original_language as AppLocale,
+    },
+  };
+}
+
+/** Updates one of the user's own custom games. The language it was written in never changes. */
+export async function updateCustomGame(
+  id: string,
+  data: CustomGameData,
+): Promise<"updated" | "not_found"> {
+  const supabase = createSupabaseServerClient();
+
+  const { data: game, error: lookupError } = await supabase
+    .from("games")
+    .select("id, original_language")
+    .eq("id", id)
+    .eq("source", "manual")
+    .maybeSingle();
+  if (lookupError) throw lookupError;
+  if (!game) return "not_found";
+
+  const { error } = await supabase
+    .from("games")
+    .update({
+      name: data.name,
+      kind: data.kind,
+      year_published: data.yearPublished ?? null,
+      min_players: data.minPlayers ?? null,
+      max_players: data.maxPlayers ?? null,
+      min_playtime: data.minPlaytime ?? null,
+      max_playtime: data.maxPlaytime ?? null,
+      min_age: data.minAge ?? null,
+    })
+    .eq("id", id);
+  if (error) throw error;
+
+  if (data.description) {
+    const { error: translationError } = await supabase
+      .from("game_translations")
+      .upsert(
+        {
+          game_id: id,
+          locale: game.original_language,
+          name: data.name,
+          description: data.description,
+        },
+        { onConflict: "game_id,locale" },
+      );
+    if (translationError) throw translationError;
+  } else {
+    const { error: deleteError } = await supabase
+      .from("game_translations")
+      .delete()
+      .eq("game_id", id)
+      .eq("locale", game.original_language);
+    if (deleteError) throw deleteError;
+  }
+  return "updated";
+}
+
+/**
+ * Deletes one of the user's own custom games. Its photo FILES go first (rows cascade,
+ * files do not); library entries and translations cascade with the game row.
+ */
+export async function deleteCustomGame(
+  userId: string,
+  id: string,
+): Promise<"deleted" | "not_found"> {
+  if (!z.uuid().safeParse(id).success) return "not_found";
+  const supabase = createSupabaseServerClient();
+
+  const { data: game, error } = await supabase
+    .from("games")
+    .select("id, source, owner_id")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  if (!game || game.source !== "manual" || game.owner_id !== userId)
+    return "not_found";
+
+  const { data: photos, error: photosError } = await supabase
+    .from("game_photos")
+    .select("storage_path")
+    .eq("game_id", id);
+  if (photosError) throw photosError;
+
+  const paths = (photos ?? []).map((p) => p.storage_path);
+  if (paths.length > 0) {
+    const { error: removeError } = await supabase.storage
+      .from("game-photos")
+      .remove(paths);
+    if (removeError) throw removeError;
+  }
+
+  const { error: deleteError } = await supabase
+    .from("games")
+    .delete()
+    .eq("id", id);
+  if (deleteError) throw deleteError;
+  return "deleted";
 }

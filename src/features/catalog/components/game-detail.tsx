@@ -1,13 +1,21 @@
 import { ArrowLeft, Dices, ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
 import { formatMinutes, formatPlayers } from "../format";
 import type { GameDetail } from "../services/game-service";
 import { TERM_TYPES } from "../types";
+import { OwnerActions } from "./owner-actions";
 import { PhotoGallery } from "./photo-gallery";
 
-export function GameDetailView({ game }: { game: GameDetail }) {
+type Props = {
+  game: GameDetail;
+  /** Slot for the user's library controls (owned by the library module). */
+  libraryPanel?: ReactNode;
+};
+
+export function GameDetailView({ game, libraryPanel }: Props) {
   const t = useTranslations("Game");
   const tg = useTranslations("Games");
   const meta = (
@@ -89,6 +97,10 @@ export function GameDetailView({ game }: { game: GameDetail }) {
           )}
         </div>
       </header>
+
+      {/* Only the owner can see a custom game, so "custom" implies "yours". */}
+      {game.isCustom && <OwnerActions gameId={game.id} />}
+      {libraryPanel}
 
       <section
         aria-labelledby="description-title"

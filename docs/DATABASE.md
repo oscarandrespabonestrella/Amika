@@ -74,8 +74,12 @@ El catálogo **no se precarga**: un servicio de servidor consulta la fuente exte
 | `rules_content` | Resumen propio de reglas: `game_id`, `locale`, `body_md`, `source_locale`, `is_machine_translated`. |
 | `faq_entries` / `faq_translations` | Preguntas por juego e idioma. |
 
-## 6. Biblioteca (privada)
-`library_items`: `user_id text`, `game_id`, `status` (`owned\|wishlist\|previously_owned`), `is_favorite`, `rating` (1–10), `notes`, `acquired_at`. Único (`user_id`,`game_id`). Añadir un juego a la biblioteca dispara la importación del juego si no está en la caché.
+## 6. Biblioteca (privada) — implementado en 0005
+`library_items`: `user_id` (por defecto el `sub` del token), `game_id`, `status` (**`owned` | `previously_owned`**; la lista de deseos queda fuera por decisión del usuario del 2026-11-15, añadirla es ampliar el CHECK), `is_favorite`, `rating` (1–10, opcional), `notes` (≤2000), timestamps. Único (`user_id`,`game_id`). RLS: solo el dueño lee, edita y borra; solo puede añadir juegos que **puede ver** (no los privados de otro). Se borra en cascada con el juego y con la cuenta.
+
+`search_library(q, p_status, p_favorites, p_limit)`: la biblioteca del usuario unida a `games`, insensible a acentos, con filtros de estado y favoritos; `SECURITY INVOKER`.
+
+Pendiente a propósito: etiquetas personales y fecha de adquisición (sin necesidad real todavía).
 
 ## 7. Partidas (MVP: solo del creador)
 | Tabla | Notas |
@@ -105,5 +109,5 @@ Vistas/funciones SQL con `security_invoker = true`. Índices: `plays(game_id, pl
 Al borrar la cuenta, `deleteUserData` elimina primero los archivos (las filas se borran en cascada, los archivos no) y después el perfil.
 
 ## 11. Migraciones aplicadas
-`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos).
-Pendientes: biblioteca (Fase 3), Game Center (4), partidas y puntuación (5), vistas de estadísticas (6).
+`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos) · `20261115230000_library` (biblioteca + `search_library`).
+Pendientes: Game Center (4), partidas y puntuación (5), vistas de estadísticas (6).

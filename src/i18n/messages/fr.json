@@ -21,14 +21,18 @@
     "label": "Navigation principale",
     "home": "Accueil",
     "games": "Jeux",
-    "settings": "Réglages"
+    "settings": "Réglages",
+    "library": "Bibliothèque"
   },
   "Home": {
     "title": "Bon retour",
     "titleNamed": "Bon retour, {name}",
     "emptyTitle": "Votre étagère est vide",
     "emptyBody": "Recherchez des jeux pour explorer le catalogue. Votre bibliothèque personnelle arrive bientôt.",
-    "browse": "Parcourir les jeux"
+    "browse": "Parcourir les jeux",
+    "libraryTitle": "Votre bibliothèque",
+    "libraryCount": "{count, plural, one {# jeu} other {# jeux}} dans votre bibliothèque.",
+    "openLibrary": "Ouvrir la bibliothèque"
   },
   "Settings": {
     "title": "Réglages",
@@ -154,6 +158,47 @@
         "limit": "Vous avez atteint la limite de 10 photos pour ce jeu.",
         "delete": "Impossible de supprimer la photo. Veuillez réessayer."
       }
+    },
+    "library": {
+      "title": "Dans ma bibliothèque",
+      "addTitle": "Ajouter à ma bibliothèque",
+      "add": {
+        "owned": "Je l'ai",
+        "previously_owned": "Je l'ai eu"
+      },
+      "status": "Statut",
+      "statusOption": {
+        "owned": "Je l'ai",
+        "previously_owned": "Je l'ai eu"
+      },
+      "favorite": "Favori",
+      "rating": "Ma note",
+      "noRating": "Sans note",
+      "ratingValue": "{n}/10",
+      "notes": "Mes notes",
+      "notesPlaceholder": "Notes privées sur ce jeu",
+      "saveNotes": "Enregistrer les notes",
+      "saving": "Enregistrement…",
+      "saved": "Enregistré",
+      "remove": "Retirer de la bibliothèque",
+      "removeConfirm": "Le retirer ? Votre note et vos notes seront perdues.",
+      "removeYes": "Oui, retirer",
+      "removeNo": "Le garder",
+      "errors": {
+        "unauthenticated": "Votre session a expiré. Veuillez vous reconnecter.",
+        "invalid": "Cette modification n'est pas valide.",
+        "not_found": "Ce jeu n'est pas disponible.",
+        "failed": "Une erreur s'est produite. Veuillez réessayer."
+      }
+    },
+    "owner": {
+      "edit": "Modifier le jeu",
+      "delete": "Supprimer le jeu",
+      "deleteConfirm": "Supprimer ce jeu ? Ses photos et son entrée dans la bibliothèque seront aussi supprimées.",
+      "deleteYes": "Oui, supprimer",
+      "deleteNo": "Annuler",
+      "deleting": "Suppression…",
+      "deleteError": "Impossible de supprimer le jeu. Veuillez réessayer."
     }
   },
   "NewGame": {
@@ -179,12 +224,44 @@
       "range": "Saisissez un nombre valide.",
       "order": "Le maximum ne peut pas être inférieur au minimum.",
       "unauthenticated": "Votre session a expiré. Veuillez vous reconnecter.",
-      "failed": "Impossible de créer le jeu. Veuillez réessayer."
-    }
+      "failed": "Impossible de créer le jeu. Veuillez réessayer.",
+      "not_found": "Ce jeu n'est pas disponible."
+    },
+    "editTitle": "Modifier le jeu",
+    "save": "Enregistrer les modifications",
+    "saving": "Enregistrement…"
   },
   "NotFound": {
     "title": "Page introuvable",
     "body": "La page que vous cherchez n'existe pas.",
     "back": "Retour à l'accueil"
+  },
+  "Library": {
+    "title": "Ma bibliothèque",
+    "subtitle": "Les jeux que vous possédez ou avez possédés.",
+    "search": {
+      "label": "Rechercher dans ma bibliothèque",
+      "placeholder": "Rechercher par nom…",
+      "submit": "Rechercher"
+    },
+    "filters": {
+      "label": "Filtrer la bibliothèque",
+      "all": "Tous",
+      "owned": "Je les ai",
+      "previouslyOwned": "Je les ai eus",
+      "favorites": "Favoris"
+    },
+    "badge": {
+      "owned": "Je l'ai",
+      "previously_owned": "Je l'ai eu",
+      "favorite": "Favori",
+      "rating": "{rating}/10"
+    },
+    "count": "{count, plural, one {# jeu} other {# jeux}}",
+    "emptyTitle": "Votre bibliothèque est vide",
+    "emptyBody": "Ouvrez un jeu et indiquez ceux que vous possédez ou avez possédés.",
+    "noMatchTitle": "Aucun jeu ne correspond",
+    "noMatchBody": "Essayez un autre nom ou filtre.",
+    "browse": "Parcourir les jeux"
   }
 }

@@ -3,6 +3,14 @@
     "title": "Amika",
     "description": "Votre collection de jeux de société, vos parties et vos statistiques au même endroit."
   },
+  "Common": {
+    "loading": "Chargement…"
+  },
+  "Errors": {
+    "title": "Une erreur s'est produite",
+    "body": "Nous n'avons pas pu charger cette page. Veuillez réessayer.",
+    "retry": "Réessayer"
+  },
   "Landing": {
     "headline": "Vos jeux. Vos parties. Vos statistiques.",
     "subhead": "Constituez votre collection, enregistrez chaque partie et découvrez qui gagne vraiment.",
@@ -12,15 +20,28 @@
   "Nav": {
     "label": "Navigation principale",
     "home": "Accueil",
+    "games": "Jeux",
     "settings": "Réglages"
   },
   "Home": {
     "title": "Bon retour",
+    "titleNamed": "Bon retour, {name}",
     "emptyTitle": "Votre étagère est vide",
-    "emptyBody": "La recherche de jeux et votre bibliothèque personnelle arriveront dans les prochaines phases."
+    "emptyBody": "Recherchez des jeux pour explorer le catalogue. Votre bibliothèque personnelle arrive bientôt.",
+    "browse": "Parcourir les jeux"
   },
   "Settings": {
     "title": "Réglages",
+    "profile": {
+      "title": "Profil",
+      "hint": "Votre nom affiché apparaît là où votre nom est montré. La photo et l'e-mail se gèrent depuis le menu du compte.",
+      "displayName": "Nom affiché",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Enregistré",
+      "tooLong": "Utilisez 60 caractères ou moins.",
+      "error": "Impossible d'enregistrer votre nom. Veuillez réessayer."
+    },
     "appearance": "Apparence",
     "appearanceHint": "Choisissez un thème ou suivez celui de votre appareil.",
     "theme": {
@@ -32,6 +53,134 @@
     "language": "Langue",
     "languageHint": "S'applique à toute l'application.",
     "saveError": "Impossible d'enregistrer votre préférence. Elle reste appliquée sur cet appareil."
+  },
+  "Games": {
+    "title": "Jeux",
+    "subtitle": "Recherchez dans le catalogue ou ajoutez un jeu que vous possédez.",
+    "create": "Créer un jeu",
+    "search": {
+      "label": "Rechercher des jeux",
+      "placeholder": "Rechercher par nom…",
+      "submit": "Rechercher",
+      "filters": "Filtres",
+      "kind": "Type",
+      "kindAny": "Tous les types",
+      "players": "Joueurs",
+      "playersHint": "Nombre de joueurs",
+      "time": "Durée max. (min)",
+      "timeHint": "Durée jusqu'à",
+      "clear": "Effacer les filtres"
+    },
+    "kind": {
+      "base": "Jeu de base",
+      "expansion": "Extension"
+    },
+    "badge": {
+      "custom": "Mon jeu"
+    },
+    "meta": {
+      "players": "{count, plural, one {# joueur} other {# joueurs}}",
+      "playersRange": "{min}–{max} joueurs",
+      "minutes": "{count} min",
+      "minutesRange": "{min}–{max} min"
+    },
+    "results": {
+      "count": "{count, plural, one {# jeu} other {# jeux}}",
+      "emptyTitle": "Aucun jeu trouvé",
+      "emptyBody": "Essayez un autre nom ou filtre, ou cherchez-le sur BoardGameGeek ci-dessous.",
+      "noneTitle": "Aucun jeu pour l'instant",
+      "noneBody": "Cherchez sur BoardGameGeek pour ajouter des jeux au catalogue, ou créez le vôtre."
+    },
+    "bgg": {
+      "title": "Il n'est pas dans la liste ?",
+      "body": "Cherchez sur BoardGameGeek et ajoutez le jeu au catalogue.",
+      "button": "Chercher « {query} » sur BoardGameGeek",
+      "searching": "Recherche…",
+      "results": "Résultats de BoardGameGeek",
+      "none": "BoardGameGeek n'a aucun résultat pour cette recherche.",
+      "add": "Ajouter",
+      "adding": "Ajout…",
+      "open": "Ouvrir",
+      "inCatalog": "Dans le catalogue",
+      "needsQuery": "Saisissez au moins 2 caractères ci-dessus pour chercher sur BoardGameGeek.",
+      "unavailable": "La recherche sur BoardGameGeek n'est pas encore disponible. Vous pouvez quand même créer votre propre jeu.",
+      "attribution": "Informations fournies par BoardGameGeek."
+    },
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Veuillez vous reconnecter.",
+      "invalid": "Cette recherche n'est pas valide.",
+      "unavailable": "BoardGameGeek n'est pas disponible pour le moment.",
+      "rate_limited": "Trop de requêtes. Attendez une minute et réessayez.",
+      "not_found": "BoardGameGeek n'a aucun jeu avec cet identifiant.",
+      "failed": "Une erreur s'est produite. Veuillez réessayer."
+    }
+  },
+  "Game": {
+    "back": "Retour aux jeux",
+    "coverAlt": "Couverture de {name}",
+    "year": "Année",
+    "players": "Joueurs",
+    "playtime": "Durée",
+    "minAge": "Âge",
+    "ageValue": "{age}+",
+    "description": "Description",
+    "noDescription": "Pas encore de description.",
+    "terms": {
+      "category": "Catégories",
+      "mechanic": "Mécaniques",
+      "designer": "Auteurs",
+      "publisher": "Éditeurs"
+    },
+    "relations": {
+      "has_expansion": "Extensions",
+      "expansion_of": "Extension de"
+    },
+    "notInCatalog": "Pas encore dans le catalogue",
+    "viewOnBgg": "Voir sur BoardGameGeek",
+    "attribution": "Informations fournies par BoardGameGeek.",
+    "photos": {
+      "title": "Mes photos",
+      "hint": "Photos de votre propre exemplaire. Vous seul pouvez les voir.",
+      "take": "Prendre une photo",
+      "choose": "Choisir une photo",
+      "uploading": "Envoi…",
+      "delete": "Supprimer la photo",
+      "empty": "Aucune photo pour l'instant.",
+      "limit": "Vous pouvez garder jusqu'à 10 photos par jeu.",
+      "alt": "Photo {number} de {name}",
+      "errors": {
+        "upload": "Impossible d'envoyer la photo. Veuillez réessayer.",
+        "unreadable": "Ce fichier n'est pas une image lisible.",
+        "limit": "Vous avez atteint la limite de 10 photos pour ce jeu.",
+        "delete": "Impossible de supprimer la photo. Veuillez réessayer."
+      }
+    }
+  },
+  "NewGame": {
+    "title": "Créer un jeu",
+    "intro": "Les jeux que vous créez sont privés : vous seul pouvez les voir.",
+    "fields": {
+      "name": "Nom",
+      "kind": "Type",
+      "yearPublished": "Année de publication",
+      "minPlayers": "Joueurs min.",
+      "maxPlayers": "Joueurs max.",
+      "minPlaytime": "Minutes min.",
+      "maxPlaytime": "Minutes max.",
+      "minAge": "Âge minimum",
+      "description": "Description (facultatif)"
+    },
+    "submit": "Créer le jeu",
+    "submitting": "Création…",
+    "cancel": "Annuler",
+    "errors": {
+      "required": "Ce champ est obligatoire.",
+      "tooLong": "C'est trop long.",
+      "range": "Saisissez un nombre valide.",
+      "order": "Le maximum ne peut pas être inférieur au minimum.",
+      "unauthenticated": "Votre session a expiré. Veuillez vous reconnecter.",
+      "failed": "Impossible de créer le jeu. Veuillez réessayer."
+    }
   },
   "NotFound": {
     "title": "Page introuvable",

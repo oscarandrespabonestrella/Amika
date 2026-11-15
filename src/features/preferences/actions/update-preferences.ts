@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
+import { unstable_rethrow } from "next/navigation";
 import { logger } from "@/lib/logger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { preferencesSchema } from "../schemas";
@@ -29,6 +30,7 @@ export async function updatePreferences(
     }
     return { ok: true };
   } catch (error) {
+    unstable_rethrow(error);
     logger.error("preferences.update threw", error);
     return { ok: false, error: "failed" };
   }

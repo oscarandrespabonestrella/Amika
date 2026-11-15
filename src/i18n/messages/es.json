@@ -3,6 +3,14 @@
     "title": "Amika",
     "description": "Tu colección de juegos de mesa, partidas y estadísticas en un solo lugar."
   },
+  "Common": {
+    "loading": "Cargando…"
+  },
+  "Errors": {
+    "title": "Algo salió mal",
+    "body": "No pudimos cargar esta página. Inténtalo de nuevo.",
+    "retry": "Reintentar"
+  },
   "Landing": {
     "headline": "Tus juegos. Tus partidas. Tus estadísticas.",
     "subhead": "Crea tu colección, registra cada partida y descubre quién gana de verdad.",
@@ -12,15 +20,28 @@
   "Nav": {
     "label": "Navegación principal",
     "home": "Inicio",
+    "games": "Juegos",
     "settings": "Ajustes"
   },
   "Home": {
     "title": "Te damos la bienvenida",
+    "titleNamed": "Te damos la bienvenida, {name}",
     "emptyTitle": "Tu estantería está vacía",
-    "emptyBody": "La búsqueda de juegos y tu biblioteca personal llegarán en las próximas fases."
+    "emptyBody": "Busca juegos para explorar el catálogo. Tu biblioteca personal llegará pronto.",
+    "browse": "Explorar juegos"
   },
   "Settings": {
     "title": "Ajustes",
+    "profile": {
+      "title": "Perfil",
+      "hint": "Tu nombre visible se muestra donde aparece tu nombre. La foto y el correo se gestionan desde el menú de la cuenta.",
+      "displayName": "Nombre visible",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "saved": "Guardado",
+      "tooLong": "Usa 60 caracteres o menos.",
+      "error": "No se pudo guardar tu nombre. Inténtalo de nuevo."
+    },
     "appearance": "Apariencia",
     "appearanceHint": "Elige un tema o sigue el de tu dispositivo.",
     "theme": {
@@ -32,6 +53,134 @@
     "language": "Idioma",
     "languageHint": "Se aplica a toda la aplicación.",
     "saveError": "No se pudo guardar tu preferencia. Se sigue aplicando en este dispositivo."
+  },
+  "Games": {
+    "title": "Juegos",
+    "subtitle": "Busca en el catálogo o añade un juego que tengas.",
+    "create": "Crear un juego",
+    "search": {
+      "label": "Buscar juegos",
+      "placeholder": "Buscar por nombre…",
+      "submit": "Buscar",
+      "filters": "Filtros",
+      "kind": "Tipo",
+      "kindAny": "Cualquier tipo",
+      "players": "Jugadores",
+      "playersHint": "Número de jugadores",
+      "time": "Máx. minutos",
+      "timeHint": "Duración de hasta",
+      "clear": "Quitar filtros"
+    },
+    "kind": {
+      "base": "Juego base",
+      "expansion": "Expansión"
+    },
+    "badge": {
+      "custom": "Mi juego"
+    },
+    "meta": {
+      "players": "{count, plural, one {# jugador} other {# jugadores}}",
+      "playersRange": "{min}–{max} jugadores",
+      "minutes": "{count} min",
+      "minutesRange": "{min}–{max} min"
+    },
+    "results": {
+      "count": "{count, plural, one {# juego} other {# juegos}}",
+      "emptyTitle": "No se encontraron juegos",
+      "emptyBody": "Prueba con otro nombre o filtro, o búscalo en BoardGameGeek aquí abajo.",
+      "noneTitle": "Aún no hay juegos",
+      "noneBody": "Busca en BoardGameGeek para añadir juegos al catálogo, o crea uno propio."
+    },
+    "bgg": {
+      "title": "¿No está en la lista?",
+      "body": "Busca en BoardGameGeek y añade el juego al catálogo.",
+      "button": "Buscar «{query}» en BoardGameGeek",
+      "searching": "Buscando…",
+      "results": "Resultados de BoardGameGeek",
+      "none": "BoardGameGeek no tiene resultados para esa búsqueda.",
+      "add": "Añadir",
+      "adding": "Añadiendo…",
+      "open": "Abrir",
+      "inCatalog": "En el catálogo",
+      "needsQuery": "Escribe al menos 2 caracteres arriba para buscar en BoardGameGeek.",
+      "unavailable": "La búsqueda en BoardGameGeek aún no está disponible. Mientras tanto puedes crear tu propio juego.",
+      "attribution": "Información proporcionada por BoardGameGeek."
+    },
+    "errors": {
+      "unauthenticated": "Tu sesión caducó. Inicia sesión de nuevo.",
+      "invalid": "Esa búsqueda no es válida.",
+      "unavailable": "BoardGameGeek no está disponible ahora mismo.",
+      "rate_limited": "Demasiadas solicitudes. Espera un minuto e inténtalo de nuevo.",
+      "not_found": "BoardGameGeek no tiene ningún juego con ese identificador.",
+      "failed": "Algo salió mal. Inténtalo de nuevo."
+    }
+  },
+  "Game": {
+    "back": "Volver a juegos",
+    "coverAlt": "Portada de {name}",
+    "year": "Año",
+    "players": "Jugadores",
+    "playtime": "Duración",
+    "minAge": "Edad",
+    "ageValue": "{age}+",
+    "description": "Descripción",
+    "noDescription": "Aún no hay descripción.",
+    "terms": {
+      "category": "Categorías",
+      "mechanic": "Mecánicas",
+      "designer": "Diseñadores",
+      "publisher": "Editoriales"
+    },
+    "relations": {
+      "has_expansion": "Expansiones",
+      "expansion_of": "Expansión de"
+    },
+    "notInCatalog": "Aún no está en el catálogo",
+    "viewOnBgg": "Ver en BoardGameGeek",
+    "attribution": "Información proporcionada por BoardGameGeek.",
+    "photos": {
+      "title": "Mis fotos",
+      "hint": "Fotos de tu propio ejemplar. Solo tú puedes verlas.",
+      "take": "Hacer foto",
+      "choose": "Elegir foto",
+      "uploading": "Subiendo…",
+      "delete": "Eliminar foto",
+      "empty": "Aún no hay fotos.",
+      "limit": "Puedes guardar hasta 10 fotos por juego.",
+      "alt": "Foto {number} de {name}",
+      "errors": {
+        "upload": "No se pudo subir la foto. Inténtalo de nuevo.",
+        "unreadable": "Ese archivo no es una imagen legible.",
+        "limit": "Has alcanzado el límite de 10 fotos para este juego.",
+        "delete": "No se pudo eliminar la foto. Inténtalo de nuevo."
+      }
+    }
+  },
+  "NewGame": {
+    "title": "Crear un juego",
+    "intro": "Los juegos que crees son privados: solo tú puedes verlos.",
+    "fields": {
+      "name": "Nombre",
+      "kind": "Tipo",
+      "yearPublished": "Año de publicación",
+      "minPlayers": "Mín. jugadores",
+      "maxPlayers": "Máx. jugadores",
+      "minPlaytime": "Mín. minutos",
+      "maxPlaytime": "Máx. minutos",
+      "minAge": "Edad mínima",
+      "description": "Descripción (opcional)"
+    },
+    "submit": "Crear juego",
+    "submitting": "Creando…",
+    "cancel": "Cancelar",
+    "errors": {
+      "required": "Este campo es obligatorio.",
+      "tooLong": "Es demasiado largo.",
+      "range": "Introduce un número válido.",
+      "order": "El máximo no puede ser menor que el mínimo.",
+      "unauthenticated": "Tu sesión caducó. Inicia sesión de nuevo.",
+      "failed": "No se pudo crear el juego. Inténtalo de nuevo."
+    }
   },
   "NotFound": {
     "title": "Página no encontrada",

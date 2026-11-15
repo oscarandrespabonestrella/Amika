@@ -49,3 +49,13 @@
 | 7 Shell responsive y estados | Hecho (home vacío, ajustes, 404) |
 | 8 Tests | 30 unitarios + 14 RLS + 42 E2E (público, sesión, layout, a11y) verdes |
 | 9 Despliegue en Vercel | Hecho: https://amika-lake.vercel.app ; las 42 E2E pasan contra ese despliegue. Pendiente: webhook de Clerk y cabeceras de seguridad (CSP) |
+
+## Estado de la Fase 2 (actualizado 2026-11-15)
+| Entrega | Estado |
+|---|---|
+| Migraciones 0002–0004 (catálogo, búsqueda, fotos, importación atómica) | Hecho y aplicado en dev; 47 tests de RLS/SQL |
+| Fuente BGG (`GameSource`, cliente, lector XML) | Escrita y probada con respuestas de ejemplo (41 tests); **sin verificar contra la API real: falta el token** |
+| Búsqueda local, filtros, ficha, juegos propios, perfil (nombre visible) | Hecho; 65 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+| Fotos propias con cámara | Hecho (subida, borrado, tope 10, EXIF eliminado) |
+| Importar un juego real de BGG de extremo a extremo | **Pendiente del token** |
+| Borrado de datos al eliminar cuenta (webhook) | Código y tests unitarios hechos; **falta registrar el webhook en Clerk** |

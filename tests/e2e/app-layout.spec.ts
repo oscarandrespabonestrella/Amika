@@ -33,16 +33,35 @@ test("navigation marks the current page and reaches settings", async ({
     "page",
   );
 
+  await nav.getByRole("link", { name: "Games" }).click();
+  await expect(page).toHaveURL(/\/en\/games$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Games");
+  await expect(nav.getByRole("link", { name: "Games" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+
   await nav.getByRole("link", { name: "Settings" }).click();
   await expect(page).toHaveURL(/\/en\/settings$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Settings");
+});
+
+test("the games navigation item stays active on a game's own pages", async ({
+  page,
+}) => {
+  await page.goto("/en/games/new");
+  const nav = page.locator("nav[aria-label='Main navigation']:visible");
+  await expect(nav.getByRole("link", { name: "Games" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
 });
 
 test("the empty state and settings pass accessibility checks", async ({
   page,
 }) => {
   const { default: AxeBuilder } = await import("@axe-core/playwright");
-  for (const path of ["/en/home", "/en/settings"]) {
+  for (const path of ["/en/home", "/en/settings", "/en/games"]) {
     await page.goto(path);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     const results = await new AxeBuilder({ page })

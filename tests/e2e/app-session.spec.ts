@@ -83,6 +83,25 @@ test("a device that never chose a theme adopts the saved one", async ({
   await context.close();
 });
 
+test("the display name is saved and used in the greeting", async ({ page }) => {
+  await page.goto("/en/settings");
+  const input = page.getByLabel("Display name");
+  await expect(input).toBeVisible();
+  await input.fill("Ada E2E");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByText("Saved", { exact: true })).toBeVisible();
+
+  const row = await withDb((c) =>
+    c.query("select display_name from public.profiles where id = $1", [userA]),
+  );
+  expect(row.rows).toEqual([{ display_name: "Ada E2E" }]);
+
+  await page.goto("/en/home");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Welcome back, Ada E2E",
+  );
+});
+
 test("another user's profile is never touched", async () => {
   const profileB = await getProfile(userB);
   if (profileB) {

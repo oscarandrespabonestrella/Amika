@@ -16,15 +16,18 @@
 erDiagram
   profiles ||--o{ user_roles : has
   profiles ||--o{ library_items : owns
+  profiles ||--o{ game_photos : takes
+  profiles ||--o{ games : "creates (custom, private)"
   games ||--o{ library_items : "in"
   games ||--o{ game_translations : has
-  games ||--o{ game_relations : "from"
-  games ||--o{ game_external_ids : has
-  games ||--o{ game_media : has
+  games ||--o{ game_external_ids : "imported as"
+  games ||--o{ game_relations : "expansions"
+  games ||--o{ game_terms : tagged
+  terms ||--o{ game_terms : used_by
+  terms ||--o{ term_translations : has
+  games ||--o{ game_photos : "photos of"
   games ||--o{ game_resources : has
   games ||--o{ scoring_configs : versions
-  games }o--o{ categories : via_game_categories
-  games }o--o{ mechanics : via_game_mechanics
   games ||--o{ plays : played
   scoring_configs ||--o{ plays : used_by
   profiles ||--o{ plays : created_by
@@ -44,22 +47,25 @@ erDiagram
 
 `public.is_admin()` `SECURITY DEFINER`, `search_path` fijo, consulta `user_roles` por `current_user_id()`.
 
-## 4. Catálogo global (caché bajo demanda)
-El catálogo **no se precarga**: se llena cuando un usuario busca/añade un juego que aún no existe. Un servicio de servidor consulta la fuente externa (BGG), guarda lo mínimo en `games` con `service_role` (los usuarios nunca escriben en el catálogo global) y registra `fetched_at`.
+## 4. Catálogo global (caché bajo demanda) — implementado en 0002/0004
+El catálogo **no se precarga**: un servicio de servidor consulta la fuente externa (BGG) cuando alguien añade un juego que aún no existe y lo guarda con `service_role` mediante la función atómica `upsert_external_game(jsonb)`. Los usuarios nunca escriben en el catálogo global.
 
 | Tabla | Notas |
 |---|---|
-| `games` | `kind` (`base\|expansion`), `slug`, `original_name`, `year_published`, `min/max_players`, `min/max_playtime`, `min_age`, `original_language`, `cover_url`, **`source`** (`bgg\|manual`), **`fetched_at`**, **`owner_id text null`** (null = global; no null = juego propio privado de ese usuario). CHECK min ≤ max. |
-| `game_translations` | (`game_id`,`locale`): `name`, `description`. |
-| `game_relations` | `game_id`, `related_game_id`, `type` (`expansion_of\|reimplements\|includes`). |
-| `categories`, `mechanics` (+ `*_translations`) y puentes | Etiquetas globales. |
-| `publishers`, `designers` y puentes | Opcionales; se rellenan si la fuente los da. |
-| `game_external_ids` | (`source`,`external_id`) único; ej. `bgg:13`. Clave para no duplicar al importar. |
-| `game_media` | Galería con `license` y `attribution`. |
+| `games` | `kind` (`base\|expansion`), `name`, `original_name`, `year_published`, `min/max_players`, `min/max_playtime`, `min_age`, `original_language`, `cover_url` (solo `https://`, **enlazada, no copiada**), `source` (`bgg\|manual`), `owner_id` (null = global; si no, juego propio privado), `fetched_at`. CHECKs: mín ≤ máx y `(source='manual') = (owner_id is not null)`. Índice GIN trigram sobre `f_unaccent(name)`. |
+| `game_translations` | (`game_id`,`locale`): `name`, `description`. BGG aporta solo `en`; los juegos propios, el idioma del usuario. |
+| `game_external_ids` | (`game_id`,`source`) y único (`source`,`external_id`): evita duplicados al importar. |
+| `game_relations` | Expansiones: `type` (`has_expansion\|expansion_of\|…`), `related_game_id` (nulo si aún no importado) + referencia externa (`related_external_id`, `related_name`). Se resuelve al leer. |
+| `terms`, `term_translations`, `game_terms` | **Una sola estructura** para categorías, mecánicas, diseñadores y editoriales (`type`). Sustituye a las 8+ tablas previstas inicialmente (ver ADR-020). |
+| `catalog_imports` | Registro por usuario (`user_id`, `source`, `external_id`, `created_at`) para el límite de uso; sin acceso para usuarios. |
 
-**Juego propio**: si no aparece en la fuente, el usuario crea uno con `owner_id = su id`; solo él lo ve. Un admin puede promocionarlo a global.
+**Búsqueda**: `search_games(q, p_kind, p_players, p_max_minutes, p_limit)`, `SECURITY INVOKER` (la RLS decide qué ve cada usuario), insensible a mayúsculas y acentos (`unaccent`), con comodines `%`/`_` escapados, ordenada por similitud.
 
-**Pendiente (BGG)**: qué campos e imágenes se pueden guardar/mostrar. Mientras no se verifique, guardar solo metadatos básicos + ID, y mostrar la portada enlazada con atribución.
+**Importación**: `upsert_external_game(p jsonb)` crea o actualiza juego + id externo + traducción + términos + relaciones en **una transacción**, es idempotente y solo ejecutable por `service_role`.
+
+**Juego propio**: si no aparece en la fuente, el usuario crea uno (`source='manual'`); solo él lo ve. No se puede promocionar a global desde la API (la RLS lo impide).
+
+**Pendiente (BGG)**: qué campos e imágenes se pueden guardar/mostrar según sus términos; mientras tanto solo metadatos básicos + ID, portada enlazada con atribución.
 
 ## 5. Game Center
 | Tabla | Notas |
@@ -88,13 +94,16 @@ Compartir partidas con otros usuarios (enlace pendiente→aceptado) queda para l
 ## 9. Estadísticas
 Vistas/funciones SQL con `security_invoker = true`. Índices: `plays(game_id, played_at)`, `play_participants(user_id, play_id)`. Sin materializar en MVP.
 
-## 10. Storage
+## 10. Storage y fotos propias — implementado en 0003
 | Bucket | Acceso |
 |---|---|
-| `avatars` | Lectura pública; escritura solo en `<clerk_user_id>/…` |
-| `play-photos` | Privado; `<clerk_user_id>/<play_id>/…`; URLs firmadas |
+| `game-photos` | **Privado**; 5 MiB; solo `image/jpeg\|png\|webp`. Ruta `<clerk_user_id>/<game_id>/<uuid>.jpg`. Políticas `storage.objects`: leer/escribir/borrar solo si la primera carpeta es tu id. |
+| `avatars` | No se crea: el avatar lo gestiona Clerk. |
 
-Las políticas de Storage usan `(select auth.jwt()->>'sub')` y `storage.foldername(name)`.
+`game_photos` (`user_id`, `game_id`, `storage_path`): RLS solo propietario; `CHECK storage_path like user_id || '/%'`; solo sobre juegos que el usuario puede ver; **máximo 10 por usuario y juego** (trigger). El navegador reduce la imagen a ≤1600 px y la recodifica a JPEG, lo que **elimina los metadatos EXIF** (ubicación GPS, etc.). Se muestran con URLs firmadas de 1 h.
 
-## 11. Migraciones propuestas
-`0001` helpers (`current_user_id`, `set_updated_at`, `is_admin`), `profiles`, `user_roles`, RLS · `0002` catálogo + caché · `0003` biblioteca · `0004` Game Center · `0005` partidas + scoring · `0006` vistas de estadísticas · `0007` storage.
+Al borrar la cuenta, `deleteUserData` elimina primero los archivos (las filas se borran en cascada, los archivos no) y después el perfil.
+
+## 11. Migraciones aplicadas
+`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos).
+Pendientes: biblioteca (Fase 3), Game Center (4), partidas y puntuación (5), vistas de estadísticas (6).

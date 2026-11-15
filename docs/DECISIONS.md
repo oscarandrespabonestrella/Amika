@@ -63,3 +63,19 @@ Los usuarios de prueba (`bglib-e2e-{a,b}+clerk_test@example.com`) se crean en la
 
 ## ADR-019 Nombre del producto: Amika *(decisión del usuario, 2026-11-15)*
 El producto se llama **Amika** (antes «BoardGame Hub», nombre provisional). Cambia en la interfaz (APP_NAME, metadatos en en/es/fr), la documentación y el nombre del paquete npm. Se mantienen sin renombrar los identificadores de infraestructura ya creados: proyecto Supabase `boardgame-hub-dev`, app de Clerk `BG_LIB` y la carpeta local `boardgame-lab`. Pendiente: dominio, repositorio y comprobar que el nombre está libre como marca/dominio.
+
+## ADR-020 Catálogo: vocabulario único e importación atómica en SQL *(nueva, Fase 2)*
+Categorías, mecánicas, diseñadores y editoriales comparten `terms` + `term_translations` + `game_terms` (columna `type`) en vez de ocho tablas casi idénticas. La importación es una función Postgres (`upsert_external_game`) para que juego, id externo, traducción, términos y relaciones se escriban en una sola transacción e idempotente: un fallo a medias no deja un juego importado a medias. Búsqueda con `pg_trgm` + `unaccent` (`search_games`, `SECURITY INVOKER`).
+
+## ADR-021 Imágenes (decisión del usuario, Fase 2)
+De BGG solo se **enlaza** la URL de la portada (con atribución); no se copia ningún archivo mientras sus términos no estén verificados. Las fotos hechas por el propio usuario se guardan en un bucket privado, se reducen y recodifican en el navegador (se pierde el EXIF) y solo las ve su dueño. Queda abierta la opción de descargar portadas de BGG si los términos lo permiten: sería un cambio acotado en el adaptador y en la tabla de medios.
+
+## ADR-022 Fuentes externas detrás de `GameSource` *(nueva)*
+La app solo conoce la interfaz `GameSource` (`search`, `fetchGame`, `isConfigured`). BGG es una implementación (`sources/bgg/`). Todo lo no verificado (formato de la cabecera del token, 202/429, campos reales) vive en `client.ts` y `parse.ts`; las respuestas de ejemplo de `fixtures.ts` están escritas a mano y deben sustituirse por respuestas reales en cuanto llegue el token (`bgg.contract.test.ts` se salta hasta entonces).
+
+## ADR-023 Lecciones de la Fase 2 que cambian reglas
+- **Claves enmascaradas**: `SUPABASE_SERVICE_ROLE_KEY` = JWT clásica o `sb_secret_` completa; validado al arrancar (ver SECURITY §11).
+- **`unstable_rethrow`** en todo `catch` que rodee `auth()`.
+- **`loading.tsx` solo en el listado** (grupo de rutas `(list)`): si envuelve la ficha, un id inexistente responde 200 en vez de 404 porque la respuesta ya empezó a enviarse.
+- **El botón de borrar foto espera a Clerk** (como los de subida): sin token la petición sale anónima.
+- **Prettier no debe formatear artefactos** de test (`test-results/`).

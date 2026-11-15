@@ -26,11 +26,14 @@ Todas las políticas usan `(select auth.jwt()->>'sub')` (≡ `current_user_id()`
 | `profiles` | propio; otros solo si `is_public` (vista limitada) | solo propio |
 | `user_roles` | propio | ninguna (service_role) |
 | `games`, traducciones, relaciones, etiquetas, media | globales (`owner_id is null`): todos; propios: solo el dueño | **catálogo global**: solo service_role / admin; **juego propio**: su dueño |
+| `game_photos` | solo dueño | solo dueño; ruta dentro de su carpeta; solo sobre juegos visibles; máx. 10 por juego |
+| Storage `game-photos` | solo dueño (primera carpeta = su id) | solo dueño |
+| `catalog_imports` | nadie | solo `service_role` |
+| `terms`, `game_terms`, `game_external_ids`, `game_relations` | según la visibilidad del juego | solo `service_role` |
 | `game_resources`, `faq_*`, `rules_content` | todos (publicados) | admin |
 | `scoring_configs` | publicadas: todos; draft: admin | admin; inmutables al publicar |
 | `library_items` | solo dueño | solo dueño |
 | `plays` y tablas hijas | solo `created_by` | solo `created_by` |
-| Storage `play-photos` | solo dueño (ruta `<uid>/…`) | solo dueño |
 
 Importación al catálogo global: función de servidor con service_role, con rate limit por usuario y validación de lo recibido de la fuente. Los usuarios no pueden insertar en el catálogo global.
 
@@ -69,3 +72,13 @@ Logger central sin PII ni tokens; sin trazas al cliente. Monitorización (Sentry
 | Subidas maliciosas | Validación MIME/tamaño, bucket privado, URLs firmadas |
 | Dependencia de proveedor (Clerk) | IDs como `text`; capa `features/auth` aislada |
 | Dependencias vulnerables | `npm audit`/Dependabot |
+
+## 11. Fase 2: catálogo, importación y fotos
+- **Escritura del catálogo global solo desde el servidor**: los usuarios no tienen permisos de escritura sobre `terms`, `game_terms`, `game_external_ids`, `game_relations` ni sobre juegos con `owner_id is null`; probado con 47 tests de RLS/SQL. La función `upsert_external_game` solo la puede ejecutar `service_role`.
+- **Entrada externa tratada como no confiable**: el XML de BGG se analiza con `fast-xml-parser` (sin resolver entidades externas; probado contra XXE y bombas de entidades), con tope de 2 MB, y el resultado se valida **otra vez** con Zod antes de la base de datos. Las descripciones se muestran como **texto plano** (nunca HTML). Solo se aceptan portadas `https://` y la ficha las enlaza con `referrerPolicy="no-referrer"`.
+- **Límite de uso por usuario**: 10 llamadas/min y 60/h a la fuente externa (también las búsquedas y los intentos fallidos). Registro en `catalog_imports` porque las instancias serverless no comparten memoria; es un límite blando.
+- **Token de BGG**: solo en servidor (`BGG_API_TOKEN`), nunca en mensajes de error ni logs; opcional mientras esté pendiente (la interfaz explica que no está disponible). `redirect: "error"` y host fijo.
+- **Ids validados**: `^\d{1,9}$` antes de construir cualquier URL externa (sin inyección de parámetros o rutas).
+- **Fotos**: privadas por defecto, tipo y tamaño limitados en el bucket, EXIF eliminado en el cliente, URLs firmadas efímeras y borrado completo con la cuenta.
+- **Claves de Supabase**: la clave `service_role` debe ser la JWT clásica o una `sb_secret_` **completa**. La CLI y el panel **enmascaran** las secretas nuevas tras crearlas; pegar la máscara produce «Invalid API key» lejos de la causa. `serviceRoleKeySchema` lo detecta al arrancar y lo explica. Cada secreto se valida por separado (un problema con uno no rompe lo que no lo usa).
+- **Errores de Next**: los `catch` que envuelven `auth()` llaman a `unstable_rethrow`; si no, se tragan las señales internas de Next (rutas dinámicas, redirecciones).

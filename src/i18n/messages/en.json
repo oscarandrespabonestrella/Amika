@@ -3,6 +3,14 @@
     "title": "Amika",
     "description": "Your board game collection, plays and stats in one place."
   },
+  "Common": {
+    "loading": "Loading…"
+  },
+  "Errors": {
+    "title": "Something went wrong",
+    "body": "We couldn't load this page. Please try again.",
+    "retry": "Try again"
+  },
   "Landing": {
     "headline": "Your games. Your plays. Your stats.",
     "subhead": "Build your collection, log every match and see who really wins.",
@@ -12,15 +20,28 @@
   "Nav": {
     "label": "Main navigation",
     "home": "Home",
+    "games": "Games",
     "settings": "Settings"
   },
   "Home": {
     "title": "Welcome back",
+    "titleNamed": "Welcome back, {name}",
     "emptyTitle": "Your shelf is empty",
-    "emptyBody": "Game search and your personal library are coming in the next phases."
+    "emptyBody": "Search for games to explore the catalog. Your personal library is coming next.",
+    "browse": "Browse games"
   },
   "Settings": {
     "title": "Settings",
+    "profile": {
+      "title": "Profile",
+      "hint": "Your display name is shown where your name appears. Photo and email are managed from the account menu.",
+      "displayName": "Display name",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "tooLong": "Use 60 characters or fewer.",
+      "error": "Couldn't save your name. Please try again."
+    },
     "appearance": "Appearance",
     "appearanceHint": "Choose a theme, or follow your device.",
     "theme": {
@@ -32,6 +53,134 @@
     "language": "Language",
     "languageHint": "Applies to the whole app.",
     "saveError": "Couldn't save your preference. It still applies on this device."
+  },
+  "Games": {
+    "title": "Games",
+    "subtitle": "Search the catalog, or add a game you own.",
+    "create": "Create a game",
+    "search": {
+      "label": "Search games",
+      "placeholder": "Search by name…",
+      "submit": "Search",
+      "filters": "Filters",
+      "kind": "Type",
+      "kindAny": "Any type",
+      "players": "Players",
+      "playersHint": "Number of players",
+      "time": "Max. minutes",
+      "timeHint": "Playing time up to",
+      "clear": "Clear filters"
+    },
+    "kind": {
+      "base": "Base game",
+      "expansion": "Expansion"
+    },
+    "badge": {
+      "custom": "My game"
+    },
+    "meta": {
+      "players": "{count, plural, one {# player} other {# players}}",
+      "playersRange": "{min}–{max} players",
+      "minutes": "{count} min",
+      "minutesRange": "{min}–{max} min"
+    },
+    "results": {
+      "count": "{count, plural, one {# game} other {# games}}",
+      "emptyTitle": "No games found",
+      "emptyBody": "Try another name or filter, or look it up on BoardGameGeek below.",
+      "noneTitle": "No games yet",
+      "noneBody": "Search BoardGameGeek to add games to the catalog, or create your own."
+    },
+    "bgg": {
+      "title": "Not in the list?",
+      "body": "Search BoardGameGeek and add the game to the catalog.",
+      "button": "Search BoardGameGeek for “{query}”",
+      "searching": "Searching…",
+      "results": "Results from BoardGameGeek",
+      "none": "BoardGameGeek has no matches for that search.",
+      "add": "Add",
+      "adding": "Adding…",
+      "open": "Open",
+      "inCatalog": "In catalog",
+      "needsQuery": "Type at least 2 characters above to search BoardGameGeek.",
+      "unavailable": "BoardGameGeek search isn't available yet. You can still create your own game.",
+      "attribution": "Information provided by BoardGameGeek."
+    },
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "invalid": "That search isn't valid.",
+      "unavailable": "BoardGameGeek isn't available right now.",
+      "rate_limited": "Too many requests. Please wait a minute and try again.",
+      "not_found": "BoardGameGeek has no game with that id.",
+      "failed": "Something went wrong. Please try again."
+    }
+  },
+  "Game": {
+    "back": "Back to games",
+    "coverAlt": "Cover of {name}",
+    "year": "Year",
+    "players": "Players",
+    "playtime": "Playing time",
+    "minAge": "Age",
+    "ageValue": "{age}+",
+    "description": "Description",
+    "noDescription": "No description yet.",
+    "terms": {
+      "category": "Categories",
+      "mechanic": "Mechanics",
+      "designer": "Designers",
+      "publisher": "Publishers"
+    },
+    "relations": {
+      "has_expansion": "Expansions",
+      "expansion_of": "Expansion of"
+    },
+    "notInCatalog": "Not in the catalog yet",
+    "viewOnBgg": "View on BoardGameGeek",
+    "attribution": "Information provided by BoardGameGeek.",
+    "photos": {
+      "title": "My photos",
+      "hint": "Photos of your own copy. Only you can see them.",
+      "take": "Take photo",
+      "choose": "Choose photo",
+      "uploading": "Uploading…",
+      "delete": "Delete photo",
+      "empty": "No photos yet.",
+      "limit": "You can keep up to 10 photos per game.",
+      "alt": "Photo {number} of {name}",
+      "errors": {
+        "upload": "The photo couldn't be uploaded. Please try again.",
+        "unreadable": "That file isn't a readable image.",
+        "limit": "You've reached the limit of 10 photos for this game.",
+        "delete": "The photo couldn't be deleted. Please try again."
+      }
+    }
+  },
+  "NewGame": {
+    "title": "Create a game",
+    "intro": "Games you create are private: only you can see them.",
+    "fields": {
+      "name": "Name",
+      "kind": "Type",
+      "yearPublished": "Year published",
+      "minPlayers": "Min. players",
+      "maxPlayers": "Max. players",
+      "minPlaytime": "Min. minutes",
+      "maxPlaytime": "Max. minutes",
+      "minAge": "Minimum age",
+      "description": "Description (optional)"
+    },
+    "submit": "Create game",
+    "submitting": "Creating…",
+    "cancel": "Cancel",
+    "errors": {
+      "required": "This field is required.",
+      "tooLong": "This is too long.",
+      "range": "Enter a valid number.",
+      "order": "The maximum can't be lower than the minimum.",
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "failed": "The game couldn't be created. Please try again."
+    }
   },
   "NotFound": {
     "title": "Page not found",

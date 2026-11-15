@@ -1,5 +1,6 @@
 import "server-only";
 import { auth } from "@clerk/nextjs/server";
+import { unstable_rethrow } from "next/navigation";
 import { cache } from "react";
 import { logger } from "@/lib/logger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -48,6 +49,8 @@ export const getOrCreateProfile = cache(async (): Promise<Profile | null> => {
     }
     return created.data as Profile;
   } catch (error) {
+    // auth() signals "this route is dynamic" by throwing: never swallow that.
+    unstable_rethrow(error);
     logger.error("profiles.lookup threw", error);
     return null;
   }

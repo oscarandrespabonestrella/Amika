@@ -39,6 +39,267 @@ export type Database = {
   };
   public: {
     Tables: {
+      catalog_imports: {
+        Row: {
+          created_at: string;
+          external_id: string;
+          id: number;
+          source: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          external_id: string;
+          id?: never;
+          source: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          external_id?: string;
+          id?: never;
+          source?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      game_external_ids: {
+        Row: {
+          external_id: string;
+          game_id: string;
+          source: string;
+        };
+        Insert: {
+          external_id: string;
+          game_id: string;
+          source: string;
+        };
+        Update: {
+          external_id?: string;
+          game_id?: string;
+          source?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_external_ids_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_photos: {
+        Row: {
+          created_at: string;
+          game_id: string;
+          id: string;
+          storage_path: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          game_id: string;
+          id?: string;
+          storage_path: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          game_id?: string;
+          id?: string;
+          storage_path?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_photos_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_photos_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_relations: {
+        Row: {
+          game_id: string;
+          id: string;
+          related_external_id: string | null;
+          related_game_id: string | null;
+          related_name: string | null;
+          related_source: string | null;
+          type: string;
+        };
+        Insert: {
+          game_id: string;
+          id?: string;
+          related_external_id?: string | null;
+          related_game_id?: string | null;
+          related_name?: string | null;
+          related_source?: string | null;
+          type: string;
+        };
+        Update: {
+          game_id?: string;
+          id?: string;
+          related_external_id?: string | null;
+          related_game_id?: string | null;
+          related_name?: string | null;
+          related_source?: string | null;
+          type?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_relations_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_relations_related_game_id_fkey";
+            columns: ["related_game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_terms: {
+        Row: {
+          game_id: string;
+          term_id: string;
+        };
+        Insert: {
+          game_id: string;
+          term_id: string;
+        };
+        Update: {
+          game_id?: string;
+          term_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_terms_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_terms_term_id_fkey";
+            columns: ["term_id"];
+            isOneToOne: false;
+            referencedRelation: "terms";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_translations: {
+        Row: {
+          description: string | null;
+          game_id: string;
+          locale: string;
+          name: string | null;
+        };
+        Insert: {
+          description?: string | null;
+          game_id: string;
+          locale: string;
+          name?: string | null;
+        };
+        Update: {
+          description?: string | null;
+          game_id?: string;
+          locale?: string;
+          name?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_translations_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      games: {
+        Row: {
+          cover_url: string | null;
+          created_at: string;
+          fetched_at: string | null;
+          id: string;
+          kind: string;
+          max_players: number | null;
+          max_playtime: number | null;
+          min_age: number | null;
+          min_players: number | null;
+          min_playtime: number | null;
+          name: string;
+          original_language: string;
+          original_name: string | null;
+          owner_id: string | null;
+          source: string;
+          updated_at: string;
+          year_published: number | null;
+        };
+        Insert: {
+          cover_url?: string | null;
+          created_at?: string;
+          fetched_at?: string | null;
+          id?: string;
+          kind?: string;
+          max_players?: number | null;
+          max_playtime?: number | null;
+          min_age?: number | null;
+          min_players?: number | null;
+          min_playtime?: number | null;
+          name: string;
+          original_language?: string;
+          original_name?: string | null;
+          owner_id?: string | null;
+          source: string;
+          updated_at?: string;
+          year_published?: number | null;
+        };
+        Update: {
+          cover_url?: string | null;
+          created_at?: string;
+          fetched_at?: string | null;
+          id?: string;
+          kind?: string;
+          max_players?: number | null;
+          max_playtime?: number | null;
+          min_age?: number | null;
+          min_players?: number | null;
+          min_playtime?: number | null;
+          name?: string;
+          original_language?: string;
+          original_name?: string | null;
+          owner_id?: string | null;
+          source?: string;
+          updated_at?: string;
+          year_published?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "games_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_path: string | null;
@@ -69,6 +330,56 @@ export type Database = {
           locale?: string;
           theme?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      term_translations: {
+        Row: {
+          locale: string;
+          name: string;
+          term_id: string;
+        };
+        Insert: {
+          locale: string;
+          name: string;
+          term_id: string;
+        };
+        Update: {
+          locale?: string;
+          name?: string;
+          term_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "term_translations_term_id_fkey";
+            columns: ["term_id"];
+            isOneToOne: false;
+            referencedRelation: "terms";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      terms: {
+        Row: {
+          external_id: string;
+          id: string;
+          name: string;
+          source: string;
+          type: string;
+        };
+        Insert: {
+          external_id: string;
+          id?: string;
+          name: string;
+          source: string;
+          type: string;
+        };
+        Update: {
+          external_id?: string;
+          id?: string;
+          name?: string;
+          source?: string;
+          type?: string;
         };
         Relationships: [];
       };
@@ -104,7 +415,43 @@ export type Database = {
     };
     Functions: {
       current_user_id: { Args: never; Returns: string };
+      f_unaccent: { Args: { "": string }; Returns: string };
       is_admin: { Args: never; Returns: boolean };
+      search_games: {
+        Args: {
+          p_kind?: string;
+          p_limit?: number;
+          p_max_minutes?: number;
+          p_players?: number;
+          q?: string;
+        };
+        Returns: {
+          cover_url: string | null;
+          created_at: string;
+          fetched_at: string | null;
+          id: string;
+          kind: string;
+          max_players: number | null;
+          max_playtime: number | null;
+          min_age: number | null;
+          min_players: number | null;
+          min_playtime: number | null;
+          name: string;
+          original_language: string;
+          original_name: string | null;
+          owner_id: string | null;
+          source: string;
+          updated_at: string;
+          year_published: number | null;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "games";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
+      upsert_external_game: { Args: { p: Json }; Returns: string };
     };
     Enums: {
       [_ in never]: never;

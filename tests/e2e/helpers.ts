@@ -1,4 +1,5 @@
 import { createClerkClient } from "@clerk/backend";
+import { createClient } from "@supabase/supabase-js";
 import { Client } from "pg";
 import { dbUrl, hasDb } from "../integration/db";
 
@@ -11,11 +12,14 @@ export const canRunAppTests = hasClerkKeys && hasDb;
 export const TEST_USERS = {
   a: { email: "bglib-e2e-a+clerk_test@example.com", firstName: "E2E Alice" },
   b: { email: "bglib-e2e-b+clerk_test@example.com", firstName: "E2E Bob" },
+  // Creates games/photos in app-games.spec.ts, so it must not be shared.
+  c: { email: "bglib-e2e-c+clerk_test@example.com", firstName: "E2E Carol" },
 } as const;
 
 export const STATE_FILE = {
   a: "playwright/.clerk/user-a.json",
   b: "playwright/.clerk/user-b.json",
+  c: "playwright/.clerk/user-c.json",
 } as const;
 
 function clerk() {
@@ -69,4 +73,72 @@ export function getProfile(userId: string) {
     );
     return rows[0] ?? null;
   });
+}
+
+// --- catalog fixtures and cleanup (Phase 2) ---------------------------------
+
+/** Marks fixtures so cleanup can never touch anything else. */
+export const E2E_EXTERNAL_PREFIX = "9900"; // BGG-style numeric ids reserved for tests
+
+/** A global game as if it had been imported from BGG (goes through the real DB function). */
+export async function insertImportedGame(
+  client: Client,
+  payload: Record<string, unknown>,
+) {
+  const { rows } = await client.query<{ id: string }>(
+    "select public.upsert_external_game($1::jsonb) as id",
+    [JSON.stringify(payload)],
+  );
+  return rows[0].id;
+}
+
+/** Removes every E2E fixture game (global ones by reserved id, custom ones by owner). */
+export async function cleanupCatalogFixtures(ownerIds: string[]) {
+  await withDb(async (c) => {
+    await c.query(
+      `delete from public.games where id in (
+         select game_id from public.game_external_ids
+         where source = 'bgg' and external_id like $1)`,
+      [`${E2E_EXTERNAL_PREFIX}%`],
+    );
+    await c.query(
+      "delete from public.terms where source = 'bgg' and external_id like $1",
+      [`${E2E_EXTERNAL_PREFIX}%`],
+    );
+    if (ownerIds.length > 0) {
+      await c.query("delete from public.games where owner_id = any($1)", [
+        ownerIds,
+      ]);
+    }
+  });
+  for (const owner of ownerIds) await removeUserPhotos(owner);
+}
+
+function adminStorage() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } },
+  ).storage.from("game-photos");
+}
+
+/** Every file path under a user's folder (Storage listing is not recursive). */
+export async function listUserPhotoPaths(userId: string): Promise<string[]> {
+  const bucket = adminStorage();
+  const walk = async (prefix: string): Promise<string[]> => {
+    const { data } = await bucket.list(prefix, { limit: 1000 });
+    const paths: string[] = [];
+    for (const entry of data ?? []) {
+      const path = `${prefix}/${entry.name}`;
+      if (entry.id) paths.push(path);
+      else paths.push(...(await walk(path)));
+    }
+    return paths;
+  };
+  return walk(userId);
+}
+
+export async function removeUserPhotos(userId: string) {
+  const paths = await listUserPhotoPaths(userId);
+  if (paths.length > 0) await adminStorage().remove(paths);
 }

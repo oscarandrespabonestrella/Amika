@@ -1,0 +1,41 @@
+{
+  "Metadata": {
+    "title": "Amika",
+    "description": "Your board game collection, plays and stats in one place."
+  },
+  "Landing": {
+    "headline": "Your games. Your plays. Your stats.",
+    "subhead": "Build your collection, log every match and see who really wins.",
+    "signUp": "Create account",
+    "signIn": "Sign in"
+  },
+  "Nav": {
+    "label": "Main navigation",
+    "home": "Home",
+    "settings": "Settings"
+  },
+  "Home": {
+    "title": "Welcome back",
+    "emptyTitle": "Your shelf is empty",
+    "emptyBody": "Game search and your personal library are coming in the next phases."
+  },
+  "Settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "appearanceHint": "Choose a theme, or follow your device.",
+    "theme": {
+      "label": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "Auto"
+    },
+    "language": "Language",
+    "languageHint": "Applies to the whole app.",
+    "saveError": "Couldn't save your preference. It still applies on this device."
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "body": "The page you are looking for does not exist.",
+    "back": "Back to start"
+  }
+}

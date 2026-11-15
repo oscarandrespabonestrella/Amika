@@ -1,0 +1,41 @@
+{
+  "Metadata": {
+    "title": "Amika",
+    "description": "Tu colección de juegos de mesa, partidas y estadísticas en un solo lugar."
+  },
+  "Landing": {
+    "headline": "Tus juegos. Tus partidas. Tus estadísticas.",
+    "subhead": "Crea tu colección, registra cada partida y descubre quién gana de verdad.",
+    "signUp": "Crear cuenta",
+    "signIn": "Iniciar sesión"
+  },
+  "Nav": {
+    "label": "Navegación principal",
+    "home": "Inicio",
+    "settings": "Ajustes"
+  },
+  "Home": {
+    "title": "Te damos la bienvenida",
+    "emptyTitle": "Tu estantería está vacía",
+    "emptyBody": "La búsqueda de juegos y tu biblioteca personal llegarán en las próximas fases."
+  },
+  "Settings": {
+    "title": "Ajustes",
+    "appearance": "Apariencia",
+    "appearanceHint": "Elige un tema o sigue el de tu dispositivo.",
+    "theme": {
+      "label": "Tema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Auto"
+    },
+    "language": "Idioma",
+    "languageHint": "Se aplica a toda la aplicación.",
+    "saveError": "No se pudo guardar tu preferencia. Se sigue aplicando en este dispositivo."
+  },
+  "NotFound": {
+    "title": "Página no encontrada",
+    "body": "La página que buscas no existe.",
+    "back": "Volver al inicio"
+  }
+}

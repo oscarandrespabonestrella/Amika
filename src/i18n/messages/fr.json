@@ -1,0 +1,41 @@
+{
+  "Metadata": {
+    "title": "Amika",
+    "description": "Votre collection de jeux de société, vos parties et vos statistiques au même endroit."
+  },
+  "Landing": {
+    "headline": "Vos jeux. Vos parties. Vos statistiques.",
+    "subhead": "Constituez votre collection, enregistrez chaque partie et découvrez qui gagne vraiment.",
+    "signUp": "Créer un compte",
+    "signIn": "Se connecter"
+  },
+  "Nav": {
+    "label": "Navigation principale",
+    "home": "Accueil",
+    "settings": "Réglages"
+  },
+  "Home": {
+    "title": "Bon retour",
+    "emptyTitle": "Votre étagère est vide",
+    "emptyBody": "La recherche de jeux et votre bibliothèque personnelle arriveront dans les prochaines phases."
+  },
+  "Settings": {
+    "title": "Réglages",
+    "appearance": "Apparence",
+    "appearanceHint": "Choisissez un thème ou suivez celui de votre appareil.",
+    "theme": {
+      "label": "Thème",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Auto"
+    },
+    "language": "Langue",
+    "languageHint": "S'applique à toute l'application.",
+    "saveError": "Impossible d'enregistrer votre préférence. Elle reste appliquée sur cet appareil."
+  },
+  "NotFound": {
+    "title": "Page introuvable",
+    "body": "La page que vous cherchez n'existe pas.",
+    "back": "Retour à l'accueil"
+  }
+}

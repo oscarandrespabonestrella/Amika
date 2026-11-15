@@ -19,14 +19,14 @@ as a third-party auth provider (see `docs/SECURITY.md` §2).
 
 ## Scripts
 
-| Command                                       | What it does                                                  |
-| --------------------------------------------- | ------------------------------------------------------------- |
-| `npm run dev` / `build`                       | Run / build the app                                           |
-| `npm run lint` · `typecheck` · `format:check` | Static checks                                                 |
-| `npm test`                                    | Unit tests (Vitest, offline)                                  |
-| `npm run test:integration`                    | RLS tests against the Supabase **dev** database (rolled back) |
-| `npm run e2e`                                 | Playwright (needs Clerk dev keys; skipped otherwise)          |
-| `npm run db:types`                            | Regenerate `src/lib/supabase/database.types.ts`               |
+| Command                                       | What it does                                                                                                  |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `npm run dev` / `build`                       | Run / build the app                                                                                           |
+| `npm run lint` · `typecheck` · `format:check` | Static checks                                                                                                 |
+| `npm test`                                    | Unit tests (Vitest, offline)                                                                                  |
+| `npm run test:integration`                    | RLS tests against the Supabase **dev** database (rolled back)                                                 |
+| `npm run e2e`                                 | Playwright (needs Clerk dev keys; skipped otherwise). `E2E_BASE_URL=https://...` runs it against a deployment |
+| `npm run db:types`                            | Regenerate `src/lib/supabase/database.types.ts`                                                               |
 
 Database changes go through `supabase/migrations/` (`supabase db push`), never through the dashboard.
 

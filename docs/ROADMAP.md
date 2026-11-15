@@ -48,4 +48,4 @@
 | 6 Migración 0001 + perfiles + webhook | Migración aplicada y probada; webhook escrito, **falta registrarlo en Clerk** |
 | 7 Shell responsive y estados | Hecho (home vacío, ajustes, 404) |
 | 8 Tests | 30 unitarios + 14 RLS + 42 E2E (público, sesión, layout, a11y) verdes |
-| 9 Preview en Vercel | Pendiente (el remoto ya existe; falta el proyecto Vercel y sus variables de entorno) |
+| 9 Despliegue en Vercel | Hecho: https://amika-lake.vercel.app ; las 42 E2E pasan contra ese despliegue. Pendiente: webhook de Clerk y cabeceras de seguridad (CSP) |

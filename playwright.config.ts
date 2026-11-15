@@ -16,7 +16,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`,
     trace: "retain-on-failure",
   },
   projects: [
@@ -49,19 +49,22 @@ export default defineConfig({
   ],
   // A Clerk dev instance performs a handshake with its own domain, so the keys
   // must be real. Without them there is nothing to serve and the specs skip.
-  webServer: hasClerkKeys
-    ? {
-        // Production build: `next dev` compiles routes on first hit, and
-        // parallel workers race on that (intermittent "Unexpected end of JSON input").
-        command: `npm run build && npx next start -p ${PORT}`,
-        url: `http://localhost:${PORT}/en`,
-        reuseExistingServer: !process.env.CI,
-        timeout: 300_000,
-        env: {
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
-            process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!,
-          CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
-        },
-      }
-    : undefined,
+  // E2E_BASE_URL points the suite at an already-running deployment (no local server).
+  webServer: process.env.E2E_BASE_URL
+    ? undefined
+    : hasClerkKeys
+      ? {
+          // Production build: `next dev` compiles routes on first hit, and
+          // parallel workers race on that (intermittent "Unexpected end of JSON input").
+          command: `npm run build && npx next start -p ${PORT}`,
+          url: `http://localhost:${PORT}/en`,
+          reuseExistingServer: !process.env.CI,
+          timeout: 300_000,
+          env: {
+            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+              process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!,
+            CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
+          },
+        }
+      : undefined,
 });

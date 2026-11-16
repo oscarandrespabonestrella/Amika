@@ -71,6 +71,19 @@
 | Lista de deseos, etiquetas personales | **Fuera de alcance por decisión** |
 | Pruebas | 171 unitarias, 62 RLS/SQL, 93 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
 
+## Fase 5 — reparto (2026-11-16)
+Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.md`. Tres entregas con revisión tras cada una: **5a** motor + hojas + editor, **5b** partidas, **5c** compartir y fiabilidad (publicar, 👍/avisos, verificada, orden por Wilson, moderación, topes). Fotos de partida y puntuación por imagen: Fase 7.
+
+## Estado de la Fase 5a (actualizado 2026-11-16)
+| Entrega | Estado |
+|---|---|
+| Motor puro (`features/scoring/engine`): 8 tipos de categoría, validación, evaluación sin `eval`, nunca lanza | Hecho; 7 Wonders (62 pts) y Wingspan (77 pts) reproducidos en tests. **Harmonies sin fixture** hasta confirmar sus categorías |
+| Migraciones 0007–0008 (hojas, versiones, RLS, control de concurrencia) | Hecho y aplicado en dev; 18 tests de RLS |
+| Lista de hojas por juego, copiar, borrar, entrada desde la ficha | Hecho |
+| Editor de formulario con vista previa en vivo, versiones, conflicto entre pestañas | Hecho |
+| Publicar, votos, verificada | **Fase 5c** |
+| Pruebas | 302 unitarias, 100 RLS/SQL, 148 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) — **cifras a confirmar tras la ejecución completa** |
+
 ## Estado de la Fase 4 (actualizado 2026-11-16)
 | Entrega | Estado |
 |---|---|

@@ -19,6 +19,8 @@ export const TEST_USERS = {
   // Game Center flows (app-game-center.spec.ts): an administrator and a regular user.
   e: { email: "bglib-e2e-e+clerk_test@example.com", firstName: "E2E Erin" },
   f: { email: "bglib-e2e-f+clerk_test@example.com", firstName: "E2E Frank" },
+  // Score sheets (app-scoring-sheets.spec.ts).
+  g: { email: "bglib-e2e-g+clerk_test@example.com", firstName: "E2E Grace" },
 } as const;
 
 export const STATE_FILE = {
@@ -28,6 +30,7 @@ export const STATE_FILE = {
   d: "playwright/.clerk/user-d.json",
   e: "playwright/.clerk/user-e.json",
   f: "playwright/.clerk/user-f.json",
+  g: "playwright/.clerk/user-g.json",
 } as const;
 
 function clerk() {

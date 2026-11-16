@@ -194,6 +194,29 @@ describe.skipIf(!hasDb)("RLS: scoring sheets", () => {
     expect(viaPrivileged).toBe("P0001"); // the trigger blocks even privileged roles
   });
 
+  it("an owner cannot delete a single version (history is immutable); deleting the sheet still removes them", async () => {
+    const result = await asA(async (c) => {
+      const single = (
+        await c.query(
+          `delete from public.scoring_sheet_versions where sheet_id = $1`,
+          [S_A],
+        )
+      ).rowCount;
+      const sheet = (
+        await c.query(`delete from public.scoring_sheets where id = $1`, [S_A])
+      ).rowCount;
+      await c.query("reset role");
+      const left = (
+        await c.query(
+          `select count(*)::int n from public.scoring_sheet_versions where sheet_id = $1`,
+          [S_A],
+        )
+      ).rows[0].n;
+      return { single, sheet, left };
+    });
+    expect(result).toEqual({ single: 0, sheet: 1, left: 0 });
+  });
+
   it("a user cannot add a version to someone else's sheet", async () => {
     expect(
       await asA((c) =>

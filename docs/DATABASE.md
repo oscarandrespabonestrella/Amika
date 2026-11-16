@@ -106,7 +106,7 @@ Cualquier usuario puede crear hojas (ADR-030). En la Fase 5a **todas son privada
 | Tabla | Notas |
 |---|---|
 | `scoring_sheets` | `game_id`, `owner_id` (autor, por defecto el `sub` del token), `title` (≤80), `locale`, `visibility` (`private\|public`; la RLS solo admite `private` por ahora), `copied_from` (→ hoja origen, `set null`). Máx. **20 hojas privadas por usuario y juego** (trigger). `game_id` y `owner_id` no se pueden cambiar. |
-| `scoring_sheet_versions` | `sheet_id`, `version` (≥1), `definition jsonb` (objeto, ≤50 000 bytes). Único (`sheet_id`,`version`). **Inmutables**: no hay política de `update` y un trigger lo impide hasta con roles privilegiados. Máx. **50 versiones por hoja**. |
+| `scoring_sheet_versions` | `sheet_id`, `version` (≥1), `definition jsonb` (objeto, ≤50 000 bytes). Único (`sheet_id`,`version`). **Inmutables**: no hay política de `update` ni de `delete` (0009: nadie borra o reescribe una versión suelta; solo se van con su hoja, por cascada) y un trigger impide el `update` hasta con roles privilegiados. Máx. **50 versiones por hoja**. |
 
 **Numeración y conflictos (0008)**: el cliente indica la versión que va a crear (la que cargó + 1); el trigger solo la acepta si es de verdad la siguiente. Si otra pestaña guardó antes, falla con `23505` y la aplicación lo muestra como «conflicto» en lugar de pisar la última versión. Con `version` nulo se numera sola (max + 1).
 
@@ -128,5 +128,5 @@ Vistas/funciones SQL con `security_invoker = true`. Índices: `plays(game_id, pl
 Al borrar la cuenta, `deleteUserData` elimina primero los archivos (las filas se borran en cascada, los archivos no) y después el perfil.
 
 ## 11. Migraciones aplicadas
-`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos) · `20261115230000_library` (biblioteca + `search_library`) · `20261116000000_game_center` (recursos, reglas, imágenes, FAQ) · `20261116100000_scoring_sheets` (hojas y versiones) · `20261116110000_scoring_version_guard` (control de concurrencia de versiones).
+`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos) · `20261115230000_library` (biblioteca + `search_library`) · `20261116000000_game_center` (recursos, reglas, imágenes, FAQ) · `20261116100000_scoring_sheets` (hojas y versiones) · `20261116110000_scoring_version_guard` (control de concurrencia de versiones) · `20261116120000_scoring_versions_no_delete` (las versiones no se borran sueltas).
 Pendientes: partidas (5b), publicar/votos/verificada (5c), vistas de estadísticas (6).

@@ -34,7 +34,7 @@ Todas las políticas usan `(select auth.jwt()->>'sub')` (≡ `current_user_id()`
 | `faq_entries` | publicadas: todos; pendientes/rechazadas: su autor y administradores | sugerir: cualquiera (siempre `pending` y como sí mismo); editar/retirar: el autor mientras esté pendiente; publicar/rechazar/borrar cualquiera: administradores |
 | `faq_translations` | igual que su entrada | igual que su entrada |
 | `scoring_sheets` | propias (las públicas, cuando existan en la 5c: todos) | solo el autor, solo `private` por ahora, solo sobre juegos visibles; máx. 20 por usuario y juego; `game_id`/`owner_id` inmutables |
-| `scoring_sheet_versions` | las de las hojas que puede ver | insertar: solo el autor de la hoja (la versión debe ser la siguiente, si no hay conflicto); **nadie actualiza** (inmutables); máx. 50 por hoja; borrar: el autor |
+| `scoring_sheet_versions` | las de las hojas que puede ver | insertar: solo el autor de la hoja (la versión debe ser la siguiente, si no hay conflicto); **nadie actualiza** (inmutables); máx. 50 por hoja; **nadie borra una versión suelta** (solo desaparecen al borrar la hoja, por cascada) |
 | `library_items` | solo dueño | solo dueño; solo sobre juegos que puede ver; `user_id` no se puede cambiar ni falsificar |
 | `plays` y tablas hijas | solo `created_by` | solo `created_by` |
 

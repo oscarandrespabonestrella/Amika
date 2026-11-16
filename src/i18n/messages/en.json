@@ -709,7 +709,7 @@
       "winRate": "Win rate",
       "average": "Average",
       "best": "Best",
-      "chartsNote": "Charts show the {n} most frequent players; the table lists everyone."
+      "chartsNote": "The score chart shows the {n} most frequent players; the tables list everyone."
     },
     "page": {
       "title": "Statistics",

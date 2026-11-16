@@ -185,15 +185,18 @@ export type GameCategoryStats = CategoryBreakdown & {
 /**
  * Average points per category for the matches of a game that used a score sheet (the
  * latest 200). Null when none did, or when the stored definition is invalid.
+ * Two small round trips: the matches (without the sheet definitions, which can weigh
+ * 50 KB each) and then each distinct version once.
  */
 export async function getGameCategoryStats(
   gameId: string,
 ): Promise<GameCategoryStats | null> {
   if (!z.uuid().safeParse(gameId).success) return null;
-  const { data, error } = await createSupabaseServerClient()
+  const db = createSupabaseServerClient();
+  const { data, error } = await db
     .from("plays")
     .select(
-      "played_on, scoring_version_id, scoring_sheet_versions(version, definition, scoring_sheets(title)), play_participants(player_id, total_score, players(name), play_scores(category_key, value))",
+      "played_on, scoring_version_id, play_participants(player_id, total_score, players(name), play_scores(category_key, value))",
     )
     .eq("game_id", gameId)
     .not("scoring_version_id", "is", null)
@@ -202,37 +205,45 @@ export async function getGameCategoryStats(
     .limit(CATEGORY_MATCH_LIMIT);
   if (error) throw error;
 
-  const versions = new Map<string, { title: string; version: number }>();
-  const plays: BreakdownPlay[] = (data ?? []).flatMap((row) => {
-    const version = row.scoring_sheet_versions;
-    if (!row.scoring_version_id || !version) return [];
-    versions.set(row.scoring_version_id, {
-      title: version.scoring_sheets?.title ?? "",
-      version: version.version,
-    });
-    return [
-      {
-        versionId: row.scoring_version_id,
-        playedOn: row.played_on,
-        definition: version.definition,
-        participants: row.play_participants.map((p) => ({
-          playerId: p.player_id,
-          name: p.players?.name ?? "",
-          total: p.total_score,
-          values: Object.fromEntries(
-            p.play_scores.map((s) => [s.category_key, s.value as ScoreValue]),
-          ),
-        })),
-      },
-    ];
-  });
+  const plays: BreakdownPlay[] = (data ?? []).flatMap((row) =>
+    row.scoring_version_id
+      ? [
+          {
+            versionId: row.scoring_version_id,
+            playedOn: row.played_on,
+            participants: row.play_participants.map((p) => ({
+              playerId: p.player_id,
+              name: p.players?.name ?? "",
+              total: p.total_score,
+              values: Object.fromEntries(
+                p.play_scores.map((sc) => [
+                  sc.category_key,
+                  sc.value as ScoreValue,
+                ]),
+              ),
+            })),
+          },
+        ]
+      : [],
+  );
+  if (plays.length === 0) return null;
 
-  const result = categoryAverages(plays);
+  const versionIds = [...new Set(plays.map((p) => p.versionId))];
+  const versions = await db
+    .from("scoring_sheet_versions")
+    .select("id, version, definition, scoring_sheets(title)")
+    .in("id", versionIds);
+  if (versions.error) throw versions.error;
+
+  const definitions = new Map<string, unknown>(
+    (versions.data ?? []).map((v) => [v.id, v.definition]),
+  );
+  const result = categoryAverages(plays, definitions);
   if (!result) return null;
-  const meta = versions.get(result.versionId);
+  const meta = (versions.data ?? []).find((v) => v.id === result.versionId);
   return {
     ...result,
-    sheetTitle: meta?.title ?? "",
+    sheetTitle: meta?.scoring_sheets?.title ?? "",
     version: meta?.version ?? 0,
   };
 }

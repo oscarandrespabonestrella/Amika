@@ -191,16 +191,26 @@ export function evaluate(
 ): Evaluation {
   const validated = validateDefinition(definition);
   if (!validated.ok) return { ...INVALID, categories: [] };
+  return evaluateValidated(validated.definition, values);
+}
 
+/**
+ * Like `evaluate`, for a definition the caller already validated (e.g. once for many
+ * participants). Still total: bad values never throw.
+ */
+export function evaluateValidated(
+  definition: Definition,
+  values: Record<string, ScoreValue | undefined>,
+): Evaluation {
   const safeValues: Record<string, unknown> =
     values && typeof values === "object" && !Array.isArray(values)
       ? values
       : {};
-  const results = evaluateAll(validated.definition, safeValues);
+  const results = evaluateAll(definition, safeValues);
 
   let total = 0;
   let ok = true;
-  const categories = validated.definition.categories.map((category) => {
+  const categories = definition.categories.map((category) => {
     const outcome = results.get(category.key) ?? fail("dependency");
     if ("error" in outcome) {
       ok = false;

@@ -1,13 +1,14 @@
 // Pure: no React, no Supabase. Points per category come from the scoring engine (stored
 // scores are raw inputs), so the average is of POINTS, never of the typed values.
-import { evaluate, type ScoreValue } from "@/features/scoring/engine/evaluate";
+import {
+  evaluateValidated,
+  type ScoreValue,
+} from "@/features/scoring/engine/evaluate";
 import { validateDefinition } from "@/features/scoring/engine/validate";
 
 export type BreakdownPlay = {
   versionId: string;
   playedOn: string;
-  /** Untrusted: validated here. */
-  definition: unknown;
   participants: {
     playerId: string;
     name: string;
@@ -40,6 +41,8 @@ export type CategoryBreakdown = {
  */
 export function categoryAverages(
   plays: BreakdownPlay[],
+  /** Stored (untrusted) definition of each version, validated here once. */
+  definitions: ReadonlyMap<string, unknown>,
 ): CategoryBreakdown | null {
   if (plays.length === 0) return null;
 
@@ -58,9 +61,11 @@ export function categoryAverages(
   const versionId = chosen[0];
 
   const onVersion = plays.filter((p) => p.versionId === versionId);
-  const validated = validateDefinition(onVersion[0].definition);
+  if (!definitions.has(versionId)) return null;
+  const validated = validateDefinition(definitions.get(versionId));
   if (!validated.ok) return null;
-  const categories = validated.definition.categories
+  const definition = validated.definition;
+  const categories = definition.categories
     .filter((c) => c.scoring)
     .map((c) => ({ key: c.key, label: c.label }));
   if (categories.length === 0) return null;
@@ -74,8 +79,7 @@ export function categoryAverages(
   for (const play of onVersion) {
     for (const person of play.participants) {
       if (person.total === null) continue;
-      const evaluation = evaluate(play.definition, person.values);
-      if (evaluation.invalidDefinition) return null;
+      const evaluation = evaluateValidated(definition, person.values);
       const entry = acc.get(person.playerId) ?? {
         name: person.name,
         matches: 0,

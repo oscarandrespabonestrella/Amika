@@ -408,7 +408,9 @@ test.describe("statistics of a game", () => {
     await page.goto(`/en/games/${games.many}`);
     await expect(byPlayer(page).getByRole("rowheader")).toHaveCount(7);
     await expect(
-      section(page).getByText(/Charts show the 5 most frequent players/),
+      section(page).getByText(
+        /The score chart shows the 5 most frequent players/,
+      ),
     ).toBeVisible();
     const evolution = section(page)
       .getByRole("figure")
@@ -659,10 +661,13 @@ test.describe("personal statistics", () => {
     const context = await browser.newContext({ storageState: STATE_FILE.l });
     const page = await context.newPage();
     await page.goto("/en/stats");
+    // User l's own "me" state belongs to app-players.spec.ts (it changes while that spec
+    // runs), so only assert that the page renders and that none of OUR data is on it.
     await expect(
-      page.getByRole("heading", { name: "Choose which player is you" }),
+      page.getByRole("heading", { level: 1, name: "Statistics" }),
     ).toBeVisible();
     await expect(page.locator("body")).not.toContainText("Mia");
+    await expect(page.locator("body")).not.toContainText("Stats Me E2E");
     await context.close();
   });
 

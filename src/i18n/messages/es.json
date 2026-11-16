@@ -709,7 +709,7 @@
       "winRate": "% de victorias",
       "average": "Media",
       "best": "Mejor",
-      "chartsNote": "Los gráficos muestran a los {n} jugadores más frecuentes; la tabla incluye a todos."
+      "chartsNote": "El gráfico de puntuaciones muestra a los {n} jugadores más frecuentes; las tablas incluyen a todos."
     },
     "page": {
       "title": "Estadísticas",

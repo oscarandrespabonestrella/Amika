@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluate } from "./evaluate";
+import { evaluate, evaluateValidated } from "./evaluate";
 import { SEVEN_WONDERS, WINGSPAN } from "./fixtures";
 import { validateDefinition } from "./validate";
 
@@ -316,5 +316,16 @@ describe("untrusted definitions", () => {
   it("does not throw when the values object is null or an array", () => {
     expect(() => evaluate(sheet([num("a")]), null as never)).not.toThrow();
     expect(() => evaluate(sheet([num("a")]), [] as never)).not.toThrow();
+  });
+});
+
+describe("evaluateValidated", () => {
+  it("gives the same result as evaluate for an already validated definition", () => {
+    const validated = validateDefinition(SEVEN_WONDERS);
+    if (!validated.ok) throw new Error("fixture must be valid");
+    const values = { military: 5, coins: 7, wonders: 3 };
+    expect(evaluateValidated(validated.definition, values)).toEqual(
+      evaluate(SEVEN_WONDERS, values),
+    );
   });
 });

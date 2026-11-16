@@ -114,20 +114,24 @@ describe.skipIf(!hasDb)("RLS: scoring sheets", () => {
     expect(await asB((c) => pgErrorCode(newSheet(c, G_B)))).toBeNull();
   });
 
-  it("visibility public is rejected on insert and update (step 5c opens this)", async () => {
-    expect(await asA((c) => pgErrorCode(newSheet(c, G2, "'public'")))).toBe(
-      "42501",
-    );
+  it("a catalog game's sheet can be made public (Phase 5c); the rules live in rls-sharing.test.ts", async () => {
+    // Insert as public, or publish an existing sheet: both are allowed for catalog games.
     expect(
-      await asA((c) =>
-        pgErrorCode(
-          c.query(
-            `update public.scoring_sheets set visibility = 'public' where id = $1`,
-            [S_A],
-          ),
-        ),
-      ),
-    ).toBe("42501");
+      await asA((c) => pgErrorCode(newSheet(c, G2, "'public'"))),
+    ).toBeNull();
+    const stamped = await asA(async (c) => {
+      await c.query(
+        `update public.scoring_sheets set visibility = 'public' where id = $1`,
+        [S_A],
+      );
+      return (
+        await c.query(
+          `select published_at is not null as stamped from public.scoring_sheets where id = $1`,
+          [S_A],
+        )
+      ).rows[0].stamped;
+    });
+    expect(stamped).toBe(true);
   });
 
   it("validates title and locale", async () => {
@@ -330,7 +334,7 @@ describe.skipIf(!hasDb)("RLS: scoring sheets", () => {
     expect(await insert(DEF)).toBeNull();
   });
 
-  it("game_id and owner_id cannot be changed", async () => {
+  it("game_id and owner_id cannot be changed (no column grant: permission denied)", async () => {
     for (const [column, value] of [
       ["game_id", G2],
       ["owner_id", B],
@@ -345,7 +349,7 @@ describe.skipIf(!hasDb)("RLS: scoring sheets", () => {
           ),
         ),
         column,
-      ).toBe("P0001");
+      ).toBe("42501");
   });
 
   it("the owner can rename and delete a sheet (versions go with it); others cannot", async () => {

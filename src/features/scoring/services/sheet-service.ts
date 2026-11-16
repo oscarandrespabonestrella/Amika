@@ -46,7 +46,7 @@ const pgCode = (error: unknown) => (error as { code?: string } | null)?.code;
 type SheetRow = {
   id: string;
   game_id: string;
-  owner_id: string;
+  owner_id: string | null;
   title: string;
   locale: string;
   copied_from: string | null;

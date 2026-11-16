@@ -793,34 +793,49 @@ export type Database = {
         Row: {
           copied_from: string | null;
           created_at: string;
+          disabled_at: string | null;
+          disabled_by: string | null;
           game_id: string;
           id: string;
           locale: string;
-          owner_id: string;
+          owner_id: string | null;
+          published_at: string | null;
           title: string;
           updated_at: string;
+          verified_at: string | null;
+          verified_by: string | null;
           visibility: string;
         };
         Insert: {
           copied_from?: string | null;
           created_at?: string;
+          disabled_at?: string | null;
+          disabled_by?: string | null;
           game_id: string;
           id?: string;
           locale: string;
-          owner_id?: string;
+          owner_id?: string | null;
+          published_at?: string | null;
           title: string;
           updated_at?: string;
+          verified_at?: string | null;
+          verified_by?: string | null;
           visibility?: string;
         };
         Update: {
           copied_from?: string | null;
           created_at?: string;
+          disabled_at?: string | null;
+          disabled_by?: string | null;
           game_id?: string;
           id?: string;
           locale?: string;
-          owner_id?: string;
+          owner_id?: string | null;
+          published_at?: string | null;
           title?: string;
           updated_at?: string;
+          verified_at?: string | null;
+          verified_by?: string | null;
           visibility?: string;
         };
         Relationships: [
@@ -829,6 +844,13 @@ export type Database = {
             columns: ["copied_from"];
             isOneToOne: false;
             referencedRelation: "scoring_sheets";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "scoring_sheets_disabled_by_fkey";
+            columns: ["disabled_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
           {
@@ -843,6 +865,68 @@ export type Database = {
             columns: ["owner_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "scoring_sheets_verified_by_fkey";
+            columns: ["verified_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      scoring_votes: {
+        Row: {
+          created_at: string;
+          id: string;
+          kind: string;
+          play_id: string | null;
+          reason: string | null;
+          updated_at: string;
+          user_id: string;
+          version_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          kind: string;
+          play_id?: string | null;
+          reason?: string | null;
+          updated_at?: string;
+          user_id?: string;
+          version_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          kind?: string;
+          play_id?: string | null;
+          reason?: string | null;
+          updated_at?: string;
+          user_id?: string;
+          version_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "scoring_votes_play_id_fkey";
+            columns: ["play_id"];
+            isOneToOne: false;
+            referencedRelation: "plays";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "scoring_votes_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "scoring_votes_version_id_fkey";
+            columns: ["version_id"];
+            isOneToOne: false;
+            referencedRelation: "scoring_sheet_versions";
             referencedColumns: ["id"];
           },
         ];
@@ -928,8 +1012,25 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_set_sheet_disabled: {
+        Args: { p_disabled: boolean; p_sheet: string };
+        Returns: undefined;
+      };
+      admin_set_sheet_verified: {
+        Args: { p_sheet: string; p_verified: boolean };
+        Returns: undefined;
+      };
+      admin_sheet_flags: {
+        Args: { p_sheet: string };
+        Returns: {
+          created_at: string;
+          reason: string;
+          version: number;
+        }[];
+      };
       current_user_id: { Args: never; Returns: string };
       f_unaccent: { Args: { "": string }; Returns: string };
+      i_use_sheet: { Args: { p_sheet: string }; Returns: boolean };
       is_admin: { Args: never; Returns: boolean };
       save_play: { Args: { p: Json }; Returns: string };
       search_games: {
@@ -990,7 +1091,26 @@ export type Database = {
           year_published: number;
         }[];
       };
+      sheet_rankings: {
+        Args: { p_game_id: string };
+        Returns: {
+          disabled: boolean;
+          flag_votes: number;
+          is_mine: boolean;
+          locale: string;
+          score: number;
+          sheet_id: string;
+          title: string;
+          up_votes: number;
+          uses: number;
+          verified: boolean;
+          version: number;
+          version_id: string;
+          visibility: string;
+        }[];
+      };
       upsert_external_game: { Args: { p: Json }; Returns: string };
+      version_is_usable: { Args: { p_version: string }; Returns: boolean };
     };
     Enums: {
       [_ in never]: never;

@@ -74,6 +74,14 @@
 ## Fase 5 — reparto (2026-11-16)
 Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.md`. Tres entregas con revisión tras cada una: **5a** motor + hojas + editor, **5b** partidas, **5c** compartir y fiabilidad (publicar, 👍/avisos, verificada, orden por Wilson, moderación, topes). Fotos de partida y puntuación por imagen: Fase 7.
 
+## Estado de la Fase 5c (actualizado 2026-11-16)
+| Entrega | Estado |
+|---|---|
+| Migraciones 0011–0012: publicar (solo catálogo, 5 al día), votos, ranking de Wilson, funciones de administrador, borrado de cuenta con hojas anónimas, permisos por columna, topes sin carrera | Hecho y aplicado en dev; 27 tests de RLS nuevos (151 en total) |
+| Sección «Hojas de la comunidad» en la página de hojas, vista de solo lectura con copiar, publicar/despublicar, selector de hoja agrupado con la mejor por defecto | Hecho |
+| Aviso 👍 / «total incorrecto» (con motivo) tras una partida con la hoja de otro; verificar/desactivar y ver avisos (administrador) | Hecho |
+| Pruebas | 353 unitarias, 151 RLS/SQL, 190 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+
 ## Estado de la Fase 5b (actualizado 2026-11-16)
 | Entrega | Estado |
 |---|---|

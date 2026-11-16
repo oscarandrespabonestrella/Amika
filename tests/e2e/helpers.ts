@@ -23,6 +23,10 @@ export const TEST_USERS = {
   g: { email: "bglib-e2e-g+clerk_test@example.com", firstName: "E2E Grace" },
   // Matches (app-plays.spec.ts).
   h: { email: "bglib-e2e-h+clerk_test@example.com", firstName: "E2E Heidi" },
+  // Sharing sheets (app-sheet-sharing.spec.ts): author, consumer and an administrator.
+  i: { email: "bglib-e2e-i+clerk_test@example.com", firstName: "E2E Ivan" },
+  j: { email: "bglib-e2e-j+clerk_test@example.com", firstName: "E2E Judy" },
+  k: { email: "bglib-e2e-k+clerk_test@example.com", firstName: "E2E Karl" },
 } as const;
 
 export const STATE_FILE = {
@@ -34,6 +38,9 @@ export const STATE_FILE = {
   f: "playwright/.clerk/user-f.json",
   g: "playwright/.clerk/user-g.json",
   h: "playwright/.clerk/user-h.json",
+  i: "playwright/.clerk/user-i.json",
+  j: "playwright/.clerk/user-j.json",
+  k: "playwright/.clerk/user-k.json",
 } as const;
 
 function clerk() {

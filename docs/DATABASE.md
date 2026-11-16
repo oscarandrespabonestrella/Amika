@@ -107,8 +107,8 @@ Solo del creador; los demás jugadores son nombres libres. Las **registra solo d
 
 Fotos de partida: Fase 7. Compartir partidas con otros usuarios: Fase 8.
 
-## 8. Hojas de puntuación — implementado en 0007 y 0008 (Fase 5a)
-Cualquier usuario puede crear hojas (ADR-030). En la Fase 5a **todas son privadas**; publicar, votos y «verificada» llegan en la 5c.
+## 8. Hojas de puntuación — implementado en 0007–0009 (5a) y 0011–0012 (5c)
+Cualquier usuario puede crear hojas (ADR-030). Empiezan **privadas**; se pueden **publicar** (ver «Compartir» abajo).
 
 | Tabla | Notas |
 |---|---|
@@ -120,6 +120,16 @@ Cualquier usuario puede crear hojas (ADR-030). En la Fase 5a **todas son privada
 **La definición no es de fiar**: un usuario con su JWT puede escribir filas por la API sin pasar por nuestro Zod. Por eso la base impone tipo y tamaño y la aplicación vuelve a validar (`validateDefinition`) cada vez que lee una; el motor (`evaluate`) también revalida y nunca lanza.
 
 **Definición** (`schemaVersion: 1`, validada con Zod): lista de 1–40 categorías con `key` estable y única (`^[a-z][a-z0-9_]{0,29}$`, se genera una vez y no se edita), `label` (≤60), `scoring` (suma al total) y un `type` de un catálogo cerrado: `number`, `count_times`, `per_n`, `boolean`, `choice`, `table` (valor exacto → puntos), `set_bonus` (suma de cuadrados + puntos por serie completa) y `derived` (`sum|product|floor_div|min|max` sobre los **puntos** de otras categorías; sin ciclos). Solo enteros, dentro de ±1 000 000. Ver ADR-031.
+
+### Compartir hojas (5c: migraciones 0011 y 0012, ADR-033)
+- **Columnas nuevas de `scoring_sheets`**: `published_at`, `verified_at/by`, `disabled_at/by`; `owner_id` pasa a **poder ser nulo** (autor anónimo, FK `on delete set null`). Permisos por columna: el usuario solo escribe `id, game_id, owner_id, title, locale, visibility, copied_from` al insertar y `title, locale, visibility` al actualizar; `published_at`, `verified_*` y `disabled_*` solo las tocan triggers y funciones de administrador.
+- **Publicar**: solo hojas de juegos del **catálogo** (`PB001` si no) y máx. **5 publicaciones por usuario y día** (`PB002`); despublicar quita el sello «verificada». Tope de 20 hojas por usuario y juego (cualquier visibilidad).
+- **Quién ve qué**: el autor; cualquiera si es `public` y no está desactivada; el administrador (también las desactivadas); y **quien tenga una partida con una versión de esa hoja** (función `i_use_sheet`, `security definer` para evitar recursión de políticas) aunque se despublique o desactive después. Una partida **nueva** solo puede usar hojas propias o públicas no desactivadas (`version_is_usable`).
+- **`scoring_votes`**: (`version_id`, `user_id`, `play_id` nulo si se borra la partida, `kind` `up|flag`, `reason` obligatorio de 1–300 si es `flag` y prohibido si es `up`; 0012 corrigió un CHECK que dejaba pasar un aviso sin motivo). Único por (`user_id`,`version_id`), cambiable y borrable por su autor. Solo se vota con **una partida propia que use exactamente esa versión** y nunca la hoja propia. Cada usuario ve solo sus votos; el administrador ve todos.
+- **`sheet_rankings(p_game_id)`** (`security definer`): hojas del juego visibles para quien llama, con votos y usos de la **última versión**, puntuación = límite inferior de Wilson (z = 1,96; 0 sin votos) y orden verificada → puntuación → usos → antigüedad. No devuelve nunca al autor.
+- **Administrador** (sin política general de actualización): `admin_set_sheet_verified`, `admin_set_sheet_disabled` y `admin_sheet_flags` comprueban `is_admin()` dentro. Verificar exige hoja pública y activa; desactivar quita el sello.
+- **Borrar una cuenta** (`before delete` sobre `profiles`): se borran sus partidas y sus hojas que nadie más usó; las que tienen partidas de otros se quedan **anónimas** (`owner_id` nulo) con sus versiones. Pendiente revisar frente a RGPD antes de la Fase 9.
+- **Topes sin carrera**: los triggers de topes (hojas, versiones, partidas, jugadores, expansiones) bloquean la fila padre con `for update`. `plays` solo admite actualizar `played_on`, `duration_minutes` y `notes` (permisos por columna).
 
 ## 9. Estadísticas
 Vistas/funciones SQL con `security_invoker = true`. Índices: `plays(game_id, played_at)`, `play_participants(user_id, play_id)`. Sin materializar en MVP.
@@ -135,5 +145,5 @@ Vistas/funciones SQL con `security_invoker = true`. Índices: `plays(game_id, pl
 Al borrar la cuenta, `deleteUserData` elimina primero los archivos (las filas se borran en cascada, los archivos no) y después el perfil.
 
 ## 11. Migraciones aplicadas
-`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos) · `20261115230000_library` (biblioteca + `search_library`) · `20261116000000_game_center` (recursos, reglas, imágenes, FAQ) · `20261116100000_scoring_sheets` (hojas y versiones) · `20261116110000_scoring_version_guard` (control de concurrencia de versiones) · `20261116120000_scoring_versions_no_delete` (las versiones no se borran sueltas) · `20261116130000_plays` (partidas, participantes, puntuaciones, expansiones y `save_play`).
-Pendientes: publicar/votos/verificada (5c), vistas de estadísticas (6).
+`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos) · `20261115230000_library` (biblioteca + `search_library`) · `20261116000000_game_center` (recursos, reglas, imágenes, FAQ) · `20261116100000_scoring_sheets` (hojas y versiones) · `20261116110000_scoring_version_guard` (control de concurrencia de versiones) · `20261116120000_scoring_versions_no_delete` (las versiones no se borran sueltas) · `20261116130000_plays` (partidas, participantes, puntuaciones, expansiones y `save_play`) · `20261116140000_sheet_sharing` (publicar, votar, clasificar y moderar hojas; borrado de cuenta; permisos por columna; topes sin carrera) · `20261116150000_votes_check_fix` (un aviso exige motivo).
+Pendientes: vistas de estadísticas (6).

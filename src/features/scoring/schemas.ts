@@ -49,3 +49,30 @@ export function composeCopyTitle(title: string, suffix: string): string {
   const head = Array.from(base).slice(0, room).join("").trimEnd();
   return `${head} ${tail}`;
 }
+
+/** A vote on one sheet version, tied to the voter's own match. */
+export const VOTE_REASON_MAX = 300;
+
+export const voteSchema = z
+  .strictObject({
+    versionId: z.uuid(),
+    playId: z.uuid(),
+    kind: z.enum(["up", "flag"]),
+    reason: z
+      .string()
+      .trim()
+      .min(1, { message: "required" })
+      .max(VOTE_REASON_MAX, { message: "tooLong" })
+      .nullable(),
+  })
+  // A flag explains itself; an up vote carries no text.
+  .refine(
+    (vote) =>
+      vote.kind === "flag" ? vote.reason !== null : vote.reason === null,
+    {
+      message: "reason",
+      path: ["reason"],
+    },
+  );
+
+export type VoteInput = z.infer<typeof voteSchema>;

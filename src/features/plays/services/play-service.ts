@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Definition } from "@/features/scoring/engine/definition";
 import type { ScoreValue } from "@/features/scoring/engine/evaluate";
 import { validateDefinition } from "@/features/scoring/engine/validate";
+import { pickDefaultSheet, type RankedSheet } from "@/features/scoring/ranking";
 import { getSheet } from "@/features/scoring/services/sheet-service";
 import { computePlay, type ParticipantInput } from "../compute";
 import type { CreatePlayInput, UpdatePlayInput } from "../schemas";
@@ -145,16 +146,17 @@ export async function getPlay(playId: string): Promise<PlayDetail | null> {
 }
 
 /**
- * The sheet to preselect: the one used in the user's latest match of this game that
- * had a sheet, else the sheet they edited most recently, else none.
+ * The sheet to preselect for a new match, from the sheets on offer (ranking order): the
+ * one used in the user's latest match of this game if it is still offered, else the
+ * best-ranked community sheet, else their own most recent one (see pickDefaultSheet).
  */
 export async function getPlayDefaults(
   gameId: string,
+  options: readonly RankedSheet[],
 ): Promise<{ defaultSheetId: string | null }> {
   if (!z.uuid().safeParse(gameId).success) return { defaultSheetId: null };
-  const supabase = createSupabaseServerClient();
 
-  const { data: lastPlay, error } = await supabase
+  const { data: lastPlay, error } = await createSupabaseServerClient()
     .from("plays")
     .select("scoring_sheet_versions(sheet_id)")
     .eq("game_id", gameId)
@@ -164,18 +166,13 @@ export async function getPlayDefaults(
     .limit(1)
     .maybeSingle();
   if (error) throw error;
-  const used = lastPlay?.scoring_sheet_versions?.sheet_id;
-  if (used) return { defaultSheetId: used };
 
-  const { data: latestSheet, error: sheetError } = await supabase
-    .from("scoring_sheets")
-    .select("id")
-    .eq("game_id", gameId)
-    .order("updated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  if (sheetError) throw sheetError;
-  return { defaultSheetId: latestSheet?.id ?? null };
+  return {
+    defaultSheetId: pickDefaultSheet(
+      options,
+      lastPlay?.scoring_sheet_versions?.sheet_id ?? null,
+    ),
+  };
 }
 
 type Computed = ReturnType<typeof computePlay>;

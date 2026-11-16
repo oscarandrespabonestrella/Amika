@@ -12,12 +12,12 @@ export default async function NewPlayPage({
   const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [game, sheets, defaults] = await Promise.all([
+  const [game, sheets] = await Promise.all([
     getGameDetail(id, locale),
     listSheetOptions(id),
-    getPlayDefaults(id),
   ]);
   if (!game) notFound(); // missing, or a private game that is not yours
+  const defaults = await getPlayDefaults(id, sheets);
   const t = await getTranslations("Plays.form");
 
   const expansions = game.relations

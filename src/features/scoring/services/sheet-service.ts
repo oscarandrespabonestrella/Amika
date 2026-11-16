@@ -6,6 +6,7 @@ import type { Json } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { type Definition } from "../engine/definition";
 import { composeCopyTitle } from "../schemas";
+import { listCommunitySheets } from "./community-service";
 import { validateDefinition } from "../engine/validate";
 
 export type SheetSummary = {
@@ -17,6 +18,9 @@ export type SheetSummary = {
   ownedByMe: boolean;
   copiedFrom: string | null;
   updatedAt: string;
+  visibility: "private" | "public";
+  verified: boolean;
+  disabled: boolean;
 };
 
 /** `versionId` is the id of the latest version: what a match stores as the version it used. */
@@ -34,6 +38,11 @@ export type SheetOption = {
   versionId: string;
   definition: Definition;
   updatedAt: string;
+  isMine: boolean;
+  verified: boolean;
+  /** Wilson score of the latest version's votes (0 when nobody voted). */
+  score: number;
+  uses: number;
 };
 
 export type CreateOutcome = { sheetId: string } | "limit" | "not_found";
@@ -51,10 +60,13 @@ type SheetRow = {
   locale: string;
   copied_from: string | null;
   updated_at: string;
+  visibility: string;
+  verified_at: string | null;
+  disabled_at: string | null;
 };
 
 const SHEET_COLUMNS =
-  "id, game_id, owner_id, title, locale, copied_from, updated_at";
+  "id, game_id, owner_id, title, locale, copied_from, updated_at, visibility, verified_at, disabled_at";
 
 function toSummary(
   row: SheetRow,
@@ -70,19 +82,24 @@ function toSummary(
     ownedByMe: userId !== null && row.owner_id === userId,
     copiedFrom: row.copied_from,
     updatedAt: row.updated_at,
+    visibility: row.visibility === "public" ? "public" : "private",
+    verified: row.verified_at !== null,
+    disabled: row.disabled_at !== null,
   };
 }
 
-/** RLS: the signed-in user's own sheets for this game (public ones arrive in Phase 5c). */
+/** The signed-in user's own sheets for this game (community sheets come from listCommunitySheets). */
 export async function listSheetsForGame(
   gameId: string,
 ): Promise<SheetSummary[]> {
   if (!z.uuid().safeParse(gameId).success) return [];
   const { userId } = await auth();
+  if (!userId) return [];
   const { data, error } = await createSupabaseServerClient()
     .from("scoring_sheets")
     .select(`${SHEET_COLUMNS}, scoring_sheet_versions(version)`)
     .eq("game_id", gameId)
+    .eq("owner_id", userId)
     .order("updated_at", { ascending: false });
   if (error) throw error;
 
@@ -238,42 +255,49 @@ export async function deleteSheet(
 }
 
 /**
- * The sheets of a game the user can see, each with its latest version's definition
- * (revalidated: invalid ones are skipped and logged), most recently updated first.
+ * The sheets a NEW match of this game can use: the user's own and the community's
+ * (disabled ones excluded), in ranking order (verified, score, uses), each with its
+ * latest version's definition (revalidated: invalid ones are skipped and logged).
  */
 export async function listSheetOptions(gameId: string): Promise<SheetOption[]> {
   if (!z.uuid().safeParse(gameId).success) return [];
+  const ranked = (await listCommunitySheets(gameId)).filter((s) => !s.disabled);
+  if (ranked.length === 0) return [];
+
   const { data, error } = await createSupabaseServerClient()
-    .from("scoring_sheets")
-    .select(
-      "id, title, locale, updated_at, scoring_sheet_versions(id, version, definition)",
-    )
-    .eq("game_id", gameId)
-    .order("updated_at", { ascending: false });
+    .from("scoring_sheet_versions")
+    .select("id, definition, scoring_sheets(updated_at)")
+    .in(
+      "id",
+      ranked.map((s) => s.versionId),
+    );
   if (error) throw error;
+  const byVersion = new Map((data ?? []).map((row) => [row.id, row]));
 
   const options: SheetOption[] = [];
-  for (const row of data ?? []) {
-    const latest = [...row.scoring_sheet_versions].sort(
-      (a, b) => b.version - a.version,
-    )[0];
-    if (!latest) continue;
-    const validated = validateDefinition(latest.definition);
+  for (const sheet of ranked) {
+    const row = byVersion.get(sheet.versionId);
+    if (!row) continue;
+    const validated = validateDefinition(row.definition);
     if (!validated.ok) {
       logger.error("scoring.listSheetOptions invalid stored definition", null, {
-        sheetId: row.id,
-        version: latest.version,
+        sheetId: sheet.sheetId,
+        version: sheet.version,
       });
       continue;
     }
     options.push({
-      id: row.id,
-      title: row.title,
-      locale: row.locale,
-      version: latest.version,
-      versionId: latest.id,
+      id: sheet.sheetId,
+      title: sheet.title,
+      locale: sheet.locale,
+      version: sheet.version,
+      versionId: sheet.versionId,
       definition: validated.definition,
-      updatedAt: row.updated_at,
+      updatedAt: row.scoring_sheets?.updated_at ?? "",
+      isMine: sheet.isMine,
+      verified: sheet.verified,
+      score: sheet.score,
+      uses: sheet.uses,
     });
   }
   return options;

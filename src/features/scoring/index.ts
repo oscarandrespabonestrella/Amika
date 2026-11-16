@@ -22,3 +22,12 @@ export { SheetsLink } from "./components/sheets-link";
 export { SheetsList } from "./components/sheets-list";
 export { SheetEditor } from "./components/sheet-editor";
 export { ScoreFields } from "./components/score-fields";
+export {
+  getMyVote,
+  isAdminViewer,
+  listCommunitySheets,
+  listSheetFlags,
+  type CommunitySheet,
+  type MyVote,
+} from "./services/community-service";
+export { pickDefaultSheet, type RankedSheet } from "./ranking";

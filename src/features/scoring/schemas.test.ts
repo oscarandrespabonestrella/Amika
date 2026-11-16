@@ -6,9 +6,11 @@ import {
   sheetIdSchema,
   sheetRenameSchema,
   sheetVersionSchema,
+  voteSchema,
 } from "./schemas";
 
 const ID = "00000000-0000-4000-8000-000000000001";
+const PLAY_ID = "00000000-0000-4000-8000-000000000002";
 const definition = { schemaVersion: 1, categories: [] }; // validated separately
 
 describe("sheetCreateSchema", () => {
@@ -107,5 +109,42 @@ describe("composeCopyTitle", () => {
 
   it("an empty title yields just the suffix, still a valid title", () => {
     expect(composeCopyTitle("   ", "(copy)")).toBe("(copy)");
+  });
+});
+
+describe("voteSchema", () => {
+  const base = { versionId: ID, playId: PLAY_ID };
+  const parse = (value: unknown) =>
+    voteSchema.safeParse({ ...base, ...(value as object) });
+
+  it("an up vote has no reason", () => {
+    expect(parse({ kind: "up", reason: null }).success).toBe(true);
+    expect(parse({ kind: "up", reason: "nice" }).success).toBe(false);
+  });
+
+  it("a flag needs a reason of 1 to 300 characters, trimmed", () => {
+    expect(parse({ kind: "flag", reason: null }).success).toBe(false);
+    expect(parse({ kind: "flag", reason: "   " }).success).toBe(false);
+    expect(parse({ kind: "flag", reason: "x".repeat(300) }).success).toBe(true);
+    expect(parse({ kind: "flag", reason: "x".repeat(301) }).success).toBe(
+      false,
+    );
+    const trimmed = parse({ kind: "flag", reason: "  Coins are wrong  " });
+    expect(trimmed.success && trimmed.data.reason).toBe("Coins are wrong");
+  });
+
+  it("rejects unknown kinds, non-uuid ids and extra keys", () => {
+    expect(parse({ kind: "meh", reason: null }).success).toBe(false);
+    expect(
+      voteSchema.safeParse({
+        versionId: "x",
+        playId: PLAY_ID,
+        kind: "up",
+        reason: null,
+      }).success,
+    ).toBe(false);
+    expect(parse({ kind: "up", reason: null, userId: "someone" }).success).toBe(
+      false,
+    );
   });
 });

@@ -6,3 +6,5 @@ export type { FieldErrorCode, ScoreValue } from "./engine/evaluate";
 export type { Definition } from "./engine/definition";
 export { IntField } from "./components/int-field";
 export { ScoreFields } from "./components/score-fields";
+export { pickDefaultSheet } from "./ranking";
+export type { RankedSheet } from "./ranking";

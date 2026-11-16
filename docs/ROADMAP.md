@@ -74,6 +74,16 @@
 ## Fase 5 — reparto (2026-11-16)
 Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.md`. Tres entregas con revisión tras cada una: **5a** motor + hojas + editor, **5b** partidas, **5c** compartir y fiabilidad (publicar, 👍/avisos, verificada, orden por Wilson, moderación, topes). Fotos de partida y puntuación por imagen: Fase 7.
 
+## Estado de la Fase 6b (actualizado 2026-11-16)
+| Entrega | Estado |
+|---|---|
+| Migración 0015: seis funciones SQL de solo lectura (`security invoker`) que agregan por `player_id`: por juego, personales y cara a cara | Hecho y aplicado en dev; 18 tests de RLS nuevos |
+| Estadísticas por juego en la ficha: tarjetas (partidas, duración media, última), tabla por jugador (partidas, victorias, %, media, mejor), victorias por jugador y puntuación en cada partida | Hecho |
+| Desglose por categoría (puntos medios, calculados con el motor, para la versión de hoja más usada) | Hecho |
+| Página «Estadísticas» (nueva entrada de navegación): mi historial, juegos más jugados y cara a cara; sin «soy yo» explica y enlaza a Mis jugadores | Hecho |
+| Gráficos: shadcn Chart sobre Recharts 3; paleta `--chart-1..5` validada (ADR-035); máximo 5 series; cada gráfico con su tabla equivalente | Hecho |
+| Pruebas | 391 unitarias, 197 RLS/SQL, 235 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+
 ## Estado de la Fase 6a (actualizado 2026-11-16)
 | Entrega | Estado |
 |---|---|
@@ -81,7 +91,7 @@ Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.m
 | Selector de jugador (combobox con búsqueda, «Añadir …», sin repetir jugador en una partida) y formulario de partida con la lista | Hecho |
 | Página «Mis jugadores» (renombrar, fusionar, borrar si no tiene partidas, «soy yo»), enlazada desde Ajustes y el formulario | Hecho |
 | Pruebas | 374 unitarias, 179 RLS/SQL, 209 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
-| **6b** (estadísticas y gráficos con shadcn Chart/Recharts) | Pendiente de plan |
+| **6b** (estadísticas y gráficos con shadcn Chart/Recharts) | Hecho: ver más abajo |
 
 ## Estado de la Fase 5c (actualizado 2026-11-16)
 | Entrega | Estado |
@@ -103,7 +113,7 @@ Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.m
 ## Estado de la Fase 5a (actualizado 2026-11-16)
 | Entrega | Estado |
 |---|---|
-| Motor puro (`features/scoring/engine`): 8 tipos de categoría, validación, evaluación sin `eval`, nunca lanza | Hecho; 7 Wonders (62 pts) y Wingspan (77 pts) reproducidos en tests. **Harmonies sin fixture** hasta confirmar sus categorías |
+| Motor puro (`features/scoring/engine`): 8 tipos de categoría, validación, evaluación sin `eval`, nunca lanza | Hecho; 7 Wonders (62 pts) y Wingspan (77 pts) reproducidos en tests. Los fixtures de tests son solo ejemplos: el motor es genérico y cada usuario crea la hoja de su juego |
 | Migraciones 0007–0009 (hojas, versiones, RLS, control de concurrencia, versiones sin borrado suelto) | Hecho y aplicado en dev; 19 tests de RLS |
 | Lista de hojas por juego, copiar, borrar, entrada desde la ficha | Hecho |
 | Editor de formulario con vista previa en vivo, versiones, conflicto entre pestañas | Hecho |

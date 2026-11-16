@@ -104,3 +104,9 @@ Logger central sin PII ni tokens; sin trazas al cliente. Monitorización (Sentry
 - **Texto plano**: resúmenes, preguntas y respuestas se muestran como texto (nunca HTML).
 - **Rol de administrador**: se concede con `scripts/grant-admin.mjs`, que exige un correo **verificado** en Clerk y rechaza los usuarios de prueba. No hay ninguna pantalla ni acción de la app que cambie roles.
 - **Datos personales**: el borrado de cuenta elimina las sugerencias pendientes y deja anonimizadas las publicadas (`created_by` pasa a null).
+
+## 14. Fase 6b: estadísticas
+- **Solo lectura y solo lo propio**: las seis funciones de estadísticas son `security invoker`; la RLS de `plays`, `play_participants`, `players` y `games` decide qué se cuenta, así que nadie agrega partidas ajenas. `anon` no puede ejecutarlas (probado). No crean ni modifican datos.
+- **Salida acotada**: la serie de puntuaciones se limita a las últimas 200 partidas como máximo; el desglose por categoría, a las últimas 200 con hoja. Un usuario con 5 000 partidas no genera respuestas enormes.
+- **Contenido no confiable**: las definiciones de hoja guardadas se validan antes de evaluarlas (una inválida oculta el desglose y no lanza); los nombres de jugador y de juego se muestran siempre como texto.
+- **Sin datos nuevos de terceros**: Recharts se ejecuta en el navegador sobre datos ya cargados; no hay llamadas externas ni cookies nuevas.

@@ -397,6 +397,106 @@
       "conflict": "La hoja ha cambiado en otro sitio. Recarga para continuar.",
       "limit": "Has alcanzado el límite de hojas o versiones para este juego.",
       "failed": "Algo ha salido mal. Inténtalo de nuevo."
+    },
+    "editor": {
+      "titleNew": "Nueva hoja de puntuación",
+      "titleEdit": "Editar hoja de puntuación",
+      "intro": "Describe cómo se puntúa {game}. Prueba los totales en la vista previa mientras la creas.",
+      "name": "Nombre de la hoja",
+      "language": "Idioma de las etiquetas",
+      "categories": "Categorías",
+      "noCategories": "Añade al menos una categoría para empezar.",
+      "addCategory": "Añadir categoría",
+      "categoryType": "Tipo de la nueva categoría",
+      "newCategoryLabel": "Nueva categoría",
+      "label": "Etiqueta",
+      "counts": "Suma al total",
+      "moveUp": "Subir {label}",
+      "moveDown": "Bajar {label}",
+      "remove": "Quitar {label}",
+      "min": "Mínimo (opcional)",
+      "max": "Máximo (opcional)",
+      "pointsEach": "Puntos por unidad",
+      "n": "Cada N",
+      "pointsPer": "Puntos por cada grupo de N",
+      "points": "Puntos",
+      "perSet": "Puntos por juego completo",
+      "options": "Opciones",
+      "optionLabel": "Nombre de la opción",
+      "optionPoints": "Puntos",
+      "addOption": "Añadir opción",
+      "rows": "Tabla",
+      "rowValue": "Cuando el valor es",
+      "rowPoints": "Puntos",
+      "addRow": "Añadir fila",
+      "inputs": "Contadores",
+      "inputLabel": "Nombre del contador",
+      "addInput": "Añadir contador",
+      "op": "Operación",
+      "refs": "Categorías usadas",
+      "ref": "Categoría",
+      "addRef": "Añadir categoría",
+      "removeItem": "Quitar",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "saved": "Guardada como versión {n}.",
+      "reload": "Recargar la última versión",
+      "back": "Volver a las hojas",
+      "problems": "Corrige esto antes de guardar",
+      "preview": {
+        "title": "Pruébala",
+        "hint": "Introduce valores de ejemplo para comprobar los totales.",
+        "invalid": "Corrige los problemas para probar la hoja.",
+        "total": "Total",
+        "pts": "{n} pts"
+      }
+    },
+    "types": {
+      "number": "Número",
+      "count_times": "Cantidad × puntos",
+      "per_n": "1 punto cada N",
+      "boolean": "Sí / no",
+      "choice": "Una opción",
+      "table": "Tabla de valores",
+      "set_bonus": "Juegos completos",
+      "derived": "Calculada"
+    },
+    "ops": {
+      "sum": "Suma",
+      "product": "Producto",
+      "floor_div": "División (redondeada hacia abajo)",
+      "min": "El menor",
+      "max": "El mayor"
+    },
+    "issues": {
+      "shape": "Algo en esta categoría no es válido.",
+      "duplicateKey": "Dos categorías comparten el mismo nombre interno.",
+      "unknownRef": "Usa una categoría que no existe.",
+      "cycle": "Las categorías calculadas no pueden depender unas de otras en bucle.",
+      "duplicateOption": "Dos opciones tienen el mismo nombre.",
+      "duplicateTableValue": "Un valor aparece dos veces en la tabla.",
+      "duplicateInput": "Dos contadores tienen el mismo nombre.",
+      "noScoringCategory": "Al menos una categoría debe sumar al total.",
+      "tooLarge": "Esta hoja es demasiado grande."
+    },
+    "fieldMessages": {
+      "required": "Este campo es obligatorio.",
+      "tooLong": "Es demasiado largo.",
+      "invalidKey": "Ese nombre no es válido.",
+      "invalidNumber": "Introduce un número entero.",
+      "outOfRange": "Ese número está fuera de rango.",
+      "floorDivNeedsTwoRefs": "Dividir necesita exactamente dos categorías."
+    },
+    "fieldErrors": {
+      "invalid": "Introduce un número entero.",
+      "outOfRange": "Ese número está fuera de rango.",
+      "notInTable": "Ese valor no está en la tabla.",
+      "unknownOption": "Elige una de las opciones.",
+      "divisionByZero": "No se puede dividir entre cero.",
+      "dependency": "Depende de una categoría con un error."
+    },
+    "fields": {
+      "none": "Ninguna"
     }
   }
 }

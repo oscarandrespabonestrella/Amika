@@ -397,6 +397,106 @@
       "conflict": "La feuille a changé ailleurs. Rechargez pour continuer.",
       "limit": "Vous avez atteint la limite de feuilles ou de versions pour ce jeu.",
       "failed": "Une erreur est survenue. Réessayez."
+    },
+    "editor": {
+      "titleNew": "Nouvelle feuille de score",
+      "titleEdit": "Modifier la feuille de score",
+      "intro": "Décrivez comment {game} se compte. Essayez les totaux dans l'aperçu pendant la création.",
+      "name": "Nom de la feuille",
+      "language": "Langue des libellés",
+      "categories": "Catégories",
+      "noCategories": "Ajoutez au moins une catégorie pour commencer.",
+      "addCategory": "Ajouter une catégorie",
+      "categoryType": "Type de la nouvelle catégorie",
+      "newCategoryLabel": "Nouvelle catégorie",
+      "label": "Libellé",
+      "counts": "Compte dans le total",
+      "moveUp": "Monter {label}",
+      "moveDown": "Descendre {label}",
+      "remove": "Retirer {label}",
+      "min": "Minimum (facultatif)",
+      "max": "Maximum (facultatif)",
+      "pointsEach": "Points par unité",
+      "n": "Tous les N",
+      "pointsPer": "Points par groupe de N",
+      "points": "Points",
+      "perSet": "Points par série complète",
+      "options": "Options",
+      "optionLabel": "Nom de l'option",
+      "optionPoints": "Points",
+      "addOption": "Ajouter une option",
+      "rows": "Tableau",
+      "rowValue": "Quand la valeur est",
+      "rowPoints": "Points",
+      "addRow": "Ajouter une ligne",
+      "inputs": "Compteurs",
+      "inputLabel": "Nom du compteur",
+      "addInput": "Ajouter un compteur",
+      "op": "Opération",
+      "refs": "Catégories utilisées",
+      "ref": "Catégorie",
+      "addRef": "Ajouter une catégorie",
+      "removeItem": "Retirer",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Enregistrée en version {n}.",
+      "reload": "Recharger la dernière version",
+      "back": "Retour aux feuilles",
+      "problems": "À corriger avant d'enregistrer",
+      "preview": {
+        "title": "Essayez-la",
+        "hint": "Saisissez des valeurs d'exemple pour vérifier les totaux.",
+        "invalid": "Corrigez les problèmes pour essayer la feuille.",
+        "total": "Total",
+        "pts": "{n} pts"
+      }
+    },
+    "types": {
+      "number": "Nombre",
+      "count_times": "Quantité × points",
+      "per_n": "1 point tous les N",
+      "boolean": "Oui / non",
+      "choice": "Une option",
+      "table": "Table de valeurs",
+      "set_bonus": "Séries",
+      "derived": "Calculée"
+    },
+    "ops": {
+      "sum": "Somme",
+      "product": "Produit",
+      "floor_div": "Division (arrondie à l'inférieur)",
+      "min": "Le plus petit",
+      "max": "Le plus grand"
+    },
+    "issues": {
+      "shape": "Quelque chose dans cette catégorie n'est pas valide.",
+      "duplicateKey": "Deux catégories partagent le même nom interne.",
+      "unknownRef": "Elle utilise une catégorie qui n'existe pas.",
+      "cycle": "Les catégories calculées ne peuvent pas dépendre l'une de l'autre en boucle.",
+      "duplicateOption": "Deux options portent le même nom.",
+      "duplicateTableValue": "Une valeur apparaît deux fois dans la table.",
+      "duplicateInput": "Deux compteurs portent le même nom.",
+      "noScoringCategory": "Au moins une catégorie doit compter dans le total.",
+      "tooLarge": "Cette feuille est trop grande."
+    },
+    "fieldMessages": {
+      "required": "Ce champ est obligatoire.",
+      "tooLong": "C'est trop long.",
+      "invalidKey": "Ce nom n'est pas valide.",
+      "invalidNumber": "Saisissez un nombre entier.",
+      "outOfRange": "Ce nombre est hors limites.",
+      "floorDivNeedsTwoRefs": "Diviser demande exactement deux catégories."
+    },
+    "fieldErrors": {
+      "invalid": "Saisissez un nombre entier.",
+      "outOfRange": "Ce nombre est hors limites.",
+      "notInTable": "Cette valeur n'est pas dans la table.",
+      "unknownOption": "Choisissez l'une des options.",
+      "divisionByZero": "Impossible de diviser par zéro.",
+      "dependency": "Dépend d'une catégorie en erreur."
+    },
+    "fields": {
+      "none": "Aucune"
     }
   }
 }

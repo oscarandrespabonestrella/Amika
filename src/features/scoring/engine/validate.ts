@@ -17,7 +17,10 @@ export type DefinitionIssue = {
     | "noScoringCategory"
     | "tooLarge";
   categoryKey?: string;
+  /** For `shape` issues: where (e.g. "categories.2.label")... */
   path?: string;
+  /** ...and the stable Zod message code (required, tooLong, outOfRange, ...). */
+  message?: string;
 };
 
 export type ValidationResult =
@@ -113,6 +116,7 @@ export function validateDefinition(input: unknown): ValidationResult {
       issues: parsed.error.issues.slice(0, MAX_SHAPE_ISSUES).map((issue) => ({
         code: "shape" as const,
         path: issue.path.join("."),
+        message: issue.message,
       })),
     };
   }

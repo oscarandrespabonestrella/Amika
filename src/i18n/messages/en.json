@@ -397,6 +397,106 @@
       "conflict": "The sheet changed somewhere else. Reload to continue.",
       "limit": "You reached the limit of sheets or versions for this game.",
       "failed": "Something went wrong. Please try again."
+    },
+    "editor": {
+      "titleNew": "New score sheet",
+      "titleEdit": "Edit score sheet",
+      "intro": "Describe how {game} is scored. Try the totals in the preview as you build.",
+      "name": "Sheet name",
+      "language": "Language of the labels",
+      "categories": "Categories",
+      "noCategories": "Add at least one category to start.",
+      "addCategory": "Add category",
+      "categoryType": "Type of the new category",
+      "newCategoryLabel": "New category",
+      "label": "Label",
+      "counts": "Counts toward the total",
+      "moveUp": "Move {label} up",
+      "moveDown": "Move {label} down",
+      "remove": "Remove {label}",
+      "min": "Minimum (optional)",
+      "max": "Maximum (optional)",
+      "pointsEach": "Points each",
+      "n": "Every N",
+      "pointsPer": "Points per group of N",
+      "points": "Points",
+      "perSet": "Points per complete set",
+      "options": "Options",
+      "optionLabel": "Option name",
+      "optionPoints": "Points",
+      "addOption": "Add option",
+      "rows": "Table",
+      "rowValue": "When the value is",
+      "rowPoints": "Points",
+      "addRow": "Add row",
+      "inputs": "Counters",
+      "inputLabel": "Counter name",
+      "addInput": "Add counter",
+      "op": "Operation",
+      "refs": "Categories used",
+      "ref": "Category",
+      "addRef": "Add category",
+      "removeItem": "Remove",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved as version {n}.",
+      "reload": "Reload the latest version",
+      "back": "Back to sheets",
+      "problems": "Fix these before saving",
+      "preview": {
+        "title": "Try it",
+        "hint": "Enter sample values to check the totals.",
+        "invalid": "Fix the problems to try the sheet.",
+        "total": "Total",
+        "pts": "{n} pts"
+      }
+    },
+    "types": {
+      "number": "Number",
+      "count_times": "Count × points",
+      "per_n": "1 point per N",
+      "boolean": "Yes / no",
+      "choice": "One option",
+      "table": "Table lookup",
+      "set_bonus": "Sets",
+      "derived": "Calculated"
+    },
+    "ops": {
+      "sum": "Sum",
+      "product": "Product",
+      "floor_div": "Divide (rounded down)",
+      "min": "Lowest",
+      "max": "Highest"
+    },
+    "issues": {
+      "shape": "Something in this category isn't valid.",
+      "duplicateKey": "Two categories share the same internal name.",
+      "unknownRef": "It uses a category that doesn't exist.",
+      "cycle": "Calculated categories can't depend on each other in a loop.",
+      "duplicateOption": "Two options share the same name.",
+      "duplicateTableValue": "A value appears twice in the table.",
+      "duplicateInput": "Two counters share the same name.",
+      "noScoringCategory": "At least one category must count toward the total.",
+      "tooLarge": "This sheet is too large."
+    },
+    "fieldMessages": {
+      "required": "This field is required.",
+      "tooLong": "This is too long.",
+      "invalidKey": "That name isn't valid.",
+      "invalidNumber": "Enter a whole number.",
+      "outOfRange": "That number is out of range.",
+      "floorDivNeedsTwoRefs": "Dividing needs exactly two categories."
+    },
+    "fieldErrors": {
+      "invalid": "Enter a whole number.",
+      "outOfRange": "That number is out of range.",
+      "notInTable": "That value isn't in the table.",
+      "unknownOption": "Pick one of the options.",
+      "divisionByZero": "Can't divide by zero.",
+      "dependency": "Depends on a category with an error."
+    },
+    "fields": {
+      "none": "None"
     }
   }
 }

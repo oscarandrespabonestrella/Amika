@@ -18,3 +18,5 @@ export {
 } from "./services/sheet-service";
 export { SheetsLink } from "./components/sheets-link";
 export { SheetsList } from "./components/sheets-list";
+export { SheetEditor } from "./components/sheet-editor";
+export { ScoreFields } from "./components/score-fields";

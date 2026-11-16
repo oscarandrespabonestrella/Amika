@@ -21,6 +21,8 @@ export interface ImportStore {
   ): Promise<void>;
   /** Atomic + idempotent. Throws an error with a Postgres `code` on failure. */
   upsertGame(game: ExternalGame): Promise<string>;
+  /** Stores the 16-hex-char hash of a game's cover (Phase 7a). */
+  saveCoverHash(gameId: string, hash: string): Promise<void>;
 }
 
 export function createSupabaseImportStore(): ImportStore {
@@ -81,6 +83,14 @@ export function createSupabaseImportStore(): ImportStore {
       });
       if (error) throw error;
       return data;
+    },
+
+    async saveCoverHash(gameId, hash) {
+      const { error } = await admin.rpc("upsert_cover_hash", {
+        p_game_id: gameId,
+        p_hash: hash,
+      });
+      if (error) throw error;
     },
   };
 }

@@ -59,6 +59,7 @@ function fakeStore(
     getUsage: vi.fn(async () => ({ lastMinute: 0, lastHour: 0 })),
     recordUsage: vi.fn(async () => undefined),
     upsertGame: vi.fn(async () => "game-1"),
+    saveCoverHash: vi.fn(async () => undefined),
     ...over,
   } as never;
 }
@@ -276,5 +277,91 @@ describe("searchExternalGames", () => {
       hits: [],
     });
     expect(store.findGameIds).not.toHaveBeenCalled();
+  });
+});
+
+describe("importExternalGame: cover hash (Phase 7a)", () => {
+  const HASH = "0123456789abcdef";
+
+  /** A defer() that only records the job, so a test decides when it runs. */
+  const queue = () => {
+    const jobs: (() => Promise<void>)[] = [];
+    return { jobs, defer: (fn: () => Promise<void>) => void jobs.push(fn) };
+  };
+
+  it("hashes the cover AFTER the import result is ready, then stores the hash", async () => {
+    const store = fakeStore();
+    const hashCover = vi.fn(async () => HASH);
+    const { jobs, defer } = queue();
+    const result = await importExternalGame(fakeSource(), "13", "u1", store, {
+      hashCover,
+      defer,
+    });
+    expect(result).toEqual({ ok: true, gameId: "game-1" });
+    expect(hashCover).not.toHaveBeenCalled(); // not on the user's critical path
+    expect(jobs).toHaveLength(1);
+    await jobs[0]();
+    expect(hashCover).toHaveBeenCalledWith(GAME.coverUrl);
+    expect(store.saveCoverHash).toHaveBeenCalledWith("game-1", HASH);
+  });
+
+  it("never fails the import when hashing or storing throws", async () => {
+    const { jobs, defer } = queue();
+    const store = fakeStore();
+    const result = await importExternalGame(fakeSource(), "13", "u1", store, {
+      hashCover: vi.fn(async () => {
+        throw new Error("sharp exploded");
+      }),
+      defer,
+    });
+    expect(result).toEqual({ ok: true, gameId: "game-1" });
+    await expect(jobs[0]()).resolves.toBeUndefined();
+
+    const q2 = queue();
+    const store2 = fakeStore({
+      saveCoverHash: vi.fn(async () => {
+        throw new Error("db down");
+      }),
+    });
+    await importExternalGame(fakeSource(), "13", "u1", store2, {
+      hashCover: vi.fn(async () => HASH),
+      defer: q2.defer,
+    });
+    await expect(q2.jobs[0]()).resolves.toBeUndefined();
+  });
+
+  it("stores nothing when the cover could not be hashed", async () => {
+    const store = fakeStore();
+    const { jobs, defer } = queue();
+    await importExternalGame(fakeSource(), "13", "u1", store, {
+      hashCover: vi.fn(async () => null),
+      defer,
+    });
+    await jobs[0]();
+    expect(store.saveCoverHash).not.toHaveBeenCalled();
+  });
+
+  it("does nothing for a game without a cover or one that was already imported", async () => {
+    const noCover = queue();
+    await importExternalGame(
+      fakeSource({
+        fetchGame: vi.fn(async () => ({ ...GAME, coverUrl: null })),
+      }),
+      "13",
+      "u1",
+      fakeStore(),
+      { hashCover: vi.fn(async () => HASH), defer: noCover.defer },
+    );
+    expect(noCover.jobs).toHaveLength(0);
+
+    const known = queue();
+    await importExternalGame(
+      fakeSource(),
+      "13",
+      "u1",
+      fakeStore({ findGameId: vi.fn(async () => "existing") }),
+      { hashCover: vi.fn(async () => HASH), defer: known.defer },
+    );
+    expect(known.jobs).toHaveLength(0);
   });
 });

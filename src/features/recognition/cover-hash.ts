@@ -92,7 +92,8 @@ export async function fetchCoverBytes(
       }
       if (!res.ok) return null;
       const type = (res.headers.get("content-type") ?? "").toLowerCase();
-      if (!type.startsWith("image/")) return null;
+      // Raster images only: an SVG would be rasterized by a vector engine.
+      if (!type.startsWith("image/") || type.includes("svg")) return null;
       const declared = Number(res.headers.get("content-length"));
       if (Number.isFinite(declared) && declared > maxBytes) {
         await res.body?.cancel().catch(() => undefined);

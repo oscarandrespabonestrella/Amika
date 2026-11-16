@@ -117,6 +117,18 @@ describe("fetchCoverBytes", () => {
     ).toBeNull();
   });
 
+  it("refuses SVG (it would be rasterized by a vector engine)", async () => {
+    expect(
+      await fetchCoverBytes(
+        OK,
+        async () =>
+          new Response("<svg/>", {
+            headers: { "content-type": "image/svg+xml" },
+          }),
+      ),
+    ).toBeNull();
+  });
+
   it("stops at the size cap instead of reading everything", async () => {
     expect(await fetchCoverBytes(OK, async () => png(3_000_000))).toBeNull();
     expect(await fetchCoverBytes(OK, async () => png(300), {})).toHaveLength(
@@ -202,6 +214,17 @@ describe("hashCoverBytes", () => {
       .png()
       .toBuffer();
     expect(await hashCoverBytes(transparent)).not.toBe("0000000000000000");
+  });
+
+  it("refuses to decode an image of more than 25 megapixels", async () => {
+    // A solid 30 MP PNG is tiny on the wire (that is the point of the attack).
+    const bomb = await sharp({
+      create: { width: 6000, height: 5000, channels: 3, background: "#808080" },
+    })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+    expect(bomb.length).toBeLessThan(2 * 1024 * 1024);
+    expect(await hashCoverBytes(bomb)).toBeNull();
   });
 
   it("is null for corrupt or empty bytes", async () => {

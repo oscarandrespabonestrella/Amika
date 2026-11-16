@@ -29,6 +29,15 @@ async function readNative(canvas: HTMLCanvasElement): Promise<string | null> {
   return pickGtin(found.map((f) => f.rawValue));
 }
 
+// One stable overrides object and a single prepare: zxing-wasm discards its compiled
+// module whenever the overrides it is given differ, so a fresh closure per read would
+// re-instantiate the WebAssembly on every photo.
+const ZXING_OVERRIDES = {
+  locateFile: (path: string, prefix: string) =>
+    path.endsWith(".wasm") ? "/zxing/zxing_reader.wasm" : prefix + path,
+};
+let zxingPrepared = false;
+
 async function readWithZxing(
   canvas: HTMLCanvasElement,
 ): Promise<string | null> {
@@ -37,12 +46,10 @@ async function readWithZxing(
   if (!ctx) return null;
   const { prepareZXingModule, readBarcodes } =
     await import("zxing-wasm/reader");
-  prepareZXingModule({
-    overrides: {
-      locateFile: (path: string, prefix: string) =>
-        path.endsWith(".wasm") ? "/zxing/zxing_reader.wasm" : prefix + path,
-    },
-  });
+  if (!zxingPrepared) {
+    prepareZXingModule({ overrides: ZXING_OVERRIDES });
+    zxingPrepared = true;
+  }
   const results = await readBarcodes(
     ctx.getImageData(0, 0, canvas.width, canvas.height),
     {

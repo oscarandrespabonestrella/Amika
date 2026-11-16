@@ -3,7 +3,8 @@
 // needs the SSRF guards, stays in cover-hash.ts (server-only).
 import { dHashFromGray, grayGrid } from "./dhash";
 
-const MAX_INPUT_PIXELS = 50_000_000;
+// A cover never needs more; also bounds the memory a hostile image can claim.
+const MAX_INPUT_PIXELS = 25_000_000;
 
 /**
  * dHash of an image: EXIF-rotated, flattened over white, grayscale, resized to exactly

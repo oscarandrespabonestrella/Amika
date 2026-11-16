@@ -22,7 +22,8 @@
     "home": "Inicio",
     "games": "Juegos",
     "settings": "Ajustes",
-    "library": "Biblioteca"
+    "library": "Biblioteca",
+    "stats": "Estadísticas"
   },
   "Home": {
     "title": "Te damos la bienvenida",
@@ -709,6 +710,31 @@
       "average": "Media",
       "best": "Mejor",
       "chartsNote": "Los gráficos muestran a los {n} jugadores más frecuentes; la tabla incluye a todos."
+    },
+    "page": {
+      "title": "Estadísticas",
+      "subtitle": "Tu historial, los juegos que más juegas y cómo te va contra cada persona.",
+      "noMeTitle": "Elige qué jugador eres tú",
+      "noMeDescription": "Tu historial y los cara a cara necesitan saber cuál de tus jugadores eres tú. Abre Mis jugadores y elige «Soy yo».",
+      "openPlayers": "Abrir Mis jugadores",
+      "emptyTitle": "Aún no hay partidas contigo",
+      "emptyDescription": "Registra una partida desde la ficha de un juego, contigo como uno de los jugadores, y tu historial aparecerá aquí.",
+      "browse": "Ver juegos",
+      "matches": "Partidas",
+      "wins": "Victorias",
+      "winRate": "% de victorias",
+      "gamesPlayed": "Juegos jugados",
+      "topTitle": "Juegos más jugados",
+      "topMatches": "{count, plural, one {# partida} other {# partidas}}",
+      "topWins": "{count, plural, one {# victoria} other {# victorias}}",
+      "h2hTitle": "Cara a cara",
+      "h2hHint": "Solo cuentan las partidas en las que ambos tenéis puntuación.",
+      "h2hEmpty": "Ningún rival ha compartido todavía una partida puntuada contigo.",
+      "rival": "Rival",
+      "together": "Partidas juntos",
+      "mine": "Mis victorias",
+      "theirs": "Sus victorias",
+      "ties": "Empates"
     }
   }
 }

@@ -70,3 +70,41 @@ test("the empty state and settings pass accessibility checks", async ({
     expect(results.violations, path).toEqual([]);
   }
 });
+
+test("the five-item bottom bar fits a 375 px phone in every language", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    storageState: STATE_FILE.b,
+    viewport: { width: 375, height: 812 },
+    isMobile: true,
+  });
+  const page = await context.newPage();
+  for (const [locale, stats] of [
+    ["en", "Statistics"],
+    ["es", "Estadísticas"],
+    ["fr", "Statistiques"],
+  ] as const) {
+    await page.goto(`/${locale}/home`);
+    const links = page.locator("nav[aria-label]:visible a");
+    await expect(links).toHaveCount(5);
+    await expect(
+      page.locator("nav:visible").getByRole("link", { name: stats }),
+    ).toBeVisible();
+    for (const link of await links.all()) {
+      const box = (await link.boundingBox())!;
+      expect(box.x, locale).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width, locale).toBeLessThanOrEqual(375.5);
+      // The label is not clipped by its own cell.
+      const clipped = await link.evaluate((a) => a.scrollWidth > a.clientWidth);
+      expect(clipped, `${locale}: ${await link.innerText()}`).toBe(false);
+    }
+    const overflow = await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
+    );
+    expect(overflow, locale).toBeLessThanOrEqual(0);
+  }
+  await context.close();
+});

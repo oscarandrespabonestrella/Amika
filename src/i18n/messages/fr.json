@@ -22,7 +22,8 @@
     "home": "Accueil",
     "games": "Jeux",
     "settings": "Réglages",
-    "library": "Bibliothèque"
+    "library": "Bibliothèque",
+    "stats": "Statistiques"
   },
   "Home": {
     "title": "Bon retour",
@@ -709,6 +710,31 @@
       "average": "Moyenne",
       "best": "Meilleur",
       "chartsNote": "Les graphiques montrent les {n} joueurs les plus fréquents ; le tableau les liste tous."
+    },
+    "page": {
+      "title": "Statistiques",
+      "subtitle": "Votre bilan, les jeux auxquels vous jouez le plus et vos résultats face à chaque personne.",
+      "noMeTitle": "Choisissez quel joueur c'est vous",
+      "noMeDescription": "Votre bilan et les confrontations ont besoin de savoir lequel de vos joueurs est vous. Ouvrez Mes joueurs et choisissez « C'est moi ».",
+      "openPlayers": "Ouvrir Mes joueurs",
+      "emptyTitle": "Pas encore de parties avec vous",
+      "emptyDescription": "Enregistrez une partie depuis la fiche d'un jeu, avec vous parmi les joueurs, et votre bilan apparaîtra ici.",
+      "browse": "Voir les jeux",
+      "matches": "Parties",
+      "wins": "Victoires",
+      "winRate": "% de victoires",
+      "gamesPlayed": "Jeux joués",
+      "topTitle": "Jeux les plus joués",
+      "topMatches": "{count, plural, one {# partie} other {# parties}}",
+      "topWins": "{count, plural, one {# victoire} other {# victoires}}",
+      "h2hTitle": "Face à face",
+      "h2hHint": "Seules comptent les parties où vous avez tous deux un score.",
+      "h2hEmpty": "Aucun rival n'a encore partagé de partie avec score avec vous.",
+      "rival": "Rival",
+      "together": "Parties ensemble",
+      "mine": "Mes victoires",
+      "theirs": "Ses victoires",
+      "ties": "Égalités"
     }
   }
 }

@@ -20,8 +20,7 @@ test.describe.configure({ mode: "serial" });
 const PREFIX = "9907";
 
 let userM: string;
-const games: Record<"main" | "merge" | "unscored" | "empty" | "many", string> =
-  {} as never;
+const games: Record<string, string> = {};
 const players: Record<string, string> = {};
 
 const wipe = async () => {
@@ -414,4 +413,177 @@ test.describe("accessibility and phones", () => {
     expect(box!.width).toBeGreaterThan(250);
     await context.close();
   });
+});
+
+// ---------------------------------------------------------------------------
+// Personal statistics (/stats): needs the "me" player.
+
+const statsPage = (page: Page) => page.getByRole("main");
+const meTiles = (page: Page) => statsPage(page).locator("dl > div");
+
+async function markMe(name: string) {
+  await withDb(async (c) => {
+    await c.query(
+      `update public.players set linked_user_id = null where owner_id = $1`,
+      [userM],
+    );
+    await c.query(
+      `update public.players set linked_user_id = $2 where id = $1`,
+      [players[name], userM],
+    );
+  });
+}
+
+test.describe("personal statistics", () => {
+  test("without a 'me' player it explains and links to My players", async ({
+    page,
+  }) => {
+    await page.goto("/en/stats");
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Statistics" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Choose which player is you" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Open My players" }),
+    ).toHaveAttribute("href", "/en/players");
+    await expect(page.getByRole("table")).toHaveCount(0);
+    await expect(page.locator("body")).not.toContainText(/NaN|undefined/);
+  });
+
+  test("with a 'me' player but no matches: an empty state, no zeros table", async ({
+    page,
+  }) => {
+    await withDb(async (c) => {
+      await seedPlayer(c, "Mia");
+    });
+    await markMe("Mia");
+    await page.goto("/en/stats");
+    await expect(
+      page.getByRole("heading", { name: "No matches with you yet" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Browse games" }),
+    ).toBeVisible();
+    await expect(page.getByRole("table")).toHaveCount(0);
+  });
+
+  test("shows my record, most played games and head-to-head with exact numbers", async ({
+    page,
+  }) => {
+    await withDb(async (c) => {
+      games.me1 = await seedGame(c, 6, "Stats Me E2E");
+      games.me2 = await seedGame(c, 7, "Stats Me Two E2E");
+      await seedPlayer(c, "Dee");
+      await seedMatch(c, games.me1, "2026-03-01", null, [
+        ["Mia", 10],
+        ["Ana", 4],
+      ]);
+      await seedMatch(c, games.me1, "2026-03-02", null, [
+        ["Mia", 8],
+        ["Ana", 8],
+        ["Bo", 3],
+      ]);
+      await seedMatch(c, games.me1, "2026-03-03", null, [
+        ["Mia", 5],
+        ["Ana", 9],
+      ]);
+      await seedMatch(c, games.me1, "2026-03-04", null, [
+        ["Mia", null],
+        ["Ana", null],
+      ]);
+      await seedMatch(c, games.me1, "2026-03-05", null, [
+        ["Dee", 5],
+        ["Bo", 1],
+      ]);
+      await seedMatch(c, games.me2, "2026-03-06", null, [
+        ["Mia", 3],
+        ["Bo", 3],
+      ]);
+    });
+    await page.goto("/en/stats");
+
+    const tiles = meTiles(page);
+    await expect(tiles).toHaveCount(4);
+    await expect(tiles.nth(0)).toHaveText(/^Matches\s*5$/);
+    await expect(tiles.nth(1)).toHaveText(/^Wins\s*3$/);
+    await expect(tiles.nth(2)).toHaveText(/^Win rate\s*75%$/);
+    await expect(tiles.nth(3)).toHaveText(/^Games played\s*2$/);
+
+    const top = page.getByRole("list", { name: "Most played games" });
+    await expect(top.getByRole("listitem")).toHaveCount(2);
+    await expect(top.getByRole("listitem").nth(0)).toContainText(
+      "Stats Me E2E",
+    );
+    await expect(top.getByRole("listitem").nth(0)).toContainText("4 matches");
+    await expect(top.getByRole("listitem").nth(0)).toContainText("2 wins");
+    await expect(top.getByRole("listitem").nth(1)).toContainText(
+      "Stats Me Two E2E",
+    );
+    await expect(top.getByRole("listitem").nth(1)).toContainText("1 match");
+    await expect(
+      top.getByRole("link", { name: "Stats Me E2E" }),
+    ).toHaveAttribute("href", `/en/games/${games.me1}`);
+
+    // Rival, matches together, my wins, their wins, ties. Cy and Dee never shared a
+    // ranked match with me, so they are absent. Match 4 has no scores, so it says nothing.
+    const h2h = page.getByRole("table", { name: "Head-to-head" });
+    await expect(h2h.getByRole("rowheader")).toHaveText(["Ana", "Bo"]);
+    expect(await cells(row(h2h, "Ana"))).toEqual(["3", "1", "1", "1"]);
+    expect(await cells(row(h2h, "Bo"))).toEqual(["2", "1", "0", "1"]);
+  });
+
+  test("the Statistics item is in the navigation and marks the current page", async ({
+    page,
+  }) => {
+    await page.goto("/en/home");
+    const nav = page.locator("nav[aria-label='Main navigation']:visible");
+    await nav.getByRole("link", { name: "Statistics" }).click();
+    await expect(page).toHaveURL(/\/en\/stats$/);
+    await expect(nav.getByRole("link", { name: "Statistics" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  });
+
+  test("Spanish and French labels and number formats", async ({ page }) => {
+    await page.goto("/es/stats");
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Estadísticas" }),
+    ).toBeVisible();
+    await expect(meTiles(page).nth(2)).toHaveText(/75\s%/);
+    await page.goto("/fr/stats");
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Statistiques" }),
+    ).toBeVisible();
+  });
+
+  test("another user never sees these numbers", async ({ browser }) => {
+    const context = await browser.newContext({ storageState: STATE_FILE.l });
+    const page = await context.newPage();
+    await page.goto("/en/stats");
+    await expect(
+      page.getByRole("heading", { name: "Choose which player is you" }),
+    ).toBeVisible();
+    await expect(page.locator("body")).not.toContainText("Mia");
+    await context.close();
+  });
+
+  for (const scheme of ["light", "dark"] as const) {
+    test(`the page has no axe violations (${scheme})`, async ({ browser }) => {
+      const context = await browser.newContext({
+        storageState: STATE_FILE.m,
+        colorScheme: scheme,
+      });
+      const page = await context.newPage();
+      await page.goto("/en/stats");
+      await expect(meTiles(page)).toHaveCount(4);
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+        .analyze();
+      expect(results.violations, scheme).toEqual([]);
+      await context.close();
+    });
+  }
 });

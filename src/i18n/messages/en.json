@@ -22,7 +22,8 @@
     "home": "Home",
     "games": "Games",
     "settings": "Settings",
-    "library": "Library"
+    "library": "Library",
+    "stats": "Statistics"
   },
   "Home": {
     "title": "Welcome back",
@@ -709,6 +710,31 @@
       "average": "Average",
       "best": "Best",
       "chartsNote": "Charts show the {n} most frequent players; the table lists everyone."
+    },
+    "page": {
+      "title": "Statistics",
+      "subtitle": "Your record, the games you play most and how you do against each person.",
+      "noMeTitle": "Choose which player is you",
+      "noMeDescription": "Your record and head-to-head need to know which of your players is you. Open My players and choose “This is me”.",
+      "openPlayers": "Open My players",
+      "emptyTitle": "No matches with you yet",
+      "emptyDescription": "Log a match from a game's page with yourself as one of the players and your record will appear here.",
+      "browse": "Browse games",
+      "matches": "Matches",
+      "wins": "Wins",
+      "winRate": "Win rate",
+      "gamesPlayed": "Games played",
+      "topTitle": "Most played games",
+      "topMatches": "{count, plural, one {# match} other {# matches}}",
+      "topWins": "{count, plural, one {# win} other {# wins}}",
+      "h2hTitle": "Head-to-head",
+      "h2hHint": "Only matches where both of you have a score count.",
+      "h2hEmpty": "No rival has shared a scored match with you yet.",
+      "rival": "Rival",
+      "together": "Matches together",
+      "mine": "My wins",
+      "theirs": "Their wins",
+      "ties": "Ties"
     }
   }
 }

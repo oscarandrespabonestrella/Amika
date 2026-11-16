@@ -1,6 +1,12 @@
 import "server-only";
 import { z } from "zod";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import type { ScoreValue } from "@/features/scoring/engine/evaluate";
+import {
+  categoryAverages,
+  type BreakdownPlay,
+  type CategoryBreakdown,
+} from "../category-breakdown";
 import type { PlayerStat, SeriesPoint } from "../format";
 import {
   gameStatRow,
@@ -166,5 +172,67 @@ export async function getMyStats(): Promise<MyStats> {
         theirWins: r.their_wins,
         ties: r.ties,
       })),
+  };
+}
+
+const CATEGORY_MATCH_LIMIT = 200;
+
+export type GameCategoryStats = CategoryBreakdown & {
+  sheetTitle: string;
+  version: number;
+};
+
+/**
+ * Average points per category for the matches of a game that used a score sheet (the
+ * latest 200). Null when none did, or when the stored definition is invalid.
+ */
+export async function getGameCategoryStats(
+  gameId: string,
+): Promise<GameCategoryStats | null> {
+  if (!z.uuid().safeParse(gameId).success) return null;
+  const { data, error } = await createSupabaseServerClient()
+    .from("plays")
+    .select(
+      "played_on, scoring_version_id, scoring_sheet_versions(version, definition, scoring_sheets(title)), play_participants(player_id, total_score, players(name), play_scores(category_key, value))",
+    )
+    .eq("game_id", gameId)
+    .not("scoring_version_id", "is", null)
+    .order("played_on", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(CATEGORY_MATCH_LIMIT);
+  if (error) throw error;
+
+  const versions = new Map<string, { title: string; version: number }>();
+  const plays: BreakdownPlay[] = (data ?? []).flatMap((row) => {
+    const version = row.scoring_sheet_versions;
+    if (!row.scoring_version_id || !version) return [];
+    versions.set(row.scoring_version_id, {
+      title: version.scoring_sheets?.title ?? "",
+      version: version.version,
+    });
+    return [
+      {
+        versionId: row.scoring_version_id,
+        playedOn: row.played_on,
+        definition: version.definition,
+        participants: row.play_participants.map((p) => ({
+          playerId: p.player_id,
+          name: p.players?.name ?? "",
+          total: p.total_score,
+          values: Object.fromEntries(
+            p.play_scores.map((s) => [s.category_key, s.value as ScoreValue]),
+          ),
+        })),
+      },
+    ];
+  });
+
+  const result = categoryAverages(plays);
+  if (!result) return null;
+  const meta = versions.get(result.versionId);
+  return {
+    ...result,
+    sheetTitle: meta?.title ?? "",
+    version: meta?.version ?? 0,
   };
 }

@@ -2,8 +2,7 @@ import { type Definition, definitionSchema } from "./definition";
 
 /**
  * Test-only sheets reproducing real games. They are NOT seeded anywhere: users
- * build their own sheets. Harmonies is deliberately absent until its exact
- * scoring categories are confirmed with the user.
+ * build their own sheets for any game.
  */
 
 export const SEVEN_WONDERS: Definition = definitionSchema.parse({

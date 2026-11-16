@@ -1,6 +1,8 @@
 // Server-side barrel. Client components import from "./client" (pure helpers and types).
 export {
+  getGameCategoryStats,
   getGameStats,
+  type GameCategoryStats,
   getMyStats,
   type GameStats,
   type GameSummary,

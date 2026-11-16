@@ -735,6 +735,12 @@
       "mine": "Mis victorias",
       "theirs": "Sus victorias",
       "ties": "Empates"
+    },
+    "categories": {
+      "title": "Puntos medios por categoría",
+      "player": "Jugador",
+      "basis": "Hoja «{sheet}», versión {version}, sobre {count, plural, one {# partida} other {# partidas}}.",
+      "skipped": "{count, plural, one {# partida usó} other {# partidas usaron}} otra versión de la hoja y no {count, plural, one {entra} other {entran}}."
     }
   }
 }

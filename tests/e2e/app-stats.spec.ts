@@ -305,6 +305,97 @@ test.describe("statistics of a game", () => {
     );
   });
 
+  test("category breakdown: average POINTS per category for the most used sheet version", async ({
+    page,
+  }) => {
+    const def = {
+      schemaVersion: 1,
+      categories: [
+        { key: "wonders", label: "Wonders", type: "number" },
+        { key: "coins", label: "Coins", type: "per_n", n: 3, pointsPer: 1 },
+      ],
+    };
+    await withDb(async (c) => {
+      games.sheet = await seedGame(c, 8, "Stats Sheet E2E");
+      const sheet = await c.query<{ id: string }>(
+        `insert into public.scoring_sheets (game_id, owner_id, title, locale)
+         values ($1,$2,'Breakdown sheet','en') returning id`,
+        [games.sheet, userM],
+      );
+      const v1 = (
+        await c.query<{ id: string }>(
+          `insert into public.scoring_sheet_versions (sheet_id, definition)
+           values ($1,$2::jsonb) returning id`,
+          [sheet.rows[0].id, JSON.stringify(def)],
+        )
+      ).rows[0].id;
+      const v2 = (
+        await c.query<{ id: string }>(
+          `insert into public.scoring_sheet_versions (sheet_id, definition)
+           values ($1,$2::jsonb) returning id`,
+          [sheet.rows[0].id, JSON.stringify(def)],
+        )
+      ).rows[0].id;
+      const match = async (
+        version: string,
+        day: string,
+        people: [string, number, Record<string, number>][],
+      ) => {
+        const { rows } = await c.query<{ id: string }>(
+          `insert into public.plays (created_by, game_id, played_on, scoring_version_id)
+           values ($1,$2,$3,$4) returning id`,
+          [userM, games.sheet, day, version],
+        );
+        for (const [seat, [name, total, values]] of people.entries()) {
+          const pp = await c.query<{ id: string }>(
+            `insert into public.play_participants (play_id, seat, player_id, total_score, rank, is_winner)
+             values ($1,$2,$3,$4,1,false) returning id`,
+            [rows[0].id, seat, players[name], total],
+          );
+          for (const [key, value] of Object.entries(values))
+            await c.query(
+              `insert into public.play_scores (participant_id, category_key, value) values ($1,$2,$3::jsonb)`,
+              [pp.rows[0].id, key, JSON.stringify(value)],
+            );
+        }
+      };
+      await match(v1, "2026-04-01", [
+        ["Ana", 12, { wonders: 10, coins: 6 }],
+        ["Bo", 5, { wonders: 4, coins: 3 }],
+      ]);
+      await match(v1, "2026-04-02", [
+        ["Ana", 9, { wonders: 6, coins: 9 }],
+        ["Bo", 8, { wonders: 8, coins: 0 }],
+      ]);
+      await match(v1, "2026-04-03", [["Ana", 5, { wonders: 5 }]]);
+      await match(v2, "2026-04-04", [["Ana", 99, { wonders: 99 }]]);
+    });
+    await page.goto(`/en/games/${games.sheet}`);
+    const block = section(page).getByRole("region", {
+      name: "Average points by category",
+    });
+    await expect(block).toContainText("Breakdown sheet");
+    await expect(block).toContainText("3 matches");
+    await expect(block).toContainText("1 match used another version");
+    const table = block.getByRole("table");
+    await expect(table.getByRole("columnheader")).toHaveText([
+      "Player",
+      "Wonders",
+      "Coins",
+    ]);
+    // Points, not typed values: coins 6 / 9 / (missing) -> 2 / 3 / 0 points -> 1.7.
+    expect(await cells(row(table, "Ana"))).toEqual(["7", "1.7"]);
+    expect(await cells(row(table, "Bo"))).toEqual(["6", "0.5"]);
+  });
+
+  test("manual-totals games show no category breakdown", async ({ page }) => {
+    await page.goto(`/en/games/${games.main}`);
+    await expect(section(page)).toBeVisible();
+    await expect(
+      section(page).getByRole("region", { name: "Average points by category" }),
+    ).toHaveCount(0);
+  });
+
   test("a game without matches has no statistics section", async ({ page }) => {
     await page.goto(`/en/games/${games.empty}`);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
@@ -370,15 +461,20 @@ test.describe("accessibility and phones", () => {
         colorScheme: scheme,
       });
       const page = await context.newPage();
-      await page.goto(`/en/games/${games.main}`);
-      await expect(section(page)).toBeVisible();
-      // Open every table so their content is audited too.
-      for (const toggle of await section(page).getByText("Show as table").all())
-        await toggle.click();
-      const results = await new AxeBuilder({ page })
-        .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
-        .analyze();
-      expect(results.violations, scheme).toEqual([]);
+      // The main game (charts) and the sheet game (category table too).
+      for (const id of [games.main, games.sheet]) {
+        await page.goto(`/en/games/${id}`);
+        await expect(section(page)).toBeVisible();
+        // Open every table so their content is audited too.
+        for (const toggle of await section(page)
+          .getByText("Show as table")
+          .all())
+          await toggle.click();
+        const results = await new AxeBuilder({ page })
+          .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+          .analyze();
+        expect(results.violations, `${scheme} ${id}`).toEqual([]);
+      }
       await context.close();
     });
   }

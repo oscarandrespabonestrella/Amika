@@ -1,7 +1,11 @@
 import { BarChart3 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { pivotSeries, topSeriesPlayers, winRate } from "../format";
-import type { GameStats as GameStatsData } from "../services/stats-service";
+import type {
+  GameCategoryStats,
+  GameStats as GameStatsData,
+} from "../services/stats-service";
+import { CategoryTable } from "./category-table";
 import { ScoreEvolutionChart } from "./score-evolution-chart";
 import { WinsChart } from "./wins-chart";
 
@@ -11,7 +15,13 @@ const CHART_PLAYERS = 5;
  * "Statistics" section of the game page. Renders nothing for a game without matches.
  * Everything comes from the viewer's own matches; players are grouped by id.
  */
-export function GameStatsPanel({ data }: { data: GameStatsData }) {
+export function GameStatsPanel({
+  data,
+  categories,
+}: {
+  data: GameStatsData;
+  categories?: GameCategoryStats | null;
+}) {
   const t = useTranslations("Stats.game");
   const format = useFormatter();
   const { summary, players, series } = data;
@@ -147,6 +157,7 @@ export function GameStatsPanel({ data }: { data: GameStatsData }) {
           players={charted.map((id) => ({ id, name: nameOf.get(id) ?? "" }))}
         />
       )}
+      {categories && <CategoryTable data={categories} />}
     </section>
   );
 }

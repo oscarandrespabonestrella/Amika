@@ -735,6 +735,12 @@
       "mine": "Mes victoires",
       "theirs": "Ses victoires",
       "ties": "Égalités"
+    },
+    "categories": {
+      "title": "Points moyens par catégorie",
+      "player": "Joueur",
+      "basis": "Feuille « {sheet} », version {version}, sur {count, plural, one {# partie} other {# parties}}.",
+      "skipped": "{count, plural, one {# partie a utilisé} other {# parties ont utilisé}} une autre version de la feuille et {count, plural, one {n’est} other {ne sont}} pas {count, plural, one {incluse} other {incluses}}."
     }
   }
 }

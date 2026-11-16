@@ -735,6 +735,12 @@
       "mine": "My wins",
       "theirs": "Their wins",
       "ties": "Ties"
+    },
+    "categories": {
+      "title": "Average points by category",
+      "player": "Player",
+      "basis": "Sheet “{sheet}”, version {version}, over {count, plural, one {# match} other {# matches}}.",
+      "skipped": "{count, plural, one {# match used} other {# matches used}} another version of the sheet and {count, plural, one {is} other {are}} not included."
     }
   }
 }

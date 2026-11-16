@@ -1,9 +1,14 @@
-import { ArrowLeft, ClipboardList } from "lucide-react";
+import { ArrowLeft, ClipboardList, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EmptyState } from "@/components/empty-state";
 import { getGameDetail } from "@/features/catalog";
-import { listSheetsForGame, SheetsList } from "@/features/scoring";
+import {
+  CommunitySheets,
+  listCommunitySheets,
+  listSheetsForGame,
+  SheetsList,
+} from "@/features/scoring";
 import { assertLocale } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 
@@ -14,12 +19,15 @@ export default async function SheetsPage({
   const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [game, sheets] = await Promise.all([
+  const [game, sheets, ranked] = await Promise.all([
     getGameDetail(id, locale),
     listSheetsForGame(id),
+    listCommunitySheets(id),
   ]);
   if (!game) notFound(); // missing, or a private game that is not yours
   const t = await getTranslations("Scoring");
+  const tc = await getTranslations("Community");
+  const community = ranked.filter((s) => !s.isMine);
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">
@@ -38,6 +46,7 @@ export default async function SheetsPage({
         </p>
       </header>
 
+      <h2 className="text-xl font-semibold tracking-tight">{tc("mine")}</h2>
       <div>
         <Link
           href={`/games/${game.id}/sheets/new`}
@@ -54,8 +63,38 @@ export default async function SheetsPage({
           description={t("empty.description")}
         />
       ) : (
-        <SheetsList gameId={game.id} sheets={sheets} />
+        <SheetsList
+          gameId={game.id}
+          sheets={sheets}
+          canPublish={!game.isCustom}
+        />
       )}
+
+      <section
+        aria-labelledby="community-title"
+        className="flex flex-col gap-3"
+      >
+        <div>
+          <h2
+            id="community-title"
+            className="text-xl font-semibold tracking-tight"
+          >
+            {tc("title")}
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {tc("subtitle", { game: game.name })}
+          </p>
+        </div>
+        {community.length === 0 ? (
+          <EmptyState
+            icon={Users}
+            title={tc("emptyTitle")}
+            description={tc("emptyDescription")}
+          />
+        ) : (
+          <CommunitySheets gameId={game.id} sheets={community} />
+        )}
+      </section>
     </div>
   );
 }

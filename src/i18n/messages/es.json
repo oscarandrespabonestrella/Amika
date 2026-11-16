@@ -544,7 +544,10 @@
       "deleteConfirm": "¿Eliminar esta partida?",
       "deleteYes": "Sí, eliminar",
       "deleteNo": "Conservar",
-      "problems": "Corrige los campos marcados antes de guardar."
+      "problems": "Corrige los campos marcados antes de guardar.",
+      "mySheetsGroup": "Mis hojas",
+      "communityGroup": "Hojas de la comunidad",
+      "verifiedSuffix": "(verificada)"
     },
     "errors": {
       "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
@@ -552,6 +555,81 @@
       "not_found": "Esa partida u hoja no está disponible.",
       "limit": "Has alcanzado el límite de partidas.",
       "failed": "Algo ha salido mal. Inténtalo de nuevo."
+    }
+  },
+  "Community": {
+    "mine": "Mis hojas",
+    "title": "Hojas de la comunidad",
+    "subtitle": "Hojas que otros jugadores han compartido para {game}, las mejores primero.",
+    "emptyTitle": "Aún no hay hojas de la comunidad",
+    "emptyDescription": "Publica una de tus hojas para que otros jugadores la usen y la mejoren.",
+    "listLabel": "Hojas de la comunidad",
+    "view": "Ver",
+    "copy": "Copiar",
+    "copying": "Copiando…",
+    "badges": {
+      "verified": "Verificada",
+      "public": "Pública",
+      "private": "Privada",
+      "disabled": "Desactivada",
+      "up": "{n} precisa(s)",
+      "flags": "{n} con aviso",
+      "uses": "Usada por {n}",
+      "unrated": "Sin votos"
+    },
+    "publish": {
+      "button": "Publicar",
+      "unpublish": "Despublicar",
+      "confirmPublish": "¿Publicar esta hoja para todos? Otros jugadores podrán usarla y copiarla. Tu nombre nunca se muestra.",
+      "confirmUnpublish": "¿Despublicar esta hoja? Quienes ya la usaron en una partida la conservan.",
+      "yesPublish": "Sí, publicar",
+      "yesUnpublish": "Sí, despublicar",
+      "no": "Cancelar",
+      "customGame": "Las hojas de tus propios juegos son privadas. Solo se pueden compartir juegos del catálogo."
+    },
+    "vote": {
+      "title": "¿Qué tan precisa fue esta hoja?",
+      "hint": "Tu voto ayuda a otros jugadores a elegir la hoja correcta.",
+      "up": "Precisa",
+      "flag": "Avisar de un total incorrecto",
+      "reasonLabel": "¿Qué estaba mal?",
+      "send": "Enviar aviso",
+      "cancel": "Cancelar",
+      "current": "Tu voto: precisa.",
+      "currentFlag": "Tu aviso: {reason}",
+      "change": "Cambiar mi voto",
+      "clear": "Quitar mi voto",
+      "saved": "Gracias, tu voto está guardado.",
+      "cleared": "Tu voto se ha quitado."
+    },
+    "admin": {
+      "title": "Moderación",
+      "verify": "Marcar como verificada",
+      "unverify": "Quitar verificada",
+      "disable": "Desactivar hoja",
+      "enable": "Activar hoja",
+      "flags": "Avisos",
+      "noFlags": "Sin avisos.",
+      "flagItem": "Versión {version}: {reason}"
+    },
+    "errors": {
+      "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+      "invalid": "Eso no es válido.",
+      "not_found": "Esa hoja no está disponible.",
+      "custom_game": "Solo se pueden publicar hojas de juegos del catálogo.",
+      "daily_limit": "Puedes publicar hasta 5 hojas al día. Inténtalo mañana.",
+      "own_sheet": "Esta hoja es tuya, así que no puedes votarla.",
+      "no_match": "Solo puedes votar una hoja que hayas usado en una partida.",
+      "forbidden": "No tienes permiso para hacer eso.",
+      "failed": "Algo ha salido mal. Inténtalo de nuevo."
+    },
+    "sheetView": {
+      "title": "Hoja de puntuación",
+      "readOnly": "Esta hoja la compartió la comunidad. Cópiala para hacer tu propia versión.",
+      "disabledNote": "Esta hoja está desactivada: otros jugadores no la ven y no se puede elegir para partidas nuevas. Las partidas que ya la usan la conservan.",
+      "categories": "Categorías",
+      "back": "Volver a las hojas",
+      "version": "Versión {n}"
     }
   }
 }

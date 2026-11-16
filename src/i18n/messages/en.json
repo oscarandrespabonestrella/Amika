@@ -544,7 +544,10 @@
       "deleteConfirm": "Delete this match?",
       "deleteYes": "Yes, delete",
       "deleteNo": "Keep it",
-      "problems": "Fix the highlighted fields before saving."
+      "problems": "Fix the highlighted fields before saving.",
+      "mySheetsGroup": "My sheets",
+      "communityGroup": "Community sheets",
+      "verifiedSuffix": "(verified)"
     },
     "errors": {
       "unauthenticated": "Your session expired. Please sign in again.",
@@ -552,6 +555,81 @@
       "not_found": "That match or sheet isn't available.",
       "limit": "You reached the limit of matches.",
       "failed": "Something went wrong. Please try again."
+    }
+  },
+  "Community": {
+    "mine": "My sheets",
+    "title": "Community sheets",
+    "subtitle": "Sheets other players shared for {game}, best first.",
+    "emptyTitle": "No community sheets yet",
+    "emptyDescription": "Publish one of your sheets so other players can use and improve on it.",
+    "listLabel": "Community sheets",
+    "view": "View",
+    "copy": "Copy",
+    "copying": "Copying…",
+    "badges": {
+      "verified": "Verified",
+      "public": "Public",
+      "private": "Private",
+      "disabled": "Disabled",
+      "up": "{n} accurate",
+      "flags": "{n} reported",
+      "uses": "Used by {n}",
+      "unrated": "No votes yet"
+    },
+    "publish": {
+      "button": "Publish",
+      "unpublish": "Unpublish",
+      "confirmPublish": "Publish this sheet for everyone? Other players will be able to use and copy it. Your name is never shown.",
+      "confirmUnpublish": "Unpublish this sheet? People who already used it in a match keep it.",
+      "yesPublish": "Yes, publish",
+      "yesUnpublish": "Yes, unpublish",
+      "no": "Cancel",
+      "customGame": "Sheets for your own games stay private. Only catalog games can be shared."
+    },
+    "vote": {
+      "title": "How accurate was this sheet?",
+      "hint": "Your vote helps other players pick the right sheet.",
+      "up": "Accurate",
+      "flag": "Report a wrong total",
+      "reasonLabel": "What was wrong?",
+      "send": "Send report",
+      "cancel": "Cancel",
+      "current": "Your vote: accurate.",
+      "currentFlag": "Your report: {reason}",
+      "change": "Change my vote",
+      "clear": "Remove my vote",
+      "saved": "Thanks, your vote is saved.",
+      "cleared": "Your vote was removed."
+    },
+    "admin": {
+      "title": "Moderation",
+      "verify": "Mark as verified",
+      "unverify": "Remove verified",
+      "disable": "Disable sheet",
+      "enable": "Enable sheet",
+      "flags": "Reports",
+      "noFlags": "No reports.",
+      "flagItem": "Version {version}: {reason}"
+    },
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "invalid": "That isn't valid.",
+      "not_found": "That sheet isn't available.",
+      "custom_game": "Only sheets of catalog games can be published.",
+      "daily_limit": "You can publish up to 5 sheets a day. Try again tomorrow.",
+      "own_sheet": "You wrote this sheet, so you can't vote on it.",
+      "no_match": "You can only vote on a sheet you used in a match.",
+      "forbidden": "You don't have permission to do that.",
+      "failed": "Something went wrong. Please try again."
+    },
+    "sheetView": {
+      "title": "Score sheet",
+      "readOnly": "This sheet was shared by the community. Copy it to make your own version.",
+      "disabledNote": "This sheet is disabled: other players can't see it and it can't be chosen for new matches. Matches that already use it keep it.",
+      "categories": "Categories",
+      "back": "Back to sheets",
+      "version": "Version {n}"
     }
   }
 }

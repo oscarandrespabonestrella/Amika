@@ -31,3 +31,8 @@ export {
   type MyVote,
 } from "./services/community-service";
 export { pickDefaultSheet, type RankedSheet } from "./ranking";
+export { AdminSheetControls } from "./components/admin-sheet-controls";
+export { CommunitySheets } from "./components/community-sheets";
+export { PublishToggle } from "./components/publish-toggle";
+export { SheetVote } from "./components/sheet-vote";
+export { SheetView } from "./components/sheet-view";

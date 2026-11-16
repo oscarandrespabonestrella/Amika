@@ -11,17 +11,22 @@ import {
   type ScoringResult,
 } from "../actions/sheet-actions";
 import type { SheetSummary } from "../services/sheet-service";
+import { PublishToggle } from "./publish-toggle";
 
 type ErrorCode = Extract<ScoringResult, { ok: false }>["error"];
 
 export function SheetsList({
   gameId,
   sheets,
+  canPublish,
 }: {
   gameId: string;
   sheets: SheetSummary[];
+  /** False when the game is the user's own custom game: its sheets stay private. */
+  canPublish: boolean;
 }) {
   const t = useTranslations("Scoring");
+  const tb = useTranslations("Community.badges");
   const router = useRouter();
   const [confirming, setConfirming] = useState<string | null>(null);
   const [error, setError] = useState<ErrorCode | null>(null);
@@ -64,6 +69,13 @@ export function SheetsList({
                 {t("version", { n: sheet.latestVersion })}
               </Badge>
               <Badge variant="outline">{sheet.locale.toUpperCase()}</Badge>
+              <Badge variant="outline">
+                {tb(sheet.visibility === "public" ? "public" : "private")}
+              </Badge>
+              {sheet.verified && <Badge>{tb("verified")}</Badge>}
+              {sheet.disabled && (
+                <Badge variant="destructive">{tb("disabled")}</Badge>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -114,6 +126,11 @@ export function SheetsList({
                 </>
               )}
             </div>
+            <PublishToggle
+              sheetId={sheet.id}
+              visibility={sheet.visibility}
+              canPublish={canPublish}
+            />
           </li>
         ))}
       </ul>

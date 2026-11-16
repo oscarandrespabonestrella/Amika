@@ -544,7 +544,10 @@
       "deleteConfirm": "Supprimer cette partie ?",
       "deleteYes": "Oui, supprimer",
       "deleteNo": "La garder",
-      "problems": "Corrigez les champs signalés avant d'enregistrer."
+      "problems": "Corrigez les champs signalés avant d'enregistrer.",
+      "mySheetsGroup": "Mes feuilles",
+      "communityGroup": "Feuilles de la communauté",
+      "verifiedSuffix": "(vérifiée)"
     },
     "errors": {
       "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
@@ -552,6 +555,81 @@
       "not_found": "Cette partie ou cette feuille n'est pas disponible.",
       "limit": "Vous avez atteint la limite de parties.",
       "failed": "Une erreur est survenue. Réessayez."
+    }
+  },
+  "Community": {
+    "mine": "Mes feuilles",
+    "title": "Feuilles de la communauté",
+    "subtitle": "Feuilles partagées par d'autres joueurs pour {game}, les meilleures d'abord.",
+    "emptyTitle": "Aucune feuille de la communauté pour l'instant",
+    "emptyDescription": "Publiez l'une de vos feuilles pour que d'autres joueurs l'utilisent et l'améliorent.",
+    "listLabel": "Feuilles de la communauté",
+    "view": "Voir",
+    "copy": "Copier",
+    "copying": "Copie…",
+    "badges": {
+      "verified": "Vérifiée",
+      "public": "Publique",
+      "private": "Privée",
+      "disabled": "Désactivée",
+      "up": "{n} juste(s)",
+      "flags": "{n} signalée(s)",
+      "uses": "Utilisée par {n}",
+      "unrated": "Aucun vote"
+    },
+    "publish": {
+      "button": "Publier",
+      "unpublish": "Dépublier",
+      "confirmPublish": "Publier cette feuille pour tout le monde ? Les autres joueurs pourront l'utiliser et la copier. Votre nom n'est jamais affiché.",
+      "confirmUnpublish": "Dépublier cette feuille ? Ceux qui l'ont déjà utilisée dans une partie la gardent.",
+      "yesPublish": "Oui, publier",
+      "yesUnpublish": "Oui, dépublier",
+      "no": "Annuler",
+      "customGame": "Les feuilles de vos propres jeux restent privées. Seuls les jeux du catalogue peuvent être partagés."
+    },
+    "vote": {
+      "title": "Cette feuille était-elle juste ?",
+      "hint": "Votre vote aide les autres joueurs à choisir la bonne feuille.",
+      "up": "Juste",
+      "flag": "Signaler un total incorrect",
+      "reasonLabel": "Qu'est-ce qui n'allait pas ?",
+      "send": "Envoyer le signalement",
+      "cancel": "Annuler",
+      "current": "Votre vote : juste.",
+      "currentFlag": "Votre signalement : {reason}",
+      "change": "Changer mon vote",
+      "clear": "Retirer mon vote",
+      "saved": "Merci, votre vote est enregistré.",
+      "cleared": "Votre vote a été retiré."
+    },
+    "admin": {
+      "title": "Modération",
+      "verify": "Marquer comme vérifiée",
+      "unverify": "Retirer vérifiée",
+      "disable": "Désactiver la feuille",
+      "enable": "Activer la feuille",
+      "flags": "Signalements",
+      "noFlags": "Aucun signalement.",
+      "flagItem": "Version {version} : {reason}"
+    },
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
+      "invalid": "Ce n'est pas valide.",
+      "not_found": "Cette feuille n'est pas disponible.",
+      "custom_game": "Seules les feuilles de jeux du catalogue peuvent être publiées.",
+      "daily_limit": "Vous pouvez publier jusqu'à 5 feuilles par jour. Réessayez demain.",
+      "own_sheet": "Cette feuille est la vôtre, vous ne pouvez pas la voter.",
+      "no_match": "Vous ne pouvez voter que pour une feuille utilisée dans une partie.",
+      "forbidden": "Vous n'avez pas la permission de faire cela.",
+      "failed": "Une erreur est survenue. Réessayez."
+    },
+    "sheetView": {
+      "title": "Feuille de score",
+      "readOnly": "Cette feuille a été partagée par la communauté. Copiez-la pour en faire votre version.",
+      "disabledNote": "Cette feuille est désactivée : les autres joueurs ne la voient pas et elle ne peut plus être choisie pour de nouvelles parties. Les parties qui l'utilisent déjà la gardent.",
+      "categories": "Catégories",
+      "back": "Retour aux feuilles",
+      "version": "Version {n}"
     }
   }
 }

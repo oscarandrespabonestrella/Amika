@@ -229,7 +229,13 @@ export function PlayForm({
         setBaseline(snapshot(current));
         setNotice(true);
       } else {
-        router.replace(`/games/${gameId}`);
+        const usedOthersSheet =
+          sheetId !== "" && sheets.some((s) => s.id === sheetId && !s.isMine);
+        router.replace(
+          usedOthersSheet
+            ? `/games/${gameId}/plays/${result.playId}#vote`
+            : `/games/${gameId}`,
+        );
       }
     });
   }
@@ -296,11 +302,24 @@ export function PlayForm({
           ) : (
             <>
               <option value="">{t("manualSheet")}</option>
-              {sheets.map((sheet) => (
-                <option key={sheet.id} value={sheet.id}>
-                  {sheet.title}
-                </option>
-              ))}
+              {[true, false].map((mine) => {
+                const group = sheets.filter((sheet) => sheet.isMine === mine);
+                if (group.length === 0) return null;
+                return (
+                  <optgroup
+                    key={String(mine)}
+                    label={t(mine ? "mySheetsGroup" : "communityGroup")}
+                  >
+                    {group.map((sheet) => (
+                      <option key={sheet.id} value={sheet.id}>
+                        {sheet.verified
+                          ? `${sheet.title} ${t("verifiedSuffix")}`
+                          : sheet.title}
+                      </option>
+                    ))}
+                  </optgroup>
+                );
+              })}
             </>
           )}
         </NativeSelect>

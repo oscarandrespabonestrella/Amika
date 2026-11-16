@@ -547,7 +547,8 @@
       "problems": "Fix the highlighted fields before saving.",
       "mySheetsGroup": "My sheets",
       "communityGroup": "Community sheets",
-      "verifiedSuffix": "(verified)"
+      "verifiedSuffix": "(verified)",
+      "managePlayers": "Manage players"
     },
     "errors": {
       "unauthenticated": "Your session expired. Please sign in again.",
@@ -633,6 +634,42 @@
     }
   },
   "Players": {
+    "title": "My players",
+    "subtitle": "Everyone you play with. Players are created when you add them to a match.",
+    "emptyTitle": "No players yet",
+    "emptyDescription": "Players appear here as soon as you add them to a match.",
+    "listLabel": "Your players",
+    "matches": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "me": "Me",
+    "markMe": "This is me",
+    "unmarkMe": "Not me",
+    "rename": "Rename",
+    "renameLabel": "New name for {name}",
+    "save": "Save",
+    "cancel": "Cancel",
+    "merge": "Merge into…",
+    "mergeLabel": "Merge {name} into",
+    "mergePick": "Choose a player",
+    "mergeConfirm": "{name} will disappear and all their matches will move to the player you chose.",
+    "mergeYes": "Merge",
+    "delete": "Delete",
+    "deleteConfirm": "Delete {name}?",
+    "deleteYes": "Yes, delete",
+    "deleteNo": "Keep",
+    "deleteBlocked": "Has matches: merge them into another player instead.",
+    "settings": {
+      "title": "My players",
+      "hint": "The people you play with: rename them, merge duplicates and mark which one is you.",
+      "open": "Open My players"
+    },
+    "picker": {
+      "choose": "Choose a player",
+      "search": "Search or add a player…",
+      "create": "Add “{name}”",
+      "empty": "No players found.",
+      "roster": "Your players",
+      "meSuffix": "(me)"
+    },
     "errors": {
       "unauthenticated": "Your session expired. Please sign in again.",
       "invalid": "That isn't valid.",

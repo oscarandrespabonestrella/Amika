@@ -547,7 +547,8 @@
       "problems": "Corrige los campos marcados antes de guardar.",
       "mySheetsGroup": "Mis hojas",
       "communityGroup": "Hojas de la comunidad",
-      "verifiedSuffix": "(verificada)"
+      "verifiedSuffix": "(verificada)",
+      "managePlayers": "Gestionar jugadores"
     },
     "errors": {
       "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
@@ -633,6 +634,42 @@
     }
   },
   "Players": {
+    "title": "Mis jugadores",
+    "subtitle": "Todas las personas con las que juegas. Los jugadores se crean al añadirlos a una partida.",
+    "emptyTitle": "Aún no hay jugadores",
+    "emptyDescription": "Los jugadores aparecen aquí en cuanto los añades a una partida.",
+    "listLabel": "Tus jugadores",
+    "matches": "{count, plural, =0 {Sin partidas} one {# partida} other {# partidas}}",
+    "me": "Yo",
+    "markMe": "Soy yo",
+    "unmarkMe": "No soy yo",
+    "rename": "Renombrar",
+    "renameLabel": "Nuevo nombre para {name}",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "merge": "Fusionar con…",
+    "mergeLabel": "Fusionar a {name} con",
+    "mergePick": "Elige un jugador",
+    "mergeConfirm": "{name} desaparecerá y todas sus partidas pasarán al jugador que elijas.",
+    "mergeYes": "Fusionar",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar a {name}?",
+    "deleteYes": "Sí, eliminar",
+    "deleteNo": "Conservar",
+    "deleteBlocked": "Tiene partidas: fusiónalo con otro jugador.",
+    "settings": {
+      "title": "Mis jugadores",
+      "hint": "Las personas con las que juegas: renómbralas, fusiona duplicados y marca cuál eres tú.",
+      "open": "Abrir Mis jugadores"
+    },
+    "picker": {
+      "choose": "Elige un jugador",
+      "search": "Busca o añade un jugador…",
+      "create": "Añadir «{name}»",
+      "empty": "No se encontraron jugadores.",
+      "roster": "Tus jugadores",
+      "meSuffix": "(yo)"
+    },
     "errors": {
       "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
       "invalid": "Eso no es válido.",

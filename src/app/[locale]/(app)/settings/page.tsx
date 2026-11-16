@@ -2,6 +2,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSelect, ThemeSelect } from "@/features/preferences";
 import { DisplayNameForm, getOrCreateProfile } from "@/features/profiles";
+import { Link } from "@/i18n/navigation";
 
 export default async function SettingsPage({
   params,
@@ -9,8 +10,9 @@ export default async function SettingsPage({
   const locale = assertLocale((await params).locale);
   setRequestLocale(locale);
 
-  const [t, profile] = await Promise.all([
+  const [t, tp, profile] = await Promise.all([
     getTranslations("Settings"),
+    getTranslations("Players.settings"),
     getOrCreateProfile(),
   ]);
 
@@ -24,6 +26,19 @@ export default async function SettingsPage({
           <p className="text-sm text-muted-foreground">{t("profile.hint")}</p>
         </div>
         <DisplayNameForm initialName={profile?.display_name ?? ""} />
+      </section>
+
+      <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5">
+        <div>
+          <h2 className="font-semibold">{tp("title")}</h2>
+          <p className="text-sm text-muted-foreground">{tp("hint")}</p>
+        </div>
+        <Link
+          href="/players"
+          className="inline-flex h-11 w-fit items-center rounded-lg border border-border bg-background px-4 text-sm font-medium outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          {tp("open")}
+        </Link>
       </section>
 
       <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5">

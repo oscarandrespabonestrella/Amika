@@ -3,3 +3,4 @@
 export { normalizePlayerName } from "./normalize";
 export { PLAYER_NAME_MAX } from "./schemas";
 export type { Player } from "./services/player-service";
+export { PlayerPicker, type PickedPlayer } from "./components/player-picker";

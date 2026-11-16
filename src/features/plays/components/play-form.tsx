@@ -10,6 +10,11 @@ import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
 import { Link, useRouter } from "@/i18n/navigation";
+import {
+  normalizePlayerName,
+  PlayerPicker,
+  type Player,
+} from "@/features/players/client";
 import type { SheetOption } from "@/features/scoring";
 import {
   IntField,
@@ -34,6 +39,8 @@ type Props = {
   defaultSheetId: string | null;
   /** Expansions of this game that exist in the catalog. */
   expansions: { id: string; name: string }[];
+  /** The user's own players (the picker offers them; new names create players). */
+  roster: Player[];
   /** Present when editing a saved match. */
   initial?: PlayDetail;
 };
@@ -44,6 +51,8 @@ type Props = {
  */
 type Row = {
   uid: number;
+  /** The roster player picked, or null for a new (typed) name. */
+  playerId: string | null;
   name: string;
   values: Record<string, ScoreValue | undefined>;
   manual: number | undefined;
@@ -55,7 +64,15 @@ const newRow = (
   name = "",
   values: Row["values"] = {},
   manual?: number,
-): Row => ({ uid: nextUid++, name, values, manual, touched: false });
+  playerId: string | null = null,
+): Row => ({
+  uid: nextUid++,
+  playerId,
+  name,
+  values,
+  manual,
+  touched: false,
+});
 
 const subscribeNothing = () => () => {};
 
@@ -81,7 +98,7 @@ const snapshot = (s: State) =>
     s.duration,
     s.notes,
     [...s.expansionIds].sort(),
-    s.rows.map((r) => [r.name, r.values, r.manual]),
+    s.rows.map((r) => [r.playerId, r.name, r.values, r.manual]),
   ]);
 
 const iconButton =
@@ -93,6 +110,7 @@ export function PlayForm({
   sheets,
   defaultSheetId,
   expansions,
+  roster,
   initial,
 }: Props) {
   const t = useTranslations("Plays.form");
@@ -113,7 +131,7 @@ export function PlayForm({
     ),
     rows: initial
       ? initial.entries.map((e) =>
-          newRow(e.name, e.values, e.manualTotal ?? undefined),
+          newRow(e.name, e.values, e.manualTotal ?? undefined, e.playerId),
         )
       : [newRow(), newRow()],
   }));
@@ -186,6 +204,20 @@ export function PlayForm({
     !durationValid ||
     !computation.ok;
 
+  // What the OTHER rows of this match already use: a player cannot be picked twice.
+  const takenIdsExcept = (uid: number): Set<string> =>
+    new Set(
+      rows
+        .filter((r) => r.uid !== uid && r.playerId !== null)
+        .map((r) => r.playerId as string),
+    );
+  const takenNamesExcept = (uid: number): Set<string> =>
+    new Set(
+      rows
+        .filter((r) => r.uid !== uid && r.name.trim() !== "")
+        .map((r) => normalizePlayerName(r.name)),
+    );
+
   const setRow = (uid: number, patch: Partial<Row>) =>
     setRows((cur) => cur.map((r) => (r.uid === uid ? { ...r, ...patch } : r)));
 
@@ -200,6 +232,7 @@ export function PlayForm({
     setNotice(false);
     startTransition(async () => {
       const participants = rows.map((r) => ({
+        playerId: r.playerId,
         name: r.name,
         ...(definition
           ? {
@@ -372,24 +405,26 @@ export function PlayForm({
                   </legend>
                   <div className="flex items-end gap-3">
                     <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                      <Label htmlFor={`name-${index}`}>
+                      <Label
+                        id={`name-${index}-label`}
+                        htmlFor={`name-${index}`}
+                      >
                         {t("playerName", { n: index + 1 })}
                       </Label>
-                      <Input
+                      <PlayerPicker
                         id={`name-${index}`}
-                        className="h-11"
-                        value={row.name}
-                        maxLength={PLAY_LIMITS.maxName}
-                        aria-invalid={row.name.trim() === "" || undefined}
-                        aria-describedby={
-                          row.touched && row.name.trim() === ""
-                            ? `name-${index}-hint`
-                            : undefined
+                        labelId={`name-${index}-label`}
+                        value={{ playerId: row.playerId, name: row.name }}
+                        roster={roster}
+                        takenIds={takenIdsExcept(row.uid)}
+                        takenNames={takenNamesExcept(row.uid)}
+                        onChange={(picked) =>
+                          setRow(row.uid, {
+                            playerId: picked.playerId,
+                            name: picked.name,
+                          })
                         }
-                        onBlur={() => setRow(row.uid, { touched: true })}
-                        onChange={(event) =>
-                          setRow(row.uid, { name: event.target.value })
-                        }
+                        onClosed={() => setRow(row.uid, { touched: true })}
                       />
                       {row.touched && row.name.trim() === "" && (
                         <p
@@ -481,6 +516,12 @@ export function PlayForm({
             <Plus className="size-4" aria-hidden />
             {t("addPlayer")}
           </Button>
+          <Link
+            href="/players"
+            className="inline-flex h-11 items-center rounded-lg px-3 text-sm text-muted-foreground underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            {t("managePlayers")}
+          </Link>
           {rows.length >= PLAY_LIMITS.maxParticipants && (
             <p className="text-sm text-muted-foreground">
               {t("maxPlayers", { max: PLAY_LIMITS.maxParticipants })}

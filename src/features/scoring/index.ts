@@ -13,7 +13,9 @@ export type { DefinitionIssue } from "./engine/validate";
 export {
   getSheet,
   listSheetsForGame,
+  listSheetOptions,
   type SheetDetail,
+  type SheetOption,
   type SheetSummary,
 } from "./services/sheet-service";
 export { SheetsLink } from "./components/sheets-link";

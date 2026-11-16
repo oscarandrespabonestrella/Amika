@@ -19,7 +19,22 @@ export type SheetSummary = {
   updatedAt: string;
 };
 
-export type SheetDetail = SheetSummary & { definition: Definition };
+/** `versionId` is the id of the latest version: what a match stores as the version it used. */
+export type SheetDetail = SheetSummary & {
+  definition: Definition;
+  versionId: string;
+};
+
+/** A sheet with the definition of its latest version, ready for scoring a match. */
+export type SheetOption = {
+  id: string;
+  title: string;
+  locale: string;
+  version: number;
+  versionId: string;
+  definition: Definition;
+  updatedAt: string;
+};
 
 export type CreateOutcome = { sheetId: string } | "limit" | "not_found";
 export type SaveVersionOutcome =
@@ -99,7 +114,7 @@ export async function getSheet(sheetId: string): Promise<SheetDetail | null> {
 
   const { data: latest, error: versionError } = await supabase
     .from("scoring_sheet_versions")
-    .select("version, definition")
+    .select("id, version, definition")
     .eq("sheet_id", sheetId)
     .order("version", { ascending: false })
     .limit(1)
@@ -118,6 +133,7 @@ export async function getSheet(sheetId: string): Promise<SheetDetail | null> {
   return {
     ...toSummary(sheet, latest.version, userId),
     definition: validated.definition,
+    versionId: latest.id,
   };
 }
 
@@ -206,12 +222,61 @@ export async function renameSheet(
   return data.length > 0 ? "saved" : "not_found";
 }
 
-export async function deleteSheet(sheetId: string): Promise<void> {
+/** `in_use`: matches still point at one of its versions (foreign key, 23503). */
+export async function deleteSheet(
+  sheetId: string,
+): Promise<"deleted" | "in_use"> {
   const { error } = await createSupabaseServerClient()
     .from("scoring_sheets")
     .delete()
     .eq("id", sheetId);
+  if (error) {
+    if (pgCode(error) === "23503") return "in_use";
+    throw error;
+  }
+  return "deleted";
+}
+
+/**
+ * The sheets of a game the user can see, each with its latest version's definition
+ * (revalidated: invalid ones are skipped and logged), most recently updated first.
+ */
+export async function listSheetOptions(gameId: string): Promise<SheetOption[]> {
+  if (!z.uuid().safeParse(gameId).success) return [];
+  const { data, error } = await createSupabaseServerClient()
+    .from("scoring_sheets")
+    .select(
+      "id, title, locale, updated_at, scoring_sheet_versions(id, version, definition)",
+    )
+    .eq("game_id", gameId)
+    .order("updated_at", { ascending: false });
   if (error) throw error;
+
+  const options: SheetOption[] = [];
+  for (const row of data ?? []) {
+    const latest = [...row.scoring_sheet_versions].sort(
+      (a, b) => b.version - a.version,
+    )[0];
+    if (!latest) continue;
+    const validated = validateDefinition(latest.definition);
+    if (!validated.ok) {
+      logger.error("scoring.listSheetOptions invalid stored definition", null, {
+        sheetId: row.id,
+        version: latest.version,
+      });
+      continue;
+    }
+    options.push({
+      id: row.id,
+      title: row.title,
+      locale: row.locale,
+      version: latest.version,
+      versionId: latest.id,
+      definition: validated.definition,
+      updatedAt: row.updated_at,
+    });
+  }
+  return options;
 }
 
 /** A new, independent sheet whose first version is the source's latest definition. */

@@ -30,6 +30,7 @@ export type ScoringResult<T extends object = object> =
         | "not_found"
         | "conflict"
         | "limit"
+        | "in_use"
         | "failed";
       issues?: DefinitionIssue[];
     };
@@ -120,8 +121,8 @@ export async function deleteSheetAction(
   return run("delete", async () => {
     const parsed = sheetIdSchema.safeParse(sheetId);
     if (!parsed.success) return invalid();
-    await deleteSheet(parsed.data);
-    return { ok: true };
+    const outcome = await deleteSheet(parsed.data);
+    return outcome === "deleted" ? { ok: true } : { ok: false, error: outcome };
   });
 }
 

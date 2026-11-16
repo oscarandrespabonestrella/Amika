@@ -396,7 +396,8 @@
       "not_found": "Esa hoja no está disponible.",
       "conflict": "La hoja ha cambiado en otro sitio. Recarga para continuar.",
       "limit": "Has alcanzado el límite de hojas o versiones para este juego.",
-      "failed": "Algo ha salido mal. Inténtalo de nuevo."
+      "failed": "Algo ha salido mal. Inténtalo de nuevo.",
+      "in_use": "Esta hoja tiene partidas, así que no se puede eliminar."
     },
     "editor": {
       "titleNew": "Nueva hoja de puntuación",

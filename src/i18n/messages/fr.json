@@ -396,7 +396,8 @@
       "not_found": "Cette feuille n'est pas disponible.",
       "conflict": "La feuille a changé ailleurs. Rechargez pour continuer.",
       "limit": "Vous avez atteint la limite de feuilles ou de versions pour ce jeu.",
-      "failed": "Une erreur est survenue. Réessayez."
+      "failed": "Une erreur est survenue. Réessayez.",
+      "in_use": "Cette feuille a des parties, elle ne peut donc pas être supprimée."
     },
     "editor": {
       "titleNew": "Nouvelle feuille de score",

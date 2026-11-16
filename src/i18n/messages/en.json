@@ -396,7 +396,8 @@
       "not_found": "That sheet isn't available.",
       "conflict": "The sheet changed somewhere else. Reload to continue.",
       "limit": "You reached the limit of sheets or versions for this game.",
-      "failed": "Something went wrong. Please try again."
+      "failed": "Something went wrong. Please try again.",
+      "in_use": "This sheet has matches, so it can't be deleted."
     },
     "editor": {
       "titleNew": "New score sheet",

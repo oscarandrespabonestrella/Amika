@@ -356,6 +356,54 @@ test.describe("players", () => {
     await expect(input).toBeFocused();
   });
 
+  test("the server-rendered form is deterministic: no per-request ids and no server-side date", async ({
+    page,
+  }) => {
+    const url = `/en/games/${gameId}/plays/new`;
+    const first = await (await page.request.get(url)).text();
+    const second = await (await page.request.get(url)).text();
+    const ids = (html: string) =>
+      [...html.matchAll(/id="((?:name|manual)-[^"]*)"/g)].map((m) => m[1]);
+    // Ids that depend on how many forms the server rendered before would not match
+    // what the browser computes when it hydrates.
+    expect(ids(first).length).toBeGreaterThan(0);
+    expect(ids(second)).toEqual(ids(first));
+
+    // Today's date depends on the viewer's time zone: the server must not render one.
+    const dateInput = /<input[^>]*id="play-date"[^>]*>/.exec(first)?.[0] ?? "";
+    expect(dateInput).not.toBe("");
+    expect(dateInput).not.toMatch(/value="\d{4}-\d{2}-\d{2}"/);
+  });
+
+  test("the date defaults to today once the page is live", async ({ page }) => {
+    await openNew(page);
+    const today = await page.evaluate(() => {
+      const d = new Date();
+      const pad = (n: number) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    });
+    await expect(page.getByLabel("Date")).toHaveValue(today);
+  });
+
+  test("a blank name explains itself once the field is left, and Save says why it is off", async ({
+    page,
+  }) => {
+    await openNew(page);
+    const name = player(page, 1).getByLabel("Name of player 1", {
+      exact: true,
+    });
+    await name.click();
+    await name.blur();
+    await expect(player(page, 1).getByText("Enter a name.")).toBeVisible();
+    await expect(name).toHaveAccessibleDescription("Enter a name.");
+    await expect(
+      page.getByText("Fix the highlighted fields before saving."),
+    ).toBeVisible();
+    await expect(save(page)).toBeDisabled();
+    await name.fill("Lou");
+    await expect(player(page, 1).getByText("Enter a name.")).toHaveCount(0);
+  });
+
   test("a name is required: Save stays disabled until every player has one", async ({
     page,
   }) => {

@@ -81,7 +81,7 @@ Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.m
 | Migración 0010 (partidas, participantes, puntuaciones, expansiones, `save_play`, RLS, topes) | Hecho y aplicado en dev; 23 tests de RLS |
 | Servicios y acciones (totales siempre recalculados en el servidor); borrar una hoja con partidas da «hoja en uso» | Hecho |
 | Formulario de partida con totales en vivo, sección «Partidas» en la ficha del juego, editar y borrar | Hecho (se registra solo desde la ficha) |
-| Pruebas | 338 unitarias, 124 RLS/SQL, 163 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+| Pruebas | 341 unitarias, 124 RLS/SQL, 166 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
 
 ## Estado de la Fase 5a (actualizado 2026-11-16)
 | Entrega | Estado |

@@ -168,3 +168,63 @@ describe("computePlay with manual totals (no sheet)", () => {
     expect(result.participants[0]).toMatchObject({ total: 3, scores: {} });
   });
 });
+
+describe("computePlay: totals the database can store", () => {
+  const bigSheet = (extra: unknown[] = []) => ({
+    schemaVersion: 1,
+    categories: [
+      { key: "big", label: "Big", type: "count_times", pointsEach: 1000 },
+      ...extra,
+    ],
+  });
+
+  it("a total of exactly 1_000_000_000 is accepted", () => {
+    const result = computePlay(bigSheet(), [
+      { name: "A", values: { big: 1_000_000 } },
+    ]);
+    expect(result.ok).toBe(true);
+    expect(result.participants[0].total).toBe(1_000_000_000);
+  });
+
+  it("one point more is a 'total' error: no total, no rank, no winner", () => {
+    const result = computePlay(
+      bigSheet([{ key: "one", label: "One", type: "number" }]),
+      [
+        { name: "A", values: { big: 1_000_000, one: 1 } },
+        { name: "B", values: { one: 5 } },
+      ],
+    );
+    expect(result.ok).toBe(false);
+    expect(result.participants[0]).toMatchObject({
+      total: null,
+      rank: null,
+      isWinner: false,
+      errors: { total: "outOfRange" },
+    });
+    // The other player is still ranked on their own.
+    expect(result.participants[1]).toMatchObject({
+      total: 5,
+      rank: 1,
+      isWinner: true,
+    });
+  });
+
+  it("a maximal count_times sheet (1e6 × 1e6) is refused instead of overflowing", () => {
+    const sheet = {
+      schemaVersion: 1,
+      categories: [
+        {
+          key: "huge",
+          label: "Huge",
+          type: "count_times",
+          pointsEach: 1_000_000,
+        },
+      ],
+    };
+    const result = computePlay(sheet, [
+      { name: "A", values: { huge: 1_000_000 } },
+    ]);
+    expect(result.ok).toBe(false);
+    expect(result.participants[0].errors).toEqual({ total: "outOfRange" });
+  });
+});

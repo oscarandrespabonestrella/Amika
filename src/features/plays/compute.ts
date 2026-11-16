@@ -49,6 +49,9 @@ export function rankTotals(
   });
 }
 
+/** Matches the CHECK on `play_participants.total_score` (migration 0010). */
+export const MAX_STORED_TOTAL = 1_000_000_000;
+
 type Partial = Pick<ParticipantResult, "total" | "scores" | "errors">;
 
 function scoreWithSheet(
@@ -70,6 +73,13 @@ function scoreWithSheet(
   const errors: Record<string, FieldErrorCode> = {};
   for (const category of evaluation.categories)
     if (category.error) errors[category.key] = category.error;
+  // The engine allows sums far above what `play_participants.total_score` stores
+  // (±1e9, see migration 0010): refuse it here with a field error instead of letting
+  // the save fail in the database.
+  if (Math.abs(evaluation.total) > MAX_STORED_TOTAL) {
+    errors.total = "outOfRange";
+    return { total: null, scores, errors };
+  }
   return { total: evaluation.total, scores, errors };
 }
 

@@ -2,7 +2,7 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,15 +47,24 @@ type Row = {
   name: string;
   values: Record<string, ScoreValue | undefined>;
   manual: number | undefined;
+  /** The name field was visited: only then do we explain that it is empty. */
+  touched: boolean;
 };
 let nextUid = 0;
 const newRow = (
   name = "",
   values: Row["values"] = {},
   manual?: number,
-): Row => ({ uid: nextUid++, name, values, manual });
+): Row => ({ uid: nextUid++, name, values, manual, touched: false });
 
-const todayLocal = () => new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
+const subscribeNothing = () => () => {};
+
+/** The viewer's own date as YYYY-MM-DD. */
+function localToday(): string {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
 
 type State = {
   playedOn: string;
@@ -93,7 +102,7 @@ export function PlayForm({
   const editing = initial !== undefined;
 
   const [start] = useState<State>(() => ({
-    playedOn: initial?.playedOn ?? todayLocal(),
+    playedOn: initial?.playedOn ?? "",
     duration: initial?.durationMinutes?.toString() ?? "",
     notes: initial?.notes ?? "",
     sheetId:
@@ -109,6 +118,9 @@ export function PlayForm({
       : [newRow(), newRow()],
   }));
   const [playedOn, setPlayedOn] = useState(start.playedOn);
+  // Today is the viewer's, not the server's: "" while hydrating, then the local date.
+  const today = useSyncExternalStore(subscribeNothing, localToday, () => "");
+  const date = playedOn !== "" ? playedOn : today;
   const [duration, setDuration] = useState(start.duration);
   const [notes, setNotes] = useState(start.notes);
   const [sheetId, setSheetId] = useState(start.sheetId);
@@ -165,8 +177,14 @@ export function PlayForm({
     dirty &&
     namesFilled &&
     durationValid &&
-    playedOn !== "" &&
+    date !== "" &&
     computation.ok;
+
+  // Why Save is off, said out loud once the user has touched the form.
+  const showProblems =
+    rows.some((r) => r.touched && r.name.trim() === "") ||
+    !durationValid ||
+    !computation.ok;
 
   const setRow = (uid: number, patch: Partial<Row>) =>
     setRows((cur) => cur.map((r) => (r.uid === uid ? { ...r, ...patch } : r)));
@@ -192,7 +210,7 @@ export function PlayForm({
           : { manualTotal: r.manual ?? null }),
       }));
       const common = {
-        playedOn,
+        playedOn: date,
         durationMinutes: durationNumber,
         notes,
         expansionIds: [...expansionIds, ...preservedExpansionIds],
@@ -243,8 +261,8 @@ export function PlayForm({
             id="play-date"
             type="date"
             className="h-11"
-            value={playedOn}
-            aria-invalid={playedOn === "" || undefined}
+            value={date}
+            aria-invalid={date === "" || undefined}
             onChange={(event) => setPlayedOn(event.target.value)}
           />
         </div>
@@ -335,19 +353,33 @@ export function PlayForm({
                   </legend>
                   <div className="flex items-end gap-3">
                     <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                      <Label htmlFor={`name-${row.uid}`}>
+                      <Label htmlFor={`name-${index}`}>
                         {t("playerName", { n: index + 1 })}
                       </Label>
                       <Input
-                        id={`name-${row.uid}`}
+                        id={`name-${index}`}
                         className="h-11"
                         value={row.name}
                         maxLength={PLAY_LIMITS.maxName}
                         aria-invalid={row.name.trim() === "" || undefined}
+                        aria-describedby={
+                          row.touched && row.name.trim() === ""
+                            ? `name-${index}-hint`
+                            : undefined
+                        }
+                        onBlur={() => setRow(row.uid, { touched: true })}
                         onChange={(event) =>
                           setRow(row.uid, { name: event.target.value })
                         }
                       />
+                      {row.touched && row.name.trim() === "" && (
+                        <p
+                          id={`name-${index}-hint`}
+                          className="text-sm text-destructive"
+                        >
+                          {t("nameRequired")}
+                        </p>
+                      )}
                     </div>
                     <button
                       type="button"
@@ -378,7 +410,7 @@ export function PlayForm({
                     <div className="flex flex-col gap-1.5">
                       <IntField
                         optional
-                        id={`manual-${row.uid}`}
+                        id={`manual-${index}`}
                         label={t("manualTotal")}
                         value={row.manual}
                         onChange={(manual) => setRow(row.uid, { manual })}
@@ -407,6 +439,11 @@ export function PlayForm({
                       </Badge>
                     )}
                     {result?.isWinner && <Badge>{t("winner")}</Badge>}
+                    {errors.total && (
+                      <p className="w-full text-sm text-destructive">
+                        {ts(`fieldErrors.${errors.total}`)}
+                      </p>
+                    )}
                   </div>
                 </fieldset>
               </li>
@@ -444,12 +481,19 @@ export function PlayForm({
         />
       </div>
 
+      {showProblems && (
+        <p id="save-hint" className="text-sm text-destructive">
+          {t("problems")}
+        </p>
+      )}
+
       <div className="flex flex-wrap items-center gap-3">
         <Button
           type="submit"
           size="lg"
           className="h-11 px-6"
           disabled={!canSave}
+          aria-describedby={showProblems ? "save-hint" : undefined}
         >
           {pending ? t("saving") : t("save")}
         </Button>

@@ -1,5 +1,7 @@
 import "server-only";
-import { dHashFromGray, grayGrid } from "./dhash";
+import { hashCoverBytes } from "./hash-bytes";
+
+export { hashCoverBytes };
 
 // Hashing a game's cover without storing it. The cover is only ever LINKED (ADR: not
 // copied); here the server fetches it transiently, computes a 64-bit hash and drops the
@@ -15,7 +17,6 @@ const MAX_REDIRECTS = 2;
 const REDIRECTS = new Set([301, 302, 303, 307, 308]);
 const DEFAULT_TIMEOUT_MS = 5000;
 const DEFAULT_MAX_BYTES = 2 * 1024 * 1024;
-const MAX_INPUT_PIXELS = 50_000_000;
 
 export function isAllowedCoverUrl(raw: string): boolean {
   let url: URL;
@@ -104,39 +105,6 @@ export async function fetchCoverBytes(
     return null;
   } finally {
     clearTimeout(timer);
-  }
-}
-
-/**
- * dHash of an image: EXIF-rotated, flattened over white, grayscale, resized to exactly
- * a 9x8 box average. The browser does the same with a canvas (tolerance: Hamming
- * distance <= 6, tested).
- */
-export async function hashCoverBytes(
-  bytes: Uint8Array,
-): Promise<string | null> {
-  if (bytes.byteLength === 0) return null;
-  try {
-    const { default: sharp } = await import("sharp");
-    // Same recipe as the browser: at most 1280 px on the long side, transparency over
-    // white, luminance, then the shared 9x8 box average.
-    const { data, info } = await sharp(Buffer.from(bytes), {
-      limitInputPixels: MAX_INPUT_PIXELS,
-    })
-      .rotate()
-      .flatten({ background: "#ffffff" })
-      .resize({
-        width: 1280,
-        height: 1280,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .grayscale()
-      .raw()
-      .toBuffer({ resolveWithObject: true });
-    return dHashFromGray(grayGrid(data, info.width, info.height));
-  } catch {
-    return null;
   }
 }
 

@@ -245,10 +245,21 @@ test.describe("identify by photo", () => {
   }) => {
     // Lazy loading: the engines are not requested before the user starts.
     const early: string[] = [];
+    const scripts: Promise<string>[] = [];
     page.on("request", (r) => early.push(r.url()));
+    page.on("response", (r) => {
+      if (r.request().resourceType() === "script")
+        scripts.push(r.text().catch(() => ""));
+    });
     await page.reload();
     await expect(region(page)).toBeVisible();
     expect(early.filter((u) => /\/(tesseract|zxing)\//.test(u))).toEqual([]);
+    // ... and the OCR / barcode code is not even in the page's JavaScript yet: the
+    // self-hosted asset paths only exist inside the lazily imported chunks.
+    for (const body of await Promise.all(scripts)) {
+      expect(body).not.toContain("/tesseract/worker.min.js");
+      expect(body).not.toContain("/zxing/zxing_reader.wasm");
+    }
 
     const png = await picture(page, "title");
     const seen: { url: string; method: string; body: string; type: string }[] =

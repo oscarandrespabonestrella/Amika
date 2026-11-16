@@ -11,6 +11,7 @@ import {
   searchLocalGames,
   SearchForm,
 } from "@/features/catalog";
+import { IdentifyGame } from "@/features/recognition/components/identify-game";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -52,6 +53,8 @@ export default async function GamesPage({
       </header>
 
       <SearchForm params={query} />
+
+      <IdentifyGame />
 
       <section aria-label={t("title")} className="flex flex-col gap-3">
         {games.length > 0 ? (

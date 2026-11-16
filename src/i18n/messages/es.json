@@ -742,5 +742,57 @@
       "basis": "Hoja «{sheet}», versión {version}, sobre {count, plural, one {# partida} other {# partidas}}.",
       "skipped": "{count, plural, one {# partida usó} other {# partidas usaron}} otra versión de la hoja y no {count, plural, one {entra} other {entran}}."
     }
+  },
+  "Recognition": {
+    "title": "Identificar un juego por foto",
+    "intro": "Haz o elige una foto del frente de la caja o de su código de barras.",
+    "privacy": "La foto se queda en tu dispositivo. Solo se usan el texto que contiene y una pequeña huella de la imagen para buscar.",
+    "take": "Hacer una foto",
+    "choose": "Elegir una foto",
+    "cancel": "Cancelar",
+    "stage": {
+      "prepare": "Preparando la foto…",
+      "code": "Buscando un código de barras…",
+      "text": "Leyendo el título…",
+      "image": "Comparando la imagen…",
+      "search": "Buscando…"
+    },
+    "results": {
+      "title": "Mejores coincidencias",
+      "list": "Coincidencias"
+    },
+    "confidence": {
+      "high": "Confianza alta",
+      "medium": "Confianza media",
+      "low": "Confianza baja"
+    },
+    "reasons": {
+      "code": "Código",
+      "title": "Título",
+      "image": "Imagen"
+    },
+    "confirm": "Es este",
+    "confirmFor": "Es este: {name}",
+    "importing": "Añadiendo…",
+    "fromBgg": "Aún no está en tu catálogo: se añadirá desde BoardGameGeek.",
+    "none": {
+      "title": "No se encontró ninguna coincidencia",
+      "body": "No hemos reconocido esta caja. Prueba con una foto más nítida del frente, o busca a mano."
+    },
+    "manual": "Ninguno de estos: buscar a mano",
+    "notes": {
+      "bggLimited": "No se pudo buscar en BoardGameGeek ahora mismo, así que solo se usó tu catálogo.",
+      "unsupported": "Este navegador no puede leer texto de las fotos, así que solo se comparó la imagen.",
+      "timedOut": "Leer el texto tardó demasiado, así que se omitió."
+    },
+    "errors": {
+      "not_image": "Ese archivo no es una imagen.",
+      "too_large": "Esa foto es demasiado grande (máximo 20 MB).",
+      "unreadable": "No hemos podido leer esa foto. Prueba con un JPEG o PNG.",
+      "timeout": "Leer la foto tardó demasiado.",
+      "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+      "invalid": "Algo falla con esa foto. Prueba con otra.",
+      "failed": "Algo ha salido mal. Inténtalo de nuevo."
+    }
   }
 }

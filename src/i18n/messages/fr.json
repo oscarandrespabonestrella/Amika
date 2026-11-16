@@ -742,5 +742,57 @@
       "basis": "Feuille « {sheet} », version {version}, sur {count, plural, one {# partie} other {# parties}}.",
       "skipped": "{count, plural, one {# partie a utilisé} other {# parties ont utilisé}} une autre version de la feuille et {count, plural, one {n’est} other {ne sont}} pas {count, plural, one {incluse} other {incluses}}."
     }
+  },
+  "Recognition": {
+    "title": "Identifier un jeu par photo",
+    "intro": "Prenez ou choisissez une photo de l'avant de la boîte ou de son code-barres.",
+    "privacy": "La photo reste sur votre appareil. Seuls le texte qu'elle contient et une petite empreinte de l'image servent à chercher.",
+    "take": "Prendre une photo",
+    "choose": "Choisir une photo",
+    "cancel": "Annuler",
+    "stage": {
+      "prepare": "Préparation de la photo…",
+      "code": "Recherche d'un code-barres…",
+      "text": "Lecture du titre…",
+      "image": "Comparaison de l'image…",
+      "search": "Recherche…"
+    },
+    "results": {
+      "title": "Meilleures correspondances",
+      "list": "Correspondances"
+    },
+    "confidence": {
+      "high": "Confiance élevée",
+      "medium": "Confiance moyenne",
+      "low": "Confiance faible"
+    },
+    "reasons": {
+      "code": "Code-barres",
+      "title": "Titre",
+      "image": "Image"
+    },
+    "confirm": "C'est celui-ci",
+    "confirmFor": "C'est celui-ci : {name}",
+    "importing": "Ajout…",
+    "fromBgg": "Pas encore dans votre catalogue : il sera ajouté depuis BoardGameGeek.",
+    "none": {
+      "title": "Aucune correspondance trouvée",
+      "body": "Nous n'avons pas reconnu cette boîte. Essayez une photo plus nette de l'avant, ou cherchez à la main."
+    },
+    "manual": "Aucun de ceux-ci : chercher à la main",
+    "notes": {
+      "bggLimited": "BoardGameGeek n'a pas pu être interrogé pour l'instant, seul votre catalogue a donc été utilisé.",
+      "unsupported": "Ce navigateur ne peut pas lire le texte des photos, seule l'image a donc été comparée.",
+      "timedOut": "La lecture du texte a pris trop de temps, elle a été ignorée."
+    },
+    "errors": {
+      "not_image": "Ce fichier n'est pas une image.",
+      "too_large": "Cette photo est trop grande (20 Mo maximum).",
+      "unreadable": "Nous n'avons pas pu lire cette photo. Essayez un JPEG ou un PNG.",
+      "timeout": "La lecture de la photo a pris trop de temps.",
+      "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
+      "invalid": "Un problème avec cette photo. Essayez-en une autre.",
+      "failed": "Une erreur s'est produite. Veuillez réessayer."
+    }
   }
 }

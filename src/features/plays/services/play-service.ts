@@ -9,6 +9,7 @@ import { validateDefinition } from "@/features/scoring/engine/validate";
 import { pickDefaultSheet, type RankedSheet } from "@/features/scoring/ranking";
 import { getSheet } from "@/features/scoring/services/sheet-service";
 import { computePlay, type ParticipantInput } from "../compute";
+import { mapSavePlayError } from "../save-errors";
 import type { CreatePlayInput, UpdatePlayInput } from "../schemas";
 
 export type PlaySummary = {
@@ -45,7 +46,12 @@ export type PlayDetail = PlaySummary & {
 };
 
 export type PlayOutcome =
-  { playId: string } | "invalid" | "not_found" | "limit";
+  | { playId: string }
+  | "invalid"
+  | "not_found"
+  | "limit"
+  | "players_limit"
+  | "duplicate_player";
 
 /** Postgres codes: 42501 = RLS said no, 23503 = missing parent, P0001 = a limit, P0002 = no such match. */
 const pgCode = (error: unknown) => (error as { code?: string } | null)?.code;
@@ -212,10 +218,11 @@ async function callSavePlay(payload: Json): Promise<PlayOutcome> {
     p: payload,
   });
   if (error) {
-    const code = pgCode(error);
-    if (code === "P0001") return "limit";
-    if (code === "42501" || code === "23503" || code === "P0002")
-      return "not_found";
+    const mapped = mapSavePlayError(
+      pgCode(error),
+      (error as { message?: string }).message,
+    );
+    if (mapped) return mapped;
     throw error;
   }
   return { playId: data };

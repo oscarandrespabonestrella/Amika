@@ -555,7 +555,9 @@
       "invalid": "Revisa la partida.",
       "not_found": "Esa partida u hoja no está disponible.",
       "limit": "Has alcanzado el límite de partidas.",
-      "failed": "Algo ha salido mal. Inténtalo de nuevo."
+      "failed": "Algo ha salido mal. Inténtalo de nuevo.",
+      "players_limit": "Has alcanzado el límite de 200 jugadores.",
+      "duplicate_player": "El mismo jugador aparece dos veces en esta partida, aunque los nombres parezcan distintos. Elige a cada jugador una sola vez."
     }
   },
   "Community": {

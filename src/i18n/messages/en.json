@@ -555,7 +555,9 @@
       "invalid": "Please check the match.",
       "not_found": "That match or sheet isn't available.",
       "limit": "You reached the limit of matches.",
-      "failed": "Something went wrong. Please try again."
+      "failed": "Something went wrong. Please try again.",
+      "players_limit": "You reached the limit of 200 players.",
+      "duplicate_player": "The same player appears twice in this match, even if the names look different. Choose each player once."
     }
   },
   "Community": {

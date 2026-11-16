@@ -33,3 +33,17 @@ describe("normalizePlayerName", () => {
     expect(normalizePlayerName("Ana")).not.toBe(normalizePlayerName("Anna"));
   });
 });
+
+describe("normalizePlayerName: only Latin accents are stripped (never wider than the database)", () => {
+  it("keeps vowel signs of other scripts, so different names stay different", () => {
+    // Devanagari: "कमल" and "कमला" differ by a vowel sign (a combining mark).
+    expect(normalizePlayerName("कमल")).not.toBe(normalizePlayerName("कमला"));
+    // Thai tone/vowel marks and Hebrew points are combining marks too.
+    expect(normalizePlayerName("ก่า")).not.toBe(normalizePlayerName("กา"));
+  });
+
+  it("still strips the combining diacritics that unaccent removes", () => {
+    for (const variant of ["José", "José", "JOSÉ", "jóse"])
+      expect(normalizePlayerName(variant), variant).toBe("jose");
+  });
+});

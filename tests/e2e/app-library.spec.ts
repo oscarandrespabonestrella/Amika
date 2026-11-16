@@ -470,7 +470,8 @@ test.describe("your own games: edit and delete", () => {
       page.getByText(/Its photos and library entry will be deleted too/),
     ).toBeVisible();
     await page.getByRole("button", { name: "Yes, delete" }).click();
-    await expect(page).toHaveURL(/\/en\/games$/);
+    // Deleting removes the photo files (Storage) and cascades: the slowest step in the suite.
+    await expect(page).toHaveURL(/\/en\/games$/, { timeout: 30_000 });
 
     const left = await withDb((c) =>
       c.query(

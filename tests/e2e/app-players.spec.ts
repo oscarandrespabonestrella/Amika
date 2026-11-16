@@ -150,6 +150,27 @@ test.describe("creating players from matches", () => {
     await page.keyboard.press("Escape");
   });
 
+  test("names the browser thinks differ but the database folds together get a clear message", async ({
+    page,
+  }) => {
+    // "Søren" / "Soren": the database folds ø to o, the browser's imitation does not.
+    await page.goto(`/en/games/${gameId}/plays/new`);
+    await pickPlayer(page, 1, "Søren");
+    await pickPlayer(page, 2, "Soren");
+    for (const n of [1, 2])
+      await page
+        .getByRole("group", { name: `Player ${n}` })
+        .getByLabel("Total points")
+        .fill(String(n));
+    await page.getByRole("button", { name: "Save match" }).click();
+    await expect(
+      page.getByText(/The same player appears twice in this match/),
+    ).toBeVisible();
+    await expect(page.getByText("Something went wrong")).toHaveCount(0);
+    // Nothing was saved, and no half-created player is left behind.
+    expect(await rosterNames()).not.toContain("Søren");
+  });
+
   test("keyboard only: open, type, Enter; focus returns to the field", async ({
     page,
   }) => {

@@ -11,7 +11,14 @@ export type PlayResult<T extends object = object> =
   | ({ ok: true } & T)
   | {
       ok: false;
-      error: "unauthenticated" | "invalid" | "not_found" | "limit" | "failed";
+      error:
+        | "unauthenticated"
+        | "invalid"
+        | "not_found"
+        | "limit"
+        | "players_limit"
+        | "duplicate_player"
+        | "failed";
     };
 
 /** Common frame: signed in, run, revalidate; the database (RLS) is the real gatekeeper. */

@@ -99,6 +99,9 @@ describe.skipIf(!hasDb)("normalize_player_name", () => {
       "",
       "Zoë",
       "Ana\tMaría",
+      // Other scripts: the database keeps their vowel signs, so the imitation must too.
+      "कमल",
+      "कमला",
     ];
     const rows = await asA(async (c) =>
       Promise.all(

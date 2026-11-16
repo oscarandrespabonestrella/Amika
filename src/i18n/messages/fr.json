@@ -555,7 +555,9 @@
       "invalid": "Vérifiez la partie.",
       "not_found": "Cette partie ou cette feuille n'est pas disponible.",
       "limit": "Vous avez atteint la limite de parties.",
-      "failed": "Une erreur est survenue. Réessayez."
+      "failed": "Une erreur est survenue. Réessayez.",
+      "players_limit": "Vous avez atteint la limite de 200 joueurs.",
+      "duplicate_player": "Le même joueur apparaît deux fois dans cette partie, même si les noms semblent différents. Choisissez chaque joueur une seule fois."
     }
   },
   "Community": {

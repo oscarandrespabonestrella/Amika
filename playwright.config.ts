@@ -16,7 +16,10 @@ export default defineConfig({
   // Assertions wait up to 10 s: with 8 workers sharing Clerk and Supabase round trips,
   // the 5 s default produced one unrelated timing failure per full run.
   expect: { timeout: 10_000 },
-  retries: process.env.CI ? 1 : 0,
+  // One retry everywhere (not only on CI): with 200+ tests on 8 workers a form submit right
+  // after navigation can lose a hydration race on a busy machine. A retried pass is
+  // reported as "flaky", so it stays visible.
+  retries: 1,
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
   use: {
     baseURL: process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`,

@@ -499,5 +499,59 @@
     "fields": {
       "none": "Aucune"
     }
+  },
+  "Plays": {
+    "panel": {
+      "title": "Parties",
+      "count": "{count, plural, =0 {Aucune partie} one {# partie} other {# parties}}",
+      "log": "Enregistrer une partie",
+      "emptyTitle": "Aucune partie pour l'instant",
+      "emptyDescription": "Enregistrez une partie pour garder qui a joué et combien chacun a marqué.",
+      "manual": "Totaux saisis à la main",
+      "winner": "Gagnant",
+      "noScores": "Aucun score",
+      "listLabel": "Vos parties",
+      "duration": "{n} min"
+    },
+    "form": {
+      "titleNew": "Enregistrer une partie",
+      "titleEdit": "Partie",
+      "intro": "Notez qui a joué à {game} et combien chacun a marqué.",
+      "back": "Retour à {game}",
+      "date": "Date",
+      "duration": "Durée en minutes (facultatif)",
+      "notes": "Notes (facultatif)",
+      "sheet": "Feuille de score",
+      "manualSheet": "Sans feuille : saisir les totaux",
+      "sheetLocked": "La feuille ne peut plus changer une fois la partie enregistrée. Enregistrez une nouvelle partie pour une autre feuille.",
+      "expansions": "Extensions utilisées",
+      "players": "Joueurs",
+      "player": "Joueur {n}",
+      "playerName": "Nom du joueur {n}",
+      "nameRequired": "Saisissez un nom.",
+      "removePlayer": "Retirer le joueur {n}",
+      "addPlayer": "Ajouter un joueur",
+      "maxPlayers": "Une partie compte jusqu'à {max} joueurs.",
+      "manualTotal": "Total des points",
+      "total": "Total",
+      "noTotal": "Rien d'enregistré",
+      "rank": "Rang {n}",
+      "winner": "Gagnant",
+      "save": "Enregistrer la partie",
+      "saving": "Enregistrement…",
+      "saved": "Enregistrée.",
+      "delete": "Supprimer la partie",
+      "deleteConfirm": "Supprimer cette partie ?",
+      "deleteYes": "Oui, supprimer",
+      "deleteNo": "La garder",
+      "problems": "Corrigez les champs signalés avant d'enregistrer."
+    },
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
+      "invalid": "Vérifiez la partie.",
+      "not_found": "Cette partie ou cette feuille n'est pas disponible.",
+      "limit": "Vous avez atteint la limite de parties.",
+      "failed": "Une erreur est survenue. Réessayez."
+    }
   }
 }

@@ -499,5 +499,59 @@
     "fields": {
       "none": "None"
     }
+  },
+  "Plays": {
+    "panel": {
+      "title": "Matches",
+      "count": "{count, plural, =0 {No matches yet} one {# match} other {# matches}}",
+      "log": "Log a match",
+      "emptyTitle": "No matches yet",
+      "emptyDescription": "Log a match to keep who played and how they scored.",
+      "manual": "Manual totals",
+      "winner": "Winner",
+      "noScores": "No scores recorded",
+      "listLabel": "Your matches",
+      "duration": "{n} min"
+    },
+    "form": {
+      "titleNew": "Log a match",
+      "titleEdit": "Match",
+      "intro": "Record who played {game} and how they scored.",
+      "back": "Back to {game}",
+      "date": "Date",
+      "duration": "Duration in minutes (optional)",
+      "notes": "Notes (optional)",
+      "sheet": "Score sheet",
+      "manualSheet": "No sheet: enter totals",
+      "sheetLocked": "The sheet can't change once the match is saved. Log a new match to use another sheet.",
+      "expansions": "Expansions used",
+      "players": "Players",
+      "player": "Player {n}",
+      "playerName": "Name of player {n}",
+      "nameRequired": "Enter a name.",
+      "removePlayer": "Remove player {n}",
+      "addPlayer": "Add player",
+      "maxPlayers": "A match can have up to {max} players.",
+      "manualTotal": "Total points",
+      "total": "Total",
+      "noTotal": "Nothing recorded",
+      "rank": "Rank {n}",
+      "winner": "Winner",
+      "save": "Save match",
+      "saving": "Saving…",
+      "saved": "Saved.",
+      "delete": "Delete match",
+      "deleteConfirm": "Delete this match?",
+      "deleteYes": "Yes, delete",
+      "deleteNo": "Keep it",
+      "problems": "Fix the highlighted fields before saving."
+    },
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "invalid": "Please check the match.",
+      "not_found": "That match or sheet isn't available.",
+      "limit": "You reached the limit of matches.",
+      "failed": "Something went wrong. Please try again."
+    }
   }
 }

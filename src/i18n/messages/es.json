@@ -499,5 +499,59 @@
     "fields": {
       "none": "Ninguna"
     }
+  },
+  "Plays": {
+    "panel": {
+      "title": "Partidas",
+      "count": "{count, plural, =0 {Aún no hay partidas} one {# partida} other {# partidas}}",
+      "log": "Registrar partida",
+      "emptyTitle": "Aún no hay partidas",
+      "emptyDescription": "Registra una partida para guardar quién jugó y cuánto puntuó.",
+      "manual": "Totales manuales",
+      "winner": "Ganador",
+      "noScores": "Sin puntuaciones",
+      "listLabel": "Tus partidas",
+      "duration": "{n} min"
+    },
+    "form": {
+      "titleNew": "Registrar una partida",
+      "titleEdit": "Partida",
+      "intro": "Anota quién jugó a {game} y cuánto puntuó.",
+      "back": "Volver a {game}",
+      "date": "Fecha",
+      "duration": "Duración en minutos (opcional)",
+      "notes": "Notas (opcional)",
+      "sheet": "Hoja de puntuación",
+      "manualSheet": "Sin hoja: introducir totales",
+      "sheetLocked": "La hoja no puede cambiar una vez guardada la partida. Registra otra partida para usar otra hoja.",
+      "expansions": "Expansiones usadas",
+      "players": "Jugadores",
+      "player": "Jugador {n}",
+      "playerName": "Nombre del jugador {n}",
+      "nameRequired": "Escribe un nombre.",
+      "removePlayer": "Quitar al jugador {n}",
+      "addPlayer": "Añadir jugador",
+      "maxPlayers": "Una partida admite hasta {max} jugadores.",
+      "manualTotal": "Puntos totales",
+      "total": "Total",
+      "noTotal": "Nada registrado",
+      "rank": "Puesto {n}",
+      "winner": "Ganador",
+      "save": "Guardar partida",
+      "saving": "Guardando…",
+      "saved": "Guardada.",
+      "delete": "Eliminar partida",
+      "deleteConfirm": "¿Eliminar esta partida?",
+      "deleteYes": "Sí, eliminar",
+      "deleteNo": "Conservar",
+      "problems": "Corrige los campos marcados antes de guardar."
+    },
+    "errors": {
+      "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+      "invalid": "Revisa la partida.",
+      "not_found": "Esa partida u hoja no está disponible.",
+      "limit": "Has alcanzado el límite de partidas.",
+      "failed": "Algo ha salido mal. Inténtalo de nuevo."
+    }
   }
 }

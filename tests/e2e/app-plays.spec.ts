@@ -6,6 +6,7 @@ import {
   canRunAppTests,
   cleanupCatalogFixtures,
   insertImportedGame,
+  pickPlayer,
   STATE_FILE,
   TEST_USERS,
   testUserId,
@@ -116,9 +117,10 @@ const plays = () =>
   withDb(async (c) => {
     const { rows } = await c.query<PlayRow>(
       `select p.id, p.played_on::text, p.duration_minutes, p.notes, p.scoring_version_id,
-              (select json_agg(json_build_object('seat', pp.seat, 'name', pp.display_name,
+              (select json_agg(json_build_object('seat', pp.seat, 'name', pl.name,
                        'total', pp.total_score, 'rank', pp.rank, 'win', pp.is_winner) order by pp.seat)
-                 from public.play_participants pp where pp.play_id = p.id) as people
+                 from public.play_participants pp join public.players pl on pl.id = pp.player_id
+                where pp.play_id = p.id) as people
          from public.plays p where p.created_by = $1 order by p.created_at`,
       [userH],
     );
@@ -137,7 +139,7 @@ async function fillPlayer(
   entries: Record<string, string> = {},
 ) {
   const group = player(page, n);
-  await group.getByLabel(`Name of player ${n}`, { exact: true }).fill(name);
+  await pickPlayer(page, n, name);
   for (const [label, value] of Object.entries(entries))
     await group.getByLabel(label, { exact: true }).fill(value);
 }
@@ -343,17 +345,19 @@ test.describe("players", () => {
     ).toBeVisible();
   });
 
-  test("typing a name key by key keeps the focus on the field", async ({
+  test("typing in the player search key by key keeps the focus on the field", async ({
     page,
   }) => {
     await openNew(page);
-    const input = player(page, 1).getByLabel("Name of player 1", {
-      exact: true,
-    });
-    await input.click();
-    await input.pressSequentially("Ana García 🐦");
-    await expect(input).toHaveValue("Ana García 🐦");
-    await expect(input).toBeFocused();
+    await player(page, 1).getByRole("combobox").click();
+    const search = page.getByPlaceholder("Search or add a player…");
+    await search.pressSequentially("Ana García 🐦");
+    await expect(search).toHaveValue("Ana García 🐦");
+    await expect(search).toBeFocused();
+    await search.press("Enter");
+    await expect(
+      player(page, 1).getByRole("combobox", { name: /Ana García 🐦/ }),
+    ).toBeVisible();
   });
 
   test("the server-rendered form is deterministic: no per-request ids and no server-side date", async ({
@@ -389,18 +393,16 @@ test.describe("players", () => {
     page,
   }) => {
     await openNew(page);
-    const name = player(page, 1).getByLabel("Name of player 1", {
-      exact: true,
-    });
+    const name = player(page, 1).getByRole("combobox");
     await name.click();
-    await name.blur();
+    await page.keyboard.press("Escape"); // leave without choosing a player
     await expect(player(page, 1).getByText("Enter a name.")).toBeVisible();
     await expect(name).toHaveAccessibleDescription("Enter a name.");
     await expect(
       page.getByText("Fix the highlighted fields before saving."),
     ).toBeVisible();
     await expect(save(page)).toBeDisabled();
-    await name.fill("Lou");
+    await pickPlayer(page, 1, "Lou");
     await expect(player(page, 1).getByText("Enter a name.")).toHaveCount(0);
   });
 
@@ -434,15 +436,14 @@ test.describe("players", () => {
     expect(last.people.map((p) => p.name)).toEqual([hostile, "Padded"]);
 
     await openNew(page);
-    await fillPlayer(page, 1, "x".repeat(61));
-    await fillPlayer(page, 2, "Ok");
-    const length = (
-      await player(page, 1)
-        .getByLabel("Name of player 1", { exact: true })
-        .inputValue()
-    ).length;
-    if (length > 60) await expect(save(page)).toBeDisabled();
-    else expect(length).toBeLessThanOrEqual(60);
+    // 61 characters: the search is capped or, if forced, offers no "Add" item.
+    await player(page, 1).getByRole("combobox").click();
+    const search = page.getByPlaceholder("Search or add a player…");
+    await search.fill("x".repeat(61));
+    const typed = (await search.inputValue()).length;
+    if (typed > 60)
+      await expect(page.getByRole("option", { name: /^Add/ })).toHaveCount(0);
+    else expect(typed).toBeLessThanOrEqual(60);
   });
 });
 
@@ -618,7 +619,7 @@ test.describe("accessibility and mobile", () => {
     for (const control of [
       page.getByRole("button", { name: "Add player" }),
       page.getByRole("button", { name: "Remove player 1" }),
-      page.getByLabel("Name of player 1", { exact: true }),
+      player(page, 1).getByRole("combobox"),
       page.getByLabel("Date"),
     ]) {
       const box = await control.boundingBox();

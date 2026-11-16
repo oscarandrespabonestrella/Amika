@@ -425,6 +425,12 @@ export function PlayForm({
                           })
                         }
                         onClosed={() => setRow(row.uid, { touched: true })}
+                        invalid={row.name.trim() === ""}
+                        describedBy={
+                          row.touched && row.name.trim() === ""
+                            ? `name-${index}-hint`
+                            : undefined
+                        }
                       />
                       {row.touched && row.name.trim() === "" && (
                         <p

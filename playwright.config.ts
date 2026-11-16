@@ -13,6 +13,9 @@ export default defineConfig({
   testDir: "tests/e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
+  // Assertions wait up to 10 s: with 8 workers sharing Clerk and Supabase round trips,
+  // the 5 s default produced one unrelated timing failure per full run.
+  expect: { timeout: 10_000 },
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
   use: {

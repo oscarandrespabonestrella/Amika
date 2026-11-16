@@ -26,6 +26,7 @@ for (const key of [
   "i",
   "j",
   "k",
+  "l",
 ] as const) {
   const user = TEST_USERS[key];
   setup(`sign in test user ${key.toUpperCase()}`, async ({ page }) => {

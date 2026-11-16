@@ -74,6 +74,15 @@
 ## Fase 5 — reparto (2026-11-16)
 Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.md`. Tres entregas con revisión tras cada una: **5a** motor + hojas + editor, **5b** partidas, **5c** compartir y fiabilidad (publicar, 👍/avisos, verificada, orden por Wilson, moderación, topes). Fotos de partida y puntuación por imagen: Fase 7.
 
+## Estado de la Fase 6a (actualizado 2026-11-16)
+| Entrega | Estado |
+|---|---|
+| Migración 0014: lista de jugadores, `player_id` en los participantes (datos migrados, ensayada en transacción revertida), `save_play` y `merge_players` | Hecho y aplicado en dev; 26 tests de RLS nuevos |
+| Selector de jugador (combobox con búsqueda, «Añadir …», sin repetir jugador en una partida) y formulario de partida con la lista | Hecho |
+| Página «Mis jugadores» (renombrar, fusionar, borrar si no tiene partidas, «soy yo»), enlazada desde Ajustes y el formulario | Hecho |
+| Pruebas | 368 unitarias, 179 RLS/SQL, 208 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+| **6b** (estadísticas y gráficos con shadcn Chart/Recharts) | Pendiente de plan |
+
 ## Estado de la Fase 5c (actualizado 2026-11-16)
 | Entrega | Estado |
 |---|---|

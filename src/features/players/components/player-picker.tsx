@@ -36,6 +36,9 @@ type Props = {
   onChange: (value: PickedPlayer) => void;
   /** Called whenever the list closes (so the form can explain an empty choice). */
   onClosed?: () => void;
+  /** Id of an element that explains why the choice is missing. */
+  describedBy?: string;
+  invalid?: boolean;
 };
 
 /**
@@ -54,6 +57,8 @@ export function PlayerPicker({
   takenNames,
   onChange,
   onClosed,
+  describedBy,
+  invalid,
 }: Props) {
   const t = useTranslations("Players.picker");
   const [open, setOpen] = useState(false);
@@ -94,6 +99,8 @@ export function PlayerPicker({
           role="combobox"
           aria-haspopup="listbox"
           aria-expanded={open}
+          aria-describedby={describedBy}
+          aria-invalid={invalid || undefined}
           aria-controls={open ? `${id}-list` : undefined}
           aria-labelledby={`${labelId} ${id}`}
           className="flex h-11 w-full min-w-0 items-center justify-between gap-2 rounded-lg border border-input bg-transparent px-2.5 text-left text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30"

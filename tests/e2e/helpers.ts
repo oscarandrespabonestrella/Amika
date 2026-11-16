@@ -1,4 +1,5 @@
 import { createClerkClient } from "@clerk/backend";
+import { expect, type Page } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 import { Client } from "pg";
 import { dbUrl, hasDb } from "../integration/db";
@@ -27,6 +28,8 @@ export const TEST_USERS = {
   i: { email: "bglib-e2e-i+clerk_test@example.com", firstName: "E2E Ivan" },
   j: { email: "bglib-e2e-j+clerk_test@example.com", firstName: "E2E Judy" },
   k: { email: "bglib-e2e-k+clerk_test@example.com", firstName: "E2E Karl" },
+  // Player roster (app-players.spec.ts).
+  l: { email: "bglib-e2e-l+clerk_test@example.com", firstName: "E2E Lena" },
 } as const;
 
 export const STATE_FILE = {
@@ -41,6 +44,7 @@ export const STATE_FILE = {
   i: "playwright/.clerk/user-i.json",
   j: "playwright/.clerk/user-j.json",
   k: "playwright/.clerk/user-k.json",
+  l: "playwright/.clerk/user-l.json",
 } as const;
 
 function clerk() {
@@ -133,6 +137,14 @@ export async function cleanupCatalogFixtures(
       await c.query("delete from public.games where owner_id = any($1)", [
         ownerIds,
       ]);
+      // Roster players the fixtures created (the matches went with their games).
+      // Players that still have matches elsewhere are left alone.
+      await c.query(
+        `delete from public.players pl
+          where pl.owner_id = any($1)
+            and not exists (select 1 from public.play_participants pp where pp.player_id = pl.id)`,
+        [ownerIds],
+      );
     }
   });
   for (const owner of ownerIds) await removeUserPhotos(owner);
@@ -165,4 +177,20 @@ export async function listUserPhotoPaths(userId: string): Promise<string[]> {
 export async function removeUserPhotos(userId: string) {
   const paths = await listUserPhotoPaths(userId);
   if (paths.length > 0) await adminStorage().remove(paths);
+}
+
+/**
+ * Chooses (or creates) the player of row `n` in the match form: opens the combobox
+ * labelled "Name of player n", types the name and presses Enter, which picks the
+ * existing player with that name or the "Add …" item for a new one.
+ */
+export async function pickPlayer(page: Page, n: number, name: string) {
+  const group = page.getByRole("group", { name: `Player ${n}` });
+  await group
+    .getByRole("combobox", { name: new RegExp(`^Name of player ${n}\\b`) })
+    .click();
+  const search = page.getByPlaceholder("Search or add a player…");
+  await search.fill(name);
+  await search.press("Enter");
+  await expect(search).toBeHidden();
 }

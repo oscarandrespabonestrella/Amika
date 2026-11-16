@@ -5,6 +5,7 @@ import {
   canRunAppTests,
   cleanupCatalogFixtures,
   insertImportedGame,
+  pickPlayer,
   STATE_FILE,
   TEST_USERS,
   testUserId,
@@ -368,10 +369,14 @@ test.describe("moderation", () => {
          values ($1,$2,$3) returning id`,
         [userK, gameId, versionIds[ALPHA]],
       );
+      const kay = await c.query<{ id: string }>(
+        `insert into public.players (owner_id, name) values ($1,'Kay') returning id`,
+        [userK],
+      );
       await c.query(
-        `insert into public.play_participants (play_id, seat, display_name, total_score, rank, is_winner)
-         values ($1,0,'Kay',null,null,false)`,
-        [play.rows[0].id],
+        `insert into public.play_participants (play_id, seat, player_id, total_score, rank, is_winner)
+         values ($1,0,$2,null,null,false)`,
+        [play.rows[0].id, kay.rows[0].id],
       );
       return play.rows[0].id;
     });
@@ -420,7 +425,7 @@ test.describe("using community sheets in a match", () => {
     military: string,
   ) => {
     const group = page.getByRole("group", { name: `Player ${n}` });
-    await group.getByLabel(`Name of player ${n}`, { exact: true }).fill(name);
+    await pickPlayer(page, n, name);
     await group.getByLabel("Military", { exact: true }).fill(military);
   };
 
@@ -598,10 +603,14 @@ test.describe("using community sheets in a match", () => {
          values ($1,$2,$3) returning id`,
         [userJ, gameId, versionIds[S1]],
       );
+      const zed = await c.query<{ id: string }>(
+        `insert into public.players (owner_id, name) values ($1,'Zed') returning id`,
+        [userJ],
+      );
       const person = await c.query<{ id: string }>(
-        `insert into public.play_participants (play_id, seat, display_name, total_score, rank, is_winner)
-         values ($1,0,'Zed',5,1,true) returning id`,
-        [play.rows[0].id],
+        `insert into public.play_participants (play_id, seat, player_id, total_score, rank, is_winner)
+         values ($1,0,$2,5,1,true) returning id`,
+        [play.rows[0].id, zed.rows[0].id],
       );
       await c.query(
         `insert into public.play_scores (participant_id, category_key, value) values ($1,'military','5'::jsonb)`,

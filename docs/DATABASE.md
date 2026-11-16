@@ -89,16 +89,23 @@ Idiomas: se muestra el del usuario, luego el inglés y luego cualquiera, con una
 
 Pendiente a propósito: etiquetas personales y fecha de adquisición (sin necesidad real todavía).
 
-## 7. Partidas (MVP: solo del creador)
+## 7. Partidas — implementado en 0010 (Fase 5b)
+Solo del creador; los demás jugadores son nombres libres. Las **registra solo desde la ficha del juego** (sin elemento nuevo en la navegación).
+
 | Tabla | Notas |
 |---|---|
-| `plays` | `created_by text`, `game_id`, `played_at`, `duration_minutes`, `scoring_version_id` (nullable, → `scoring_sheet_versions`, `on delete restrict`), `notes`, `extra jsonb`. |
-| `play_participants` | `play_id`, `display_name` (texto libre), `user_id text null` (reservado para enlazar usuarios en Fase 8; en MVP solo el propio creador), `seat`, `is_winner`, `total_score`, `rank`. |
-| `play_scores` | `participant_id`, `category_key`, `value jsonb`; único (`participant_id`,`category_key`). |
-| `play_expansions` | `play_id`, `game_id`. |
-| `play_photos` | `play_id`, `storage_path`. Bucket privado. |
+| `plays` | `created_by` (por defecto el `sub` del token), `game_id` (visible), `played_on date`, `duration_minutes` (1–1440), `scoring_version_id` (nullable → `scoring_sheet_versions`, FK `no action`; null = totales a mano), `notes` (≤2000). Máx. **5 000 por usuario** (trigger). |
+| `play_participants` | `play_id`, `seat` (0–11, único por partida), `display_name` (1–60), `total_score` (nulo = nada registrado), `rank`, `is_winner`. Máx. **12 por partida**. Sin `user_id` hasta la Fase 8 (añadir una columna nula después es trivial). |
+| `play_scores` | `participant_id`, `category_key` (patrón de clave), `value jsonb` (≤500 bytes); clave primaria (`participant_id`,`category_key`). |
+| `play_expansions` | `play_id`, `game_id` (debe ser una expansión visible). Máx. **20 por partida**. |
 
-Compartir partidas con otros usuarios (enlace pendiente→aceptado) queda para la Fase 8; el esquema lo admite añadiendo `link_status` sin romper datos.
+**Escritura atómica**: `save_play(p jsonb)` (`security invoker`, solo `authenticated`) crea o reemplaza la partida y todos sus hijos en una transacción; con `playId` no cambia ni el juego ni la hoja y da `P0002` si la partida no es visible. **Totales, puestos y ganadores los calcula el servidor** (`features/plays/compute.ts` + el motor de la 5a) y el input los rechaza (esquemas estrictos); el navegador solo los calcula para mostrarlos en vivo.
+
+**Reglas**: gana la puntuación más alta; empates: todos ganan; un jugador sin nada registrado no tiene total ni puesto; si nadie tiene puntuación, no hay ganador. La hoja queda fija al crear la partida (cambiar de hoja = partida nueva); editar recalcula con la versión guardada.
+
+**FK `no action` hacia la versión** (no `restrict`): borrar la cuenta o el juego sigue limpiando en cascada (probado), y borrar una hoja con partidas se rechaza (`23503`; la aplicación lo muestra como «hoja en uso»).
+
+Fotos de partida: Fase 7. Compartir partidas con otros usuarios: Fase 8.
 
 ## 8. Hojas de puntuación — implementado en 0007 y 0008 (Fase 5a)
 Cualquier usuario puede crear hojas (ADR-030). En la Fase 5a **todas son privadas**; publicar, votos y «verificada» llegan en la 5c.
@@ -128,5 +135,5 @@ Vistas/funciones SQL con `security_invoker = true`. Índices: `plays(game_id, pl
 Al borrar la cuenta, `deleteUserData` elimina primero los archivos (las filas se borran en cascada, los archivos no) y después el perfil.
 
 ## 11. Migraciones aplicadas
-`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos) · `20261115230000_library` (biblioteca + `search_library`) · `20261116000000_game_center` (recursos, reglas, imágenes, FAQ) · `20261116100000_scoring_sheets` (hojas y versiones) · `20261116110000_scoring_version_guard` (control de concurrencia de versiones) · `20261116120000_scoring_versions_no_delete` (las versiones no se borran sueltas).
-Pendientes: partidas (5b), publicar/votos/verificada (5c), vistas de estadísticas (6).
+`20261115180000_foundations` (perfiles, roles, RLS) · `20261115200000_catalog` (catálogo, búsqueda, RLS) · `20261115210000_game_photos` (fotos + bucket) · `20261115220000_import_function` (importación atómica + tope de fotos) · `20261115230000_library` (biblioteca + `search_library`) · `20261116000000_game_center` (recursos, reglas, imágenes, FAQ) · `20261116100000_scoring_sheets` (hojas y versiones) · `20261116110000_scoring_version_guard` (control de concurrencia de versiones) · `20261116120000_scoring_versions_no_delete` (las versiones no se borran sueltas) · `20261116130000_plays` (partidas, participantes, puntuaciones, expansiones y `save_play`).
+Pendientes: publicar/votos/verificada (5c), vistas de estadísticas (6).

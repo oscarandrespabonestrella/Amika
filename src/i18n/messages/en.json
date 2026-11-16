@@ -57,7 +57,11 @@
     },
     "language": "Language",
     "languageHint": "Applies to the whole app.",
-    "saveError": "Couldn't save your preference. It still applies on this device."
+    "saveError": "Couldn't save your preference. It still applies on this device.",
+    "recognition": {
+      "title": "Live game recognition",
+      "hint": "Recognize game boxes with your camera. Off by default; it needs a one-time download on each device."
+    }
   },
   "Games": {
     "title": "Games",
@@ -793,6 +797,57 @@
       "unauthenticated": "Your session expired. Please sign in again.",
       "invalid": "Something is wrong with that photo. Try another one.",
       "failed": "Something went wrong. Please try again."
+    },
+    "live": {
+      "title": "Identify a game",
+      "intro": "Point your camera at a game box and the app recognizes it live, or choose a photo.",
+      "scan": "Scan with the camera",
+      "stop": "Stop",
+      "choose": "Choose a photo",
+      "searching": "Looking for a game…",
+      "hint": "Nothing recognized yet. Get closer, hold the box steady and face the front cover.",
+      "idleTimeout": "Scanning stopped because nothing was recognized. Start again when you are ready.",
+      "noGames": "Your catalog has no games with a cover yet, so there is nothing to compare with. Add games first.",
+      "confirm": "This is it",
+      "confirmFor": "This is it: {name}",
+      "notThis": "Not this one",
+      "lowWarning": "Not very sure. Check it is the right box.",
+      "alsoLike": "Also similar: {names}",
+      "confidence": {
+        "high": "High confidence",
+        "medium": "Medium confidence",
+        "low": "Low confidence"
+      },
+      "stage": {
+        "camera": "Starting the camera…",
+        "model": "Loading the recognition engine…",
+        "references": "Preparing your games ({done} of {total})…",
+        "scanning": "Scanning…",
+        "photo": "Analyzing the photo…"
+      },
+      "activation": {
+        "intro": "Live recognition runs entirely on this device. To work, it needs to download a recognition model once.",
+        "warning": "It is a download of about {mb} MB. Use Wi-Fi if you are on mobile data.",
+        "privacy": "The camera image never leaves your device: nothing is uploaded and no external service sees it.",
+        "enable": "Download (~{mb} MB) and enable",
+        "downloading": "Downloading…",
+        "progress": "Downloading… {pct}%",
+        "cancel": "Cancel",
+        "failed": "The download failed. Check your connection and try again."
+      },
+      "settings": {
+        "on": "Live recognition is enabled on this device (about {mb} MB stored).",
+        "remove": "Disable and delete the download"
+      },
+      "errors": {
+        "insecure": "The camera only works over a secure (https) connection.",
+        "no_camera": "No camera was found on this device.",
+        "denied": "Camera access was denied. Allow it in your browser settings, or choose a photo instead.",
+        "no_wasm": "This browser cannot run the recognition engine.",
+        "not_installed": "The recognition model is not installed. Enable it again.",
+        "model_failed": "The recognition engine could not start. Try again.",
+        "failed": "Something went wrong. Please try again."
+      }
     }
   }
 }

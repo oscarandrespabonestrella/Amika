@@ -57,7 +57,11 @@
     },
     "language": "Langue",
     "languageHint": "S'applique à toute l'application.",
-    "saveError": "Impossible d'enregistrer votre préférence. Elle reste appliquée sur cet appareil."
+    "saveError": "Impossible d'enregistrer votre préférence. Elle reste appliquée sur cet appareil.",
+    "recognition": {
+      "title": "Reconnaissance de jeux en direct",
+      "hint": "Reconnaissez des boîtes de jeux avec votre caméra. Désactivé par défaut ; un téléchargement unique est nécessaire sur chaque appareil."
+    }
   },
   "Games": {
     "title": "Jeux",
@@ -793,6 +797,57 @@
       "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
       "invalid": "Un problème avec cette photo. Essayez-en une autre.",
       "failed": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "live": {
+      "title": "Identifier un jeu",
+      "intro": "Pointez la caméra vers une boîte de jeu et l'app la reconnaît en direct, ou choisissez une photo.",
+      "scan": "Scanner avec la caméra",
+      "stop": "Arrêter",
+      "choose": "Choisir une photo",
+      "searching": "Recherche d'un jeu…",
+      "hint": "Rien de reconnu pour l'instant. Rapprochez-vous, tenez la boîte stable et montrez la face avant.",
+      "idleTimeout": "Le scan s'est arrêté car rien n'a été reconnu. Relancez-le quand vous voulez.",
+      "noGames": "Votre catalogue n'a pas encore de jeux avec une couverture, il n'y a donc rien à comparer. Ajoutez d'abord des jeux.",
+      "confirm": "C'est celui-là",
+      "confirmFor": "C'est celui-là : {name}",
+      "notThis": "Pas celui-là",
+      "lowWarning": "Pas très sûr. Vérifiez que c'est la bonne boîte.",
+      "alsoLike": "Ressemble aussi à : {names}",
+      "confidence": {
+        "high": "Confiance élevée",
+        "medium": "Confiance moyenne",
+        "low": "Confiance faible"
+      },
+      "stage": {
+        "camera": "Démarrage de la caméra…",
+        "model": "Chargement du moteur de reconnaissance…",
+        "references": "Préparation de vos jeux ({done} sur {total})…",
+        "scanning": "Scan en cours…",
+        "photo": "Analyse de la photo…"
+      },
+      "activation": {
+        "intro": "La reconnaissance en direct fonctionne entièrement sur cet appareil. Pour cela, elle doit télécharger une seule fois un modèle de reconnaissance.",
+        "warning": "Il s'agit d'un téléchargement d'environ {mb} Mo. Utilisez le Wi-Fi si vous êtes en données mobiles.",
+        "privacy": "L'image de la caméra ne quitte jamais votre appareil : rien n'est envoyé et aucun service externe ne la voit.",
+        "enable": "Télécharger (~{mb} Mo) et activer",
+        "downloading": "Téléchargement…",
+        "progress": "Téléchargement… {pct} %",
+        "cancel": "Annuler",
+        "failed": "Le téléchargement a échoué. Vérifiez votre connexion et réessayez."
+      },
+      "settings": {
+        "on": "La reconnaissance en direct est activée sur cet appareil (environ {mb} Mo stockés).",
+        "remove": "Désactiver et supprimer le téléchargement"
+      },
+      "errors": {
+        "insecure": "La caméra ne fonctionne qu'avec une connexion sécurisée (https).",
+        "no_camera": "Aucune caméra n'a été trouvée sur cet appareil.",
+        "denied": "L'accès à la caméra a été refusé. Autorisez-le dans les réglages du navigateur ou choisissez une photo.",
+        "no_wasm": "Ce navigateur ne peut pas exécuter le moteur de reconnaissance.",
+        "not_installed": "Le modèle de reconnaissance n'est pas installé. Réactivez-le.",
+        "model_failed": "Le moteur de reconnaissance n'a pas pu démarrer. Réessayez.",
+        "failed": "Une erreur s'est produite. Veuillez réessayer."
+      }
     }
   }
 }

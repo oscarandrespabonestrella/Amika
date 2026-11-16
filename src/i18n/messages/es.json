@@ -57,7 +57,11 @@
     },
     "language": "Idioma",
     "languageHint": "Se aplica a toda la aplicación.",
-    "saveError": "No se pudo guardar tu preferencia. Se sigue aplicando en este dispositivo."
+    "saveError": "No se pudo guardar tu preferencia. Se sigue aplicando en este dispositivo.",
+    "recognition": {
+      "title": "Reconocimiento de juegos en vivo",
+      "hint": "Reconoce cajas de juegos con tu cámara. Desactivado por defecto; requiere una descarga única en cada dispositivo."
+    }
   },
   "Games": {
     "title": "Juegos",
@@ -793,6 +797,57 @@
       "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
       "invalid": "Algo falla con esa foto. Prueba con otra.",
       "failed": "Algo ha salido mal. Inténtalo de nuevo."
+    },
+    "live": {
+      "title": "Identificar un juego",
+      "intro": "Apunta la cámara a la caja de un juego y la app lo reconoce en vivo, o elige una foto.",
+      "scan": "Escanear con la cámara",
+      "stop": "Detener",
+      "choose": "Elegir una foto",
+      "searching": "Buscando un juego…",
+      "hint": "Aún no se reconoce nada. Acércate, mantén la caja quieta y muestra la portada.",
+      "idleTimeout": "El escaneo se detuvo porque no se reconoció nada. Vuelve a empezar cuando quieras.",
+      "noGames": "Tu catálogo aún no tiene juegos con portada, así que no hay con qué comparar. Añade juegos primero.",
+      "confirm": "Es este",
+      "confirmFor": "Es este: {name}",
+      "notThis": "No es este",
+      "lowWarning": "No estoy muy seguro. Comprueba que sea la caja correcta.",
+      "alsoLike": "También se parece a: {names}",
+      "confidence": {
+        "high": "Confianza alta",
+        "medium": "Confianza media",
+        "low": "Confianza baja"
+      },
+      "stage": {
+        "camera": "Iniciando la cámara…",
+        "model": "Cargando el motor de reconocimiento…",
+        "references": "Preparando tus juegos ({done} de {total})…",
+        "scanning": "Escaneando…",
+        "photo": "Analizando la foto…"
+      },
+      "activation": {
+        "intro": "El reconocimiento en vivo funciona por completo en este dispositivo. Para ello necesita descargar un modelo de reconocimiento una sola vez.",
+        "warning": "Es una descarga de unos {mb} MB. Usa Wi-Fi si estás con datos móviles.",
+        "privacy": "La imagen de la cámara nunca sale de tu dispositivo: no se sube nada ni la ve ningún servicio externo.",
+        "enable": "Descargar (~{mb} MB) y activar",
+        "downloading": "Descargando…",
+        "progress": "Descargando… {pct} %",
+        "cancel": "Cancelar",
+        "failed": "La descarga falló. Revisa tu conexión e inténtalo de nuevo."
+      },
+      "settings": {
+        "on": "El reconocimiento en vivo está activado en este dispositivo (unos {mb} MB almacenados).",
+        "remove": "Desactivar y borrar la descarga"
+      },
+      "errors": {
+        "insecure": "La cámara solo funciona con una conexión segura (https).",
+        "no_camera": "No se encontró ninguna cámara en este dispositivo.",
+        "denied": "Se denegó el acceso a la cámara. Permítelo en los ajustes del navegador o elige una foto.",
+        "no_wasm": "Este navegador no puede ejecutar el motor de reconocimiento.",
+        "not_installed": "El modelo de reconocimiento no está instalado. Vuelve a activarlo.",
+        "model_failed": "No se pudo iniciar el motor de reconocimiento. Inténtalo de nuevo.",
+        "failed": "Algo salió mal. Inténtalo de nuevo."
+      }
     }
   }
 }

@@ -28,6 +28,41 @@ export function dHashFromGray(gray: ArrayLike<number>): string {
   return bits.toString(16).padStart(16, "0");
 }
 
+/**
+ * Box-averages a width x height grayscale image into the 9x8 grid that
+ * `dHashFromGray` expects. Browser and server both call this on their own decoded
+ * pixels, so the two hashes of one picture differ only by resampling noise. Cell edges
+ * are proportional; every cell covers at least one pixel (tiny images are fine).
+ */
+export function grayGrid(
+  gray: ArrayLike<number>,
+  width: number,
+  height: number,
+): number[] {
+  if (!(width > 0 && height > 0) || gray.length !== width * height)
+    throw new Error("gray does not match width x height");
+  const out: number[] = [];
+  for (let cy = 0; cy < HASH_HEIGHT; cy++) {
+    const y0 = Math.min(height - 1, Math.floor((cy * height) / HASH_HEIGHT));
+    const y1 = Math.min(
+      height,
+      Math.max(y0 + 1, Math.floor(((cy + 1) * height) / HASH_HEIGHT)),
+    );
+    for (let cx = 0; cx < HASH_WIDTH; cx++) {
+      const x0 = Math.min(width - 1, Math.floor((cx * width) / HASH_WIDTH));
+      const x1 = Math.min(
+        width,
+        Math.max(x0 + 1, Math.floor(((cx + 1) * width) / HASH_WIDTH)),
+      );
+      let sum = 0;
+      for (let y = y0; y < y1; y++)
+        for (let x = x0; x < x1; x++) sum += gray[y * width + x];
+      out.push(sum / ((y1 - y0) * (x1 - x0)));
+    }
+  }
+  return out;
+}
+
 /** Number of differing bits between two hashes (0–64). Throws on malformed input. */
 export function hamming(a: string, b: string): number {
   if (!isHash(a) || !isHash(b)) throw new Error("malformed hash");

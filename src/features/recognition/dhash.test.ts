@@ -3,6 +3,7 @@ import {
   HASH_HEIGHT,
   HASH_WIDTH,
   dHashFromGray,
+  grayGrid,
   hamming,
   isHash,
 } from "./dhash";
@@ -38,6 +39,39 @@ describe("dHashFromGray", () => {
 
   it("rejects an input of the wrong size", () => {
     expect(() => dHashFromGray([1, 2, 3])).toThrow();
+  });
+});
+
+describe("grayGrid", () => {
+  it("keeps a constant image constant", () => {
+    const grid = grayGrid(new Array(90 * 80).fill(100), 90, 80);
+    expect(grid).toHaveLength(HASH_WIDTH * HASH_HEIGHT);
+    expect(new Set(grid)).toEqual(new Set([100]));
+  });
+
+  it("averages each cell over its own region", () => {
+    // 90x80: left 45 columns black, right 45 white. Each cell is 10 px wide.
+    const gray = new Array(90 * 80);
+    for (let y = 0; y < 80; y++)
+      for (let x = 0; x < 90; x++) gray[y * 90 + x] = x < 45 ? 0 : 255;
+    const grid = grayGrid(gray, 90, 80);
+    for (let row = 0; row < HASH_HEIGHT; row++) {
+      const cells = grid.slice(row * HASH_WIDTH, (row + 1) * HASH_WIDTH);
+      expect(cells.slice(0, 4)).toEqual([0, 0, 0, 0]);
+      expect(cells[4]).toBeCloseTo(127.5, 5);
+      expect(cells.slice(5)).toEqual([255, 255, 255, 255]);
+    }
+  });
+
+  it("copes with images smaller than the grid (no NaN, no holes)", () => {
+    const grid = grayGrid([10, 20, 30, 40, 50, 60], 3, 2);
+    expect(grid).toHaveLength(72);
+    expect(grid.every((v) => Number.isFinite(v))).toBe(true);
+  });
+
+  it("rejects a buffer whose size does not match the dimensions", () => {
+    expect(() => grayGrid([1, 2, 3], 2, 2)).toThrow();
+    expect(() => grayGrid([], 0, 0)).toThrow();
   });
 });
 

@@ -56,6 +56,8 @@ Al crear una partida, la hoja por defecto es: **verificada** → si no hay, la d
 
 ## 8. Partidas
 Crear, ver, editar y borrar las propias. Una partida sin hoja es válida: un único total manual por participante (decisión mía, para juegos sin hoja aún). Participantes con nombre libre (máx. 12), orden de asiento, notas ≤ 2 000, duración, fecha, expansiones del juego base. Edición de una partida recalcula con la versión que usó. Al terminar con hoja, se ofrece 👍/aviso.
+**Entrada (decisión del usuario, 2026-11-16)**: las partidas se registran **solo desde la ficha del juego** (botón «Registrar partida» y su historial en la propia ficha); no hay elemento nuevo en la navegación principal.
+**Decisiones mías para la 5b** (ajustables): la hoja de una partida queda fija tras crearla (cambiar de hoja = partida nueva); gana la puntuación más alta (empates: todos ganan); si nadie tiene puntuación registrada no hay ganador; se guarda de forma atómica con una función SQL; la FK a la versión es `no action` (no `restrict`) para que borrar cuenta o juego siga limpiando en cascada, y borrar una hoja con partidas da un aviso claro.
 UI en en/es/fr; etiquetas de categoría en el idioma de la hoja (texto del usuario, sin traducción automática). Móvil primero: entrada de puntos por jugador con totales en vivo, objetivos táctiles ≥ 44 px, accesible por teclado.
 
 ## 9. Entregas y criterio de «hecho»

@@ -12,7 +12,7 @@
 | 4 | Game Center | Reglas (en + idiomas disponibles), FAQ, vídeos, galería, expansiones |
 | 5 | Partidas y puntuación | Registrar partida con config versionada y participantes por nombre |
 | 6 | Estadísticas | Personales y por juego, gráficos |
-| 7 | IA | Identificar juego por foto (visión → nombre → búsqueda), lectura de hojas |
+| 7 | IA local | **7a** identificar juego por foto en el dispositivo (OCR, código de barras, hash de imagen; `docs/superpowers/specs/2026-11-16-fase7a-identificar-juego-design.md`) · **7b** lectura de hojas (pendiente) · IA externa opcional, apagada por defecto |
 | 8 | Comunidad | Partidas compartidas con usuarios, amigos, grupos, admin avanzado |
 | 9 | Producción | Auditoría, a11y, rendimiento, monitorización, legal, despliegue |
 

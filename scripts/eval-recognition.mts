@@ -14,6 +14,7 @@
  * and `supabase link`. BoardGameGeek is never called (the test is about the local part).
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { extname, join } from "node:path";
 import pg from "pg";
 import sharp from "sharp";
@@ -99,6 +100,7 @@ async function readTitleLines(file: Buffer): Promise<string[]> {
   const { createWorker } = await import("tesseract.js");
   const worker = await createWorker(langs, 1, {
     langPath: "public/tesseract/lang",
+    cachePath: tmpdir(), // keep the language-data cache out of the repository,
   });
   try {
     const png = await (await resized(file)).png().toBuffer();

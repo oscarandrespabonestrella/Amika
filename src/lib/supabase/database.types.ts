@@ -565,28 +565,28 @@ export type Database = {
       };
       play_participants: {
         Row: {
-          display_name: string;
           id: string;
           is_winner: boolean;
           play_id: string;
+          player_id: string;
           rank: number | null;
           seat: number;
           total_score: number | null;
         };
         Insert: {
-          display_name: string;
           id?: string;
           is_winner?: boolean;
           play_id: string;
+          player_id: string;
           rank?: number | null;
           seat: number;
           total_score?: number | null;
         };
         Update: {
-          display_name?: string;
           id?: string;
           is_winner?: boolean;
           play_id?: string;
+          player_id?: string;
           rank?: number | null;
           seat?: number;
           total_score?: number | null;
@@ -597,6 +597,13 @@ export type Database = {
             columns: ["play_id"];
             isOneToOne: false;
             referencedRelation: "plays";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "play_participants_player_fkey";
+            columns: ["player_id"];
+            isOneToOne: false;
+            referencedRelation: "players";
             referencedColumns: ["id"];
           },
         ];
@@ -623,6 +630,48 @@ export type Database = {
             columns: ["participant_id"];
             isOneToOne: false;
             referencedRelation: "play_participants";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      players: {
+        Row: {
+          created_at: string;
+          id: string;
+          linked_user_id: string | null;
+          name: string;
+          owner_id: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          linked_user_id?: string | null;
+          name: string;
+          owner_id?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          linked_user_id?: string | null;
+          name?: string;
+          owner_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "players_linked_user_id_fkey";
+            columns: ["linked_user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "players_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];
@@ -1032,6 +1081,11 @@ export type Database = {
       f_unaccent: { Args: { "": string }; Returns: string };
       i_use_sheet: { Args: { p_sheet: string }; Returns: boolean };
       is_admin: { Args: never; Returns: boolean };
+      merge_players: {
+        Args: { p_keep: string; p_remove: string };
+        Returns: undefined;
+      };
+      normalize_player_name: { Args: { p: string }; Returns: string };
       save_play: { Args: { p: Json }; Returns: string };
       search_games: {
         Args: {

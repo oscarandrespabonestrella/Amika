@@ -15,6 +15,9 @@ const P_A = "00000000-0000-4000-8000-0000000000f1"; // A's play (uses V_A, expan
 const P_B = "00000000-0000-4000-8000-0000000000f2"; // B's play
 const PP_A = "00000000-0000-4000-8000-0000000000a1";
 const PP_B = "00000000-0000-4000-8000-0000000000a2";
+const PL_A = "00000000-0000-4000-8000-0000000000b1"; // A's player "Ana"
+const PL_B = "00000000-0000-4000-8000-0000000000b2"; // B's player "Bo"
+const PL_S = "00000000-0000-4000-8000-0000000000b3"; // A's spare player
 const DEF = JSON.stringify({
   schemaVersion: 1,
   categories: [{ key: "military", label: "M", type: "number", scoring: true }],
@@ -46,9 +49,14 @@ async function fixtures(c: Client) {
     [P_A, P_B, A, B, G1, V_A],
   );
   await c.query(
-    `insert into public.play_participants (id, play_id, seat, display_name, total_score, rank, is_winner) values
-       ($1,$3,0,'Ana',5,1,true), ($2,$4,0,'Bo',null,null,false)`,
-    [PP_A, PP_B, P_A, P_B],
+    `insert into public.players (id, owner_id, name) values
+       ($1,$4,'Ana'), ($2,$5,'Bo'), ($3,$4,'Spare')`,
+    [PL_A, PL_B, PL_S, A, B],
+  );
+  await c.query(
+    `insert into public.play_participants (id, play_id, seat, player_id, total_score, rank, is_winner) values
+       ($1,$3,0,$5,5,1,true), ($2,$4,0,$6,null,null,false)`,
+    [PP_A, PP_B, P_A, P_B, PL_A, PL_B],
   );
   await c.query(
     `insert into public.play_scores (participant_id, category_key, value) values ($1,'military','5'::jsonb)`,
@@ -221,8 +229,9 @@ describe.skipIf(!hasDb)("save_play", () => {
         play,
         people: (
           await c.query(
-            `select seat, display_name, total_score, rank, is_winner
-               from public.play_participants where play_id = $1 order by seat`,
+            `select pp.seat, pl.name as display_name, pp.total_score, pp.rank, pp.is_winner
+               from public.play_participants pp join public.players pl on pl.id = pp.player_id
+              where pp.play_id = $1 order by pp.seat`,
             [id],
           )
         ).rows,
@@ -325,7 +334,8 @@ describe.skipIf(!hasDb)("save_play", () => {
         ).rows[0],
         people: (
           await c.query(
-            `select display_name from public.play_participants where play_id = $1`,
+            `select pl.name as display_name from public.play_participants pp
+               join public.players pl on pl.id = pp.player_id where pp.play_id = $1`,
             [id],
           )
         ).rows,
@@ -362,28 +372,24 @@ describe.skipIf(!hasDb)("play constraints and caps", () => {
   const insertPerson = (extra: string, params: unknown[]) => (c: Client) =>
     pgErrorCode(
       c.query(
-        `insert into public.play_participants (play_id, seat, display_name, total_score, rank) values ${extra}`,
+        `insert into public.play_participants (play_id, seat, player_id, total_score, rank) values ${extra}`,
         params,
       ),
     );
 
-  it("seat, name, total and rank are range-checked (23514)", async () => {
-    expect(await asA(insertPerson(`($1,12,'x',null,null)`, [P_A]))).toBe(
+  it("seat, total and rank are range-checked (23514)", async () => {
+    expect(await asA(insertPerson(`($1,12,$2,null,null)`, [P_A, PL_S]))).toBe(
       "23514",
     );
-    expect(await asA(insertPerson(`($1,1,'',null,null)`, [P_A]))).toBe("23514");
     expect(
-      await asA(insertPerson(`($1,1,$2,null,null)`, [P_A, "x".repeat(61)])),
+      await asA(insertPerson(`($1,1,$2,2000000000,null)`, [P_A, PL_S])),
     ).toBe("23514");
-    expect(await asA(insertPerson(`($1,1,'x',2000000000,null)`, [P_A]))).toBe(
-      "23514",
-    );
-    expect(await asA(insertPerson(`($1,1,'x',1,0)`, [P_A]))).toBe("23514");
-    expect(await asA(insertPerson(`($1,1,'x',1,1)`, [P_A]))).toBeNull();
+    expect(await asA(insertPerson(`($1,1,$2,1,0)`, [P_A, PL_S]))).toBe("23514");
+    expect(await asA(insertPerson(`($1,1,$2,1,1)`, [P_A, PL_S]))).toBeNull();
   });
 
   it("a duplicate seat is refused (23505)", async () => {
-    expect(await asA(insertPerson(`($1,0,'dup',null,null)`, [P_A]))).toBe(
+    expect(await asA(insertPerson(`($1,0,$2,null,null)`, [P_A, PL_S]))).toBe(
       "23505",
     );
   });
@@ -406,7 +412,7 @@ describe.skipIf(!hasDb)("play constraints and caps", () => {
   });
 
   it("a user cannot write children of someone else's play", async () => {
-    expect(await asA(insertPerson(`($1,5,'sneaky',null,null)`, [P_B]))).toBe(
+    expect(await asA(insertPerson(`($1,5,$2,null,null)`, [P_B, PL_S]))).toBe(
       "42501",
     );
   });
@@ -415,12 +421,17 @@ describe.skipIf(!hasDb)("play constraints and caps", () => {
     // 12 people already (seats 0..11); the 13th has to reuse a seat. The cap trigger
     // fires before the unique index, so the answer is the cap, not 23505.
     const code = await asA(
-      insertPerson(`($1,11,'thirteen',null,null)`, [P_A]),
+      insertPerson(`($1,11,$2,null,null)`, [P_A, PL_S]),
       async (c) => {
         await c.query(
-          `insert into public.play_participants (play_id, seat, display_name)
-         select $1, g, 'p' || g from generate_series(1, 11) g`,
-          [P_A],
+          `insert into public.players (owner_id, name) select $1, 'p' || g from generate_series(1, 11) g`,
+          [A],
+        );
+        await c.query(
+          `insert into public.play_participants (play_id, seat, player_id)
+           select $1, (row_number() over (order by name))::int, id
+             from public.players where owner_id = $2 and name like 'p%'`,
+          [P_A, A],
         );
       },
     );

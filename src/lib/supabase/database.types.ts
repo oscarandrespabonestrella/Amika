@@ -1079,11 +1079,73 @@ export type Database = {
       };
       current_user_id: { Args: never; Returns: string };
       f_unaccent: { Args: { "": string }; Returns: string };
+      game_score_series: {
+        Args: { p_game_id: string; p_limit?: number };
+        Returns: {
+          name: string;
+          play_id: string;
+          played_on: string;
+          player_id: string;
+          seq: number;
+          total: number;
+        }[];
+      };
+      game_stats: {
+        Args: { p_game_id: string };
+        Returns: {
+          avg_score: number;
+          best_score: number;
+          name: string;
+          player_id: string;
+          plays: number;
+          scored_plays: number;
+          wins: number;
+        }[];
+      };
+      game_summary: {
+        Args: { p_game_id: string };
+        Returns: {
+          avg_duration_minutes: number;
+          first_played_on: string;
+          last_played_on: string;
+          plays: number;
+        }[];
+      };
+      head_to_head: {
+        Args: never;
+        Returns: {
+          my_wins: number;
+          name: string;
+          player_id: string;
+          plays_together: number;
+          their_wins: number;
+          ties: number;
+        }[];
+      };
       i_use_sheet: { Args: { p_sheet: string }; Returns: boolean };
       is_admin: { Args: never; Returns: boolean };
       merge_players: {
         Args: { p_keep: string; p_remove: string };
         Returns: undefined;
+      };
+      my_overview: {
+        Args: never;
+        Returns: {
+          games_played: number;
+          me_player_id: string;
+          plays: number;
+          scored_plays: number;
+          wins: number;
+        }[];
+      };
+      my_top_games: {
+        Args: { p_limit?: number };
+        Returns: {
+          game_id: string;
+          name: string;
+          plays: number;
+          wins: number;
+        }[];
       };
       normalize_player_name: { Args: { p: string }; Returns: string };
       save_play: { Args: { p: Json }; Returns: string };

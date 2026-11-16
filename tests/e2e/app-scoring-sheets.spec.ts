@@ -14,8 +14,8 @@ test.skip(!canRunAppTests, "Clerk keys / database not configured");
 test.use({ storageState: STATE_FILE.g });
 test.describe.configure({ mode: "serial" });
 
-// Own reserved id range (other specs clean up "9900…" and "9901…").
-const PREFIX = "9902";
+// Own reserved id range: other specs use 9900 (games), 9901 (library), 9902 (game center).
+const PREFIX = "9903";
 const GAME_NAME = "Wonders Sheets E2E";
 
 let userG: string;

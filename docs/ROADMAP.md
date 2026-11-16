@@ -82,7 +82,7 @@ Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.m
 | Lista de hojas por juego, copiar, borrar, entrada desde la ficha | Hecho |
 | Editor de formulario con vista previa en vivo, versiones, conflicto entre pestañas | Hecho |
 | Publicar, votos, verificada | **Fase 5c** |
-| Pruebas | 302 unitarias, 100 RLS/SQL, 148 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) — **cifras a confirmar tras la ejecución completa** |
+| Pruebas | 302 unitarias, 100 RLS/SQL, 141 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
 
 ## Estado de la Fase 4 (actualizado 2026-11-16)
 | Entrega | Estado |

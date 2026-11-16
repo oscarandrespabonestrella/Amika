@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ZodConfig } from "@/components/zod-config";
 import { type AppLocale, routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -51,6 +52,7 @@ export default async function LocaleLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full`}
     >
       <body className="min-h-full">
+        <ZodConfig />
         <ClerkProvider
           localization={CLERK_LOCALIZATIONS[locale]}
           appearance={{ theme: shadcn }}

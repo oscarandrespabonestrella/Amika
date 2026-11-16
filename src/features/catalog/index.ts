@@ -22,6 +22,7 @@ export type {
   ImportResult,
   SearchHit,
 } from "./services/import-service";
+export { searchExternalGames } from "./services/import-service";
 export { searchLocalGames } from "./services/search-service";
 export { getGameSource } from "./sources";
 export type { GameKind, GameSummary, TermType } from "./types";

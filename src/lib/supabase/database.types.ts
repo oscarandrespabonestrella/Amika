@@ -533,6 +533,158 @@ export type Database = {
           },
         ];
       };
+      play_expansions: {
+        Row: {
+          game_id: string;
+          play_id: string;
+        };
+        Insert: {
+          game_id: string;
+          play_id: string;
+        };
+        Update: {
+          game_id?: string;
+          play_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "play_expansions_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "play_expansions_play_id_fkey";
+            columns: ["play_id"];
+            isOneToOne: false;
+            referencedRelation: "plays";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      play_participants: {
+        Row: {
+          display_name: string;
+          id: string;
+          is_winner: boolean;
+          play_id: string;
+          rank: number | null;
+          seat: number;
+          total_score: number | null;
+        };
+        Insert: {
+          display_name: string;
+          id?: string;
+          is_winner?: boolean;
+          play_id: string;
+          rank?: number | null;
+          seat: number;
+          total_score?: number | null;
+        };
+        Update: {
+          display_name?: string;
+          id?: string;
+          is_winner?: boolean;
+          play_id?: string;
+          rank?: number | null;
+          seat?: number;
+          total_score?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "play_participants_play_id_fkey";
+            columns: ["play_id"];
+            isOneToOne: false;
+            referencedRelation: "plays";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      play_scores: {
+        Row: {
+          category_key: string;
+          participant_id: string;
+          value: Json;
+        };
+        Insert: {
+          category_key: string;
+          participant_id: string;
+          value: Json;
+        };
+        Update: {
+          category_key?: string;
+          participant_id?: string;
+          value?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "play_scores_participant_id_fkey";
+            columns: ["participant_id"];
+            isOneToOne: false;
+            referencedRelation: "play_participants";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      plays: {
+        Row: {
+          created_at: string;
+          created_by: string;
+          duration_minutes: number | null;
+          game_id: string;
+          id: string;
+          notes: string | null;
+          played_on: string;
+          scoring_version_id: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string;
+          duration_minutes?: number | null;
+          game_id: string;
+          id?: string;
+          notes?: string | null;
+          played_on?: string;
+          scoring_version_id?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string;
+          duration_minutes?: number | null;
+          game_id?: string;
+          id?: string;
+          notes?: string | null;
+          played_on?: string;
+          scoring_version_id?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "plays_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "plays_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "plays_scoring_version_id_fkey";
+            columns: ["scoring_version_id"];
+            isOneToOne: false;
+            referencedRelation: "scoring_sheet_versions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_path: string | null;
@@ -779,6 +931,7 @@ export type Database = {
       current_user_id: { Args: never; Returns: string };
       f_unaccent: { Args: { "": string }; Returns: string };
       is_admin: { Args: never; Returns: boolean };
+      save_play: { Args: { p: Json }; Returns: string };
       search_games: {
         Args: {
           p_kind?: string;

@@ -368,6 +368,35 @@
     }
   },
   "Scoring": {
-    "copySuffix": "(copy)"
+    "copySuffix": "(copy)",
+    "title": "Score sheets",
+    "subtitle": "Score pads for {game}. Only you can see your sheets.",
+    "back": "Back to {game}",
+    "new": "New sheet",
+    "empty": {
+      "title": "No score sheets yet",
+      "description": "Build a sheet with the categories this game scores and the totals add up for you."
+    },
+    "version": "Version {n}",
+    "copy": "Copy",
+    "copying": "Copying…",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this sheet and all its versions?",
+    "deleteYes": "Yes, delete",
+    "deleteNo": "Keep it",
+    "listLabel": "Your score sheets",
+    "panel": {
+      "title": "Score sheets",
+      "count": "{count, plural, =0 {No sheets yet} one {# sheet} other {# sheets}}",
+      "open": "Open score sheets"
+    },
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "invalid": "That isn't valid. Please check the sheet.",
+      "not_found": "That sheet isn't available.",
+      "conflict": "The sheet changed somewhere else. Reload to continue.",
+      "limit": "You reached the limit of sheets or versions for this game.",
+      "failed": "Something went wrong. Please try again."
+    }
   }
 }

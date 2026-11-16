@@ -368,6 +368,35 @@
     }
   },
   "Scoring": {
-    "copySuffix": "(copia)"
+    "copySuffix": "(copia)",
+    "title": "Hojas de puntuación",
+    "subtitle": "Hojas de puntuación para {game}. Solo tú ves tus hojas.",
+    "back": "Volver a {game}",
+    "new": "Nueva hoja",
+    "empty": {
+      "title": "Aún no hay hojas de puntuación",
+      "description": "Crea una hoja con las categorías que puntúa este juego y los totales se calculan solos."
+    },
+    "version": "Versión {n}",
+    "copy": "Copiar",
+    "copying": "Copiando…",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar esta hoja y todas sus versiones?",
+    "deleteYes": "Sí, eliminar",
+    "deleteNo": "Conservar",
+    "listLabel": "Tus hojas de puntuación",
+    "panel": {
+      "title": "Hojas de puntuación",
+      "count": "{count, plural, =0 {Aún no hay hojas} one {# hoja} other {# hojas}}",
+      "open": "Abrir hojas de puntuación"
+    },
+    "errors": {
+      "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+      "invalid": "Eso no es válido. Revisa la hoja.",
+      "not_found": "Esa hoja no está disponible.",
+      "conflict": "La hoja ha cambiado en otro sitio. Recarga para continuar.",
+      "limit": "Has alcanzado el límite de hojas o versiones para este juego.",
+      "failed": "Algo ha salido mal. Inténtalo de nuevo."
+    }
   }
 }

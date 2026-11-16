@@ -368,6 +368,35 @@
     }
   },
   "Scoring": {
-    "copySuffix": "(copie)"
+    "copySuffix": "(copie)",
+    "title": "Feuilles de score",
+    "subtitle": "Feuilles de score pour {game}. Vous seul voyez vos feuilles.",
+    "back": "Retour à {game}",
+    "new": "Nouvelle feuille",
+    "empty": {
+      "title": "Aucune feuille de score pour l'instant",
+      "description": "Créez une feuille avec les catégories que ce jeu compte et les totaux se calculent tout seuls."
+    },
+    "version": "Version {n}",
+    "copy": "Copier",
+    "copying": "Copie…",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer cette feuille et toutes ses versions ?",
+    "deleteYes": "Oui, supprimer",
+    "deleteNo": "La garder",
+    "listLabel": "Vos feuilles de score",
+    "panel": {
+      "title": "Feuilles de score",
+      "count": "{count, plural, =0 {Aucune feuille} one {# feuille} other {# feuilles}}",
+      "open": "Ouvrir les feuilles de score"
+    },
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
+      "invalid": "Ce n'est pas valide. Vérifiez la feuille.",
+      "not_found": "Cette feuille n'est pas disponible.",
+      "conflict": "La feuille a changé ailleurs. Rechargez pour continuer.",
+      "limit": "Vous avez atteint la limite de feuilles ou de versions pour ce jeu.",
+      "failed": "Une erreur est survenue. Réessayez."
+    }
   }
 }

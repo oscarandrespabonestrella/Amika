@@ -16,3 +16,5 @@ export {
   type SheetDetail,
   type SheetSummary,
 } from "./services/sheet-service";
+export { SheetsLink } from "./components/sheets-link";
+export { SheetsList } from "./components/sheets-list";

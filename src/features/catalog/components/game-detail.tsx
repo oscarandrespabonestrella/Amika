@@ -16,6 +16,8 @@ type Props = {
   libraryPanel?: ReactNode;
   /** Slot for rules, videos, FAQ and gallery (owned by the game-center module). */
   gameCenter?: ReactNode;
+  /** Slot for the user's score sheets (owned by the scoring module). */
+  scoringPanel?: ReactNode;
   /** Whether adding a game from the external source is possible right now. */
   bggAvailable?: boolean;
 };
@@ -24,6 +26,7 @@ export function GameDetailView({
   game,
   libraryPanel,
   gameCenter,
+  scoringPanel,
   bggAvailable = false,
 }: Props) {
   const t = useTranslations("Game");
@@ -111,6 +114,7 @@ export function GameDetailView({
       {/* Only the owner can see a custom game, so "custom" implies "yours". */}
       {game.isCustom && <OwnerActions gameId={game.id} />}
       {libraryPanel}
+      {scoringPanel}
 
       <section
         aria-labelledby="description-title"

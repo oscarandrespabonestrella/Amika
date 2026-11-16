@@ -46,7 +46,6 @@ export function WinsChart({ data }: { data: WinsDatum[] }) {
       <figcaption className="text-sm font-medium">{t("winsTitle")}</figcaption>
       <ChartContainer
         config={config}
-        aria-label={t("winsTitle")}
         className="w-full"
         style={{ height: data.length * ROW_PX + 32 }}
       >

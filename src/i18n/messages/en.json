@@ -694,6 +694,21 @@
       "tablePlayer": "Player",
       "tableScored": "Scored matches",
       "tableDate": "Date"
+    },
+    "game": {
+      "title": "Statistics",
+      "matches": "Matches",
+      "avgDuration": "Average duration",
+      "lastPlayed": "Last played",
+      "minutes": "{n} min",
+      "tableCaption": "Statistics by player",
+      "player": "Player",
+      "matchesCol": "Matches",
+      "wins": "Wins",
+      "winRate": "Win rate",
+      "average": "Average",
+      "best": "Best",
+      "chartsNote": "Charts show the {n} most frequent players; the table lists everyone."
     }
   }
 }

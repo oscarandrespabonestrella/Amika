@@ -10,6 +10,7 @@ import {
 import { GameCenter, getGameCenter } from "@/features/game-center";
 import { getLibraryItem, LibraryPanel } from "@/features/library";
 import { listPlaysForGame, PlaysPanel } from "@/features/plays";
+import { GameStatsPanel, getGameStats } from "@/features/stats";
 import { listSheetsForGame, SheetsLink } from "@/features/scoring";
 
 export default async function GamePage({
@@ -20,11 +21,12 @@ export default async function GamePage({
   setRequestLocale(locale);
 
   const { userId } = await auth();
-  const [game, item, sheets, plays] = await Promise.all([
+  const [game, item, sheets, plays, stats] = await Promise.all([
     getGameDetail(id, locale),
     getLibraryItem(id),
     listSheetsForGame(id),
     listPlaysForGame(id),
+    getGameStats(id),
   ]);
   if (!game) notFound();
 
@@ -42,6 +44,7 @@ export default async function GamePage({
       gameCenter={center && <GameCenter gameId={game.id} data={center} />}
       scoringPanel={<SheetsLink gameId={game.id} count={sheets.length} />}
       playsPanel={<PlaysPanel gameId={game.id} plays={plays} />}
+      statsPanel={<GameStatsPanel data={stats} />}
     />
   );
 }

@@ -20,6 +20,8 @@ type Props = {
   scoringPanel?: ReactNode;
   /** Slot for the user's matches of this game (owned by the plays module). */
   playsPanel?: ReactNode;
+  /** Slot for the user's statistics of this game (owned by the stats module). */
+  statsPanel?: ReactNode;
   /** Whether adding a game from the external source is possible right now. */
   bggAvailable?: boolean;
 };
@@ -30,6 +32,7 @@ export function GameDetailView({
   gameCenter,
   scoringPanel,
   playsPanel,
+  statsPanel,
   bggAvailable = false,
 }: Props) {
   const t = useTranslations("Game");
@@ -119,6 +122,7 @@ export function GameDetailView({
       {libraryPanel}
       {scoringPanel}
       {playsPanel}
+      {statsPanel}
 
       <section
         aria-labelledby="description-title"

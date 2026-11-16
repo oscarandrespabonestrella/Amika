@@ -694,6 +694,21 @@
       "tablePlayer": "Jugador",
       "tableScored": "Partidas puntuadas",
       "tableDate": "Fecha"
+    },
+    "game": {
+      "title": "Estadísticas",
+      "matches": "Partidas",
+      "avgDuration": "Duración media",
+      "lastPlayed": "Última partida",
+      "minutes": "{n} min",
+      "tableCaption": "Estadísticas por jugador",
+      "player": "Jugador",
+      "matchesCol": "Partidas",
+      "wins": "Victorias",
+      "winRate": "% de victorias",
+      "average": "Media",
+      "best": "Mejor",
+      "chartsNote": "Los gráficos muestran a los {n} jugadores más frecuentes; la tabla incluye a todos."
     }
   }
 }

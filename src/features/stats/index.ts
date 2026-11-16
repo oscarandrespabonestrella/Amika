@@ -17,3 +17,4 @@ export {
   type SeriesPoint,
   type SeriesRow,
 } from "./format";
+export { GameStatsPanel } from "./components/game-stats";

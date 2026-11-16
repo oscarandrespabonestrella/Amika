@@ -30,6 +30,8 @@ export const TEST_USERS = {
   k: { email: "bglib-e2e-k+clerk_test@example.com", firstName: "E2E Karl" },
   // Player roster (app-players.spec.ts).
   l: { email: "bglib-e2e-l+clerk_test@example.com", firstName: "E2E Lena" },
+  // Statistics (app-stats.spec.ts).
+  m: { email: "bglib-e2e-m+clerk_test@example.com", firstName: "E2E Mallory" },
 } as const;
 
 export const STATE_FILE = {
@@ -45,6 +47,7 @@ export const STATE_FILE = {
   j: "playwright/.clerk/user-j.json",
   k: "playwright/.clerk/user-k.json",
   l: "playwright/.clerk/user-l.json",
+  m: "playwright/.clerk/user-m.json",
 } as const;
 
 function clerk() {

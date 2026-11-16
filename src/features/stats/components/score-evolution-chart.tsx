@@ -43,11 +43,7 @@ export function ScoreEvolutionChart({
       <figcaption className="text-sm font-medium">
         {t("evolutionTitle")}
       </figcaption>
-      <ChartContainer
-        config={config}
-        aria-label={t("evolutionTitle")}
-        className="h-64 w-full"
-      >
+      <ChartContainer config={config} className="h-64 w-full">
         <LineChart
           accessibilityLayer
           data={rows}
@@ -63,13 +59,6 @@ export function ScoreEvolutionChart({
             axisLine={false}
             tickMargin={8}
             tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
-            label={{
-              value: t("match"),
-              position: "insideBottomRight",
-              offset: -2,
-              fill: "var(--muted-foreground)",
-              fontSize: 12,
-            }}
           />
           <YAxis
             width={40}
@@ -96,7 +85,7 @@ export function ScoreEvolutionChart({
             <Line
               key={p.id}
               dataKey={p.id}
-              type="monotone"
+              type="linear"
               stroke={`var(--chart-${i + 1})`}
               strokeWidth={2}
               strokeLinecap="round"

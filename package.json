@@ -17,7 +17,8 @@
     "db:types": "supabase gen types typescript --linked > src/lib/supabase/database.types.ts",
     "recognition:backfill": "node --conditions=react-server --import tsx scripts/backfill-cover-hashes.mts",
     "predev": "node scripts/copy-ocr-assets.mjs",
-    "prebuild": "node scripts/copy-ocr-assets.mjs"
+    "prebuild": "node scripts/copy-ocr-assets.mjs",
+    "recognition:eval": "node --conditions=react-server --import tsx scripts/eval-recognition.mts"
   },
   "dependencies": {
     "@clerk/localizations": "^4.24.8",

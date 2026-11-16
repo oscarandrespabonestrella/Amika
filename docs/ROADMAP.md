@@ -74,6 +74,19 @@
 ## Fase 5 — reparto (2026-11-16)
 Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.md`. Tres entregas con revisión tras cada una: **5a** motor + hojas + editor, **5b** partidas, **5c** compartir y fiabilidad (publicar, 👍/avisos, verificada, orden por Wilson, moderación, topes). Fotos de partida y puntuación por imagen: Fase 7.
 
+## Estado de la Fase 7a (actualizado 2026-11-16)
+| Entrega | Estado |
+|---|---|
+| Identificar un juego por foto **en el dispositivo**: OCR (Tesseract.js), código de barras (`BarcodeDetector` nativo con `zxing-wasm` de respaldo) y hash de imagen; la foto no sale del dispositivo (a la red solo van ≤ 3 líneas de texto, un código y un hash de 64 bits) | Hecho |
+| Migración 0016: `game_barcodes` (privados por usuario), `game_image_hashes` (portadas del catálogo y fotos propias) y `match_game_images` | Hecho y aplicada en dev; 20 tests de RLS nuevos |
+| Hash de portadas al importar (descarga transitoria, solo hosts de BGG, sin guardar la imagen) y script de relleno | Hecho |
+| Resultados ordenados con el motivo («Código», «Título», «Imagen») y confianza (nunca «seguro»); confirmación manual; el código y la foto confirmados se aprenden | Hecho |
+| Punto de extensión `GameRecognizer` (IA externa opcional: apagada, exige consentimiento explícito; ninguna implementada) | Hecho |
+| Cabeceras de seguridad y CSP compatible con WebAssembly | Hecho; **CSP en modo informe** hasta activar `CSP_ENFORCE=1` (ver SECURITY §16) |
+| Medición con fotos reales (`npm run recognition:eval -- <carpeta>`) y decisión sobre la señal de imagen | **Pendiente: faltan las fotos del usuario** (la señal de imagen se entrega sin medir) |
+| Verificar el adaptador de BGG con el token real | **Pendiente: falta `BGG_API_TOKEN` en `.env.local`** |
+| Pruebas | 507 unitarias, 217 RLS/SQL, 259 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+
 ## Estado de la Fase 6b (actualizado 2026-11-16)
 | Entrega | Estado |
 |---|---|

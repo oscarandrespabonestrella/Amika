@@ -5,6 +5,7 @@ import { defineConfig, devices } from "@playwright/test";
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const PORT = 3100;
+const HEAVY = /app-(recognition|security-headers)\.spec\.ts/;
 const hasClerkKeys =
   !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
   !!process.env.CLERK_SECRET_KEY;
@@ -43,7 +44,16 @@ export default defineConfig({
     {
       name: "app-desktop",
       testMatch: /app-.*\.spec\.ts/,
+      testIgnore: HEAVY,
       dependencies: ["setup"],
+      use: { ...devices["Desktop Chrome"] },
+    },
+    // CPU-heavy specs (WebAssembly OCR) run AFTER everything else, never beside the
+    // timing-sensitive specs: they starve the machine and made unrelated tests flaky.
+    {
+      name: "app-heavy",
+      testMatch: HEAVY,
+      dependencies: ["setup", "app-desktop"],
       use: { ...devices["Desktop Chrome"] },
     },
     {

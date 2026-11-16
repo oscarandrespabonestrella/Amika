@@ -14,10 +14,13 @@ Con 15 fotos de frentes de caja contra 65 portadas: OCR + hash acertaron 1–3 d
 
 - Dirección: **CLIP + OpenCV.js como verificador; retirar OCR y hash de imagen** (aprobado el 2026-11-16).
 - **CLIP ViT-B/32 cuantizado (~85 MB)** como modelo (13/15 en la medición).
+- **Opcional y apagado de serie** (decisión del usuario, 2026-11-16): al ser un sistema pesado, no se activa solo. Cada usuario lo activa, en cada dispositivo, desde Ajustes o desde la sección de Juegos; al activarlo se muestra el aviso de la descarga única (~85 MB) y, una vez descargado, la función queda disponible. Se puede desactivar y borrar lo descargado.
 - Escala: ~50 juegos al empezar y ~1 al mes; **reconocer en vivo con la cámara**, sin tomar foto.
 - Heredadas: nada de la imagen sale del dispositivo; sin IA externa de pago ni que reciba imágenes; mismo stack (sin Rust ni otros lenguajes); bibliotecas abiertas, procesamiento local, coste cero; cualquier IA externa futura, opcional, apagada y con consentimiento (la interfaz `GameRecognizer` de la 7a se conserva).
 
 ## 4. Diseño
+
+**Activación opcional (por dispositivo).** De serie la función está apagada: no se descarga el modelo, no se carga ningún motor y en Juegos solo aparece una tarjeta «Reconocer juegos con la cámara» con el botón «Activar». Al pulsarlo se explica qué es y se avisa claramente: «Se descargarán unos 85 MB una sola vez (conviene usar wifi). Quedan guardados en este dispositivo». Solo al confirmar empieza la descarga, con barra de progreso, posibilidad de cancelar y de reintentar; después se calculan los vectores de las portadas del catálogo (también con progreso) y la función queda **activa y lista** en ese dispositivo (también en Ajustes, donde se puede **desactivar y borrar** el modelo y los vectores guardados, para recuperar espacio). El estado «activada» se guarda en el propio dispositivo (el modelo también vive allí), no en el servidor.
 
 **Flujo en vivo (navegador).** Botón «Reconocer con la cámara» → `getUserMedia` (cámara trasera) → un fotograma cada ~500 ms, **solo si el anterior ya terminó** → un Web Worker calcula el vector (512 números) con CLIP → similitud coseno contra los vectores de referencia → **votación** sobre los últimos fotogramas (se «fija» un candidato cuando es el primero en al menos 3 de 5 y gana con margen) → se muestra «Parece X» con su confianza y un botón para abrirlo. Si hay dudas entre los 2–3 mejores, **OpenCV.js los verifica** (coincidencia de características ORB + homografía): muchas coincidencias suben la confianza. El **código de barras** se lee en paralelo (`BarcodeDetector`, o `zxing-wasm` de respaldo) y, si es uno aprendido, manda. Existe también «elegir una foto» con el mismo motor.
 

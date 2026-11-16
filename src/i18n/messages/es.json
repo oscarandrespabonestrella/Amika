@@ -682,5 +682,18 @@
       "me_taken": "Otro jugador ya está marcado como tú.",
       "failed": "Algo ha salido mal. Inténtalo de nuevo."
     }
+  },
+  "Stats": {
+    "charts": {
+      "winsTitle": "Victorias por jugador",
+      "evolutionTitle": "Puntuación en cada partida",
+      "wins": "Victorias",
+      "match": "Partida",
+      "matchN": "Partida {n}",
+      "showTable": "Mostrar como tabla",
+      "tablePlayer": "Jugador",
+      "tableScored": "Partidas puntuadas",
+      "tableDate": "Fecha"
+    }
   }
 }

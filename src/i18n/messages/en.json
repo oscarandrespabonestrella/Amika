@@ -682,5 +682,18 @@
       "me_taken": "Another player is already marked as you.",
       "failed": "Something went wrong. Please try again."
     }
+  },
+  "Stats": {
+    "charts": {
+      "winsTitle": "Wins by player",
+      "evolutionTitle": "Score in each match",
+      "wins": "Wins",
+      "match": "Match",
+      "matchN": "Match {n}",
+      "showTable": "Show as table",
+      "tablePlayer": "Player",
+      "tableScored": "Scored matches",
+      "tableDate": "Date"
+    }
   }
 }

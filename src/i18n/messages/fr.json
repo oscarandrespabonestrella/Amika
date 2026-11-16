@@ -682,5 +682,18 @@
       "me_taken": "Un autre joueur est déjà marqué comme vous.",
       "failed": "Une erreur est survenue. Réessayez."
     }
+  },
+  "Stats": {
+    "charts": {
+      "winsTitle": "Victoires par joueur",
+      "evolutionTitle": "Score à chaque partie",
+      "wins": "Victoires",
+      "match": "Partie",
+      "matchN": "Partie {n}",
+      "showTable": "Afficher sous forme de tableau",
+      "tablePlayer": "Joueur",
+      "tableScored": "Parties avec score",
+      "tableDate": "Date"
+    }
   }
 }

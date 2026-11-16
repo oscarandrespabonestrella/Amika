@@ -42,27 +42,6 @@ export function createRecognitionDeps(userId: string): IdentifyDeps {
         })),
       };
     },
-
-    async matchImages(hash) {
-      const { data, error } = await db.rpc("match_game_images", {
-        p_hash: hash,
-      });
-      if (error) throw error;
-      return (data ?? []).map((r) => ({
-        gameId: r.game_id,
-        distance: r.distance,
-      }));
-    },
-
-    async gameNames(ids) {
-      if (ids.length === 0) return new Map();
-      const { data, error } = await db
-        .from("games")
-        .select("id, name")
-        .in("id", ids);
-      if (error) throw error;
-      return new Map((data ?? []).map((g) => [g.id, g.name]));
-    },
   };
 }
 
@@ -96,18 +75,6 @@ export async function learnBarcode(
     .update({ game_id: gameId })
     .eq("gtin", gtin);
   return updated.error ? failed(updated.error) : { ok: true };
-}
-
-/** Remembers the hash of the user's own photo of a game (private). */
-export async function savePhotoHash(
-  gameId: string,
-  hash: string,
-): Promise<WriteResult> {
-  const { error } = await createSupabaseServerClient().rpc("save_photo_hash", {
-    p_game_id: gameId,
-    p_hash: hash,
-  });
-  return error ? failed(error) : { ok: true };
 }
 
 export type RecognitionGame = { id: string; name: string; coverUrl: string };

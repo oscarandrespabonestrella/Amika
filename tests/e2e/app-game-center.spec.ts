@@ -89,6 +89,14 @@ test.afterAll(async () => {
   await cleanupCatalogFixtures([], PREFIX);
 });
 
+/** The admin form's own Add button (the Expansions list has its own "Add" too). */
+const addButton = (page: Page) =>
+  page
+    .getByLabel("Title", { exact: true })
+    .first()
+    .locator("xpath=ancestor::form")
+    .getByRole("button", { name: "Add", exact: true });
+
 const gamePage = (page: Page, locale = "en") =>
   page.goto(`/${locale}/games/${gameId}`);
 /** Admin controls and the FAQ form need Clerk (the Server Actions check the session). */
@@ -141,7 +149,7 @@ test.describe("administrator adds content", () => {
     await page
       .getByLabel("Address (https://…)", { exact: true })
       .fill("http://insecure.example.com/rules.pdf");
-    await page.getByRole("button", { name: "Add", exact: true }).click();
+    await addButton(page).click();
     await expect(
       page.getByText("Enter a valid https:// address."),
     ).toBeVisible();
@@ -150,7 +158,7 @@ test.describe("administrator adds content", () => {
     await page
       .getByLabel("YouTube link or video id")
       .fill("https://vimeo.com/12345");
-    await page.getByRole("button", { name: "Add", exact: true }).click();
+    await addButton(page).click();
     await expect(
       page.getByText("Enter a YouTube link or a video id."),
     ).toBeVisible();
@@ -172,7 +180,7 @@ test.describe("administrator adds content", () => {
       .getByLabel("Address (https://…)", { exact: true })
       .fill("https://example.com/rulebook.pdf");
     await page.getByLabel("Official source").check();
-    await page.getByRole("button", { name: "Add", exact: true }).click();
+    await addButton(page).click();
     await expect(
       page.getByText("Saved", { exact: true }).first(),
     ).toBeVisible();
@@ -206,7 +214,7 @@ test.describe("administrator adds content", () => {
     await page
       .getByLabel("YouTube link or video id")
       .fill(`https://www.youtube.com/watch?v=${YT_ID}&t=10s`);
-    await page.getByRole("button", { name: "Add", exact: true }).click();
+    await addButton(page).click();
     await expect(
       page.getByText("Saved", { exact: true }).first(),
     ).toBeVisible();

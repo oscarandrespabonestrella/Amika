@@ -8,6 +8,9 @@ const B = "test_user_b";
 const G_GLOBAL = "00000000-0000-4000-8000-000000000001"; // imported from BGG
 const G_A = "00000000-0000-4000-8000-0000000000a1"; // A's custom game
 const G_B = "00000000-0000-4000-8000-0000000000b1"; // B's custom game
+// The dev database also holds real catalog games, so assertions look only at the games
+// these fixtures create.
+const FIXTURE_GAMES = [G_GLOBAL, G_A, G_B];
 
 async function fixtures(c: Client) {
   await c.query(
@@ -31,17 +34,17 @@ async function fixtures(c: Client) {
     [G_GLOBAL, G_B],
   );
   await c.query(
-    `insert into public.game_external_ids (game_id, source, external_id) values ($1,'bgg','13')`,
+    `insert into public.game_external_ids (game_id, source, external_id) values ($1,'bgg','9911013')`,
     [G_GLOBAL],
   );
   await c.query(`insert into public.terms (id, type, source, external_id, name)
-                 values ('00000000-0000-4000-8000-0000000000c1','category','bgg','1021','Economic')`);
+                 values ('00000000-0000-4000-8000-0000000000c1','category','bgg','9911021','Economic')`);
   await c.query(
     `insert into public.game_terms (game_id, term_id) values ($1,'00000000-0000-4000-8000-0000000000c1')`,
     [G_GLOBAL],
   );
   await c.query(
-    `insert into public.catalog_imports (user_id, source, external_id) values ($1,'bgg','13')`,
+    `insert into public.catalog_imports (user_id, source, external_id) values ($1,'bgg','9911013')`,
     [A],
   );
 }
@@ -58,12 +61,20 @@ const names = async (c: Client, sql: string, params: unknown[] = []) =>
 
 describe.skipIf(!hasDb)("RLS: games visibility", () => {
   it("a user sees global games and their own custom games, never another user's", async () => {
-    expect(await asA((c) => names(c, "select name from public.games"))).toEqual(
-      ["Alice Secret Game", "Catán"],
-    );
-    expect(await asB((c) => names(c, "select name from public.games"))).toEqual(
-      ["Catán", "Zebra Private Game"],
-    );
+    expect(
+      await asA((c) =>
+        names(c, "select name from public.games where id = any($1)", [
+          FIXTURE_GAMES,
+        ]),
+      ),
+    ).toEqual(["Alice Secret Game", "Catán"]);
+    expect(
+      await asB((c) =>
+        names(c, "select name from public.games where id = any($1)", [
+          FIXTURE_GAMES,
+        ]),
+      ),
+    ).toEqual(["Catán", "Zebra Private Game"]);
   });
 
   it("anonymous users see nothing", async () => {
@@ -74,13 +85,21 @@ describe.skipIf(!hasDb)("RLS: games visibility", () => {
 
   it("child rows follow the visibility of their game", async () => {
     const a = await asA(async (c) =>
-      (await c.query("select game_id from public.game_translations")).rows.map(
-        (r) => r.game_id,
-      ),
+      (
+        await c.query(
+          "select game_id from public.game_translations where game_id = any($1)",
+          [FIXTURE_GAMES],
+        )
+      ).rows.map((r) => r.game_id),
     );
     expect(a).toEqual([G_GLOBAL]); // not B's custom game translation
     const b = await asB(async (c) =>
-      (await c.query("select game_id from public.game_translations")).rows
+      (
+        await c.query(
+          "select game_id from public.game_translations where game_id = any($1)",
+          [FIXTURE_GAMES],
+        )
+      ).rows
         .map((r) => r.game_id)
         .sort(),
     );
@@ -90,14 +109,22 @@ describe.skipIf(!hasDb)("RLS: games visibility", () => {
   it("shared vocabulary and external ids are readable", async () => {
     expect(
       await asA(
-        async (c) => (await c.query("select name from public.terms")).rowCount,
+        async (c) =>
+          (
+            await c.query(
+              "select name from public.terms where external_id = '9911021'",
+            )
+          ).rowCount,
       ),
     ).toBe(1);
     expect(
       await asA(
         async (c) =>
-          (await c.query("select external_id from public.game_external_ids"))
-            .rowCount,
+          (
+            await c.query(
+              "select external_id from public.game_external_ids where external_id = '9911013'",
+            )
+          ).rowCount,
       ),
     ).toBe(1);
   });
@@ -218,7 +245,7 @@ describe.skipIf(!hasDb)("RLS: games writes", () => {
       asA((c) => pgErrorCode(c.query(sql, params)));
     const attempts = [
       await attempt(
-        `insert into public.terms (type, source, external_id, name) values ('category','bgg','9','x')`,
+        `insert into public.terms (type, source, external_id, name) values ('category','bgg','9911009','x')`,
       ),
       await attempt(
         `insert into public.game_terms (game_id, term_id) values ($1,'00000000-0000-4000-8000-0000000000c1')`,
@@ -244,12 +271,17 @@ describe.skipIf(!hasDb)("RLS: games writes", () => {
 
 describe.skipIf(!hasDb)("search_games()", () => {
   const search = (c: Client, ...args: unknown[]) =>
-    names(c, "select name from public.search_games($1, $2, $3, $4)", [
-      args[0],
-      args[1] ?? null,
-      args[2] ?? null,
-      args[3] ?? null,
-    ]);
+    names(
+      c,
+      "select name from public.search_games($1, $2, $3, $4) where id = any($5)",
+      [
+        args[0],
+        args[1] ?? null,
+        args[2] ?? null,
+        args[3] ?? null,
+        FIXTURE_GAMES,
+      ],
+    );
 
   it("ignores accents and case", async () => {
     expect(await asA((c) => search(c, "catan"))).toEqual(["Catán"]);

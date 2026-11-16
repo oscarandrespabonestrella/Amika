@@ -209,48 +209,6 @@ export type Database = {
           },
         ];
       };
-      game_image_hashes: {
-        Row: {
-          created_at: string;
-          game_id: string;
-          hash: number;
-          id: string;
-          owner_id: string | null;
-          source: string;
-        };
-        Insert: {
-          created_at?: string;
-          game_id: string;
-          hash: number;
-          id?: string;
-          owner_id?: string | null;
-          source: string;
-        };
-        Update: {
-          created_at?: string;
-          game_id?: string;
-          hash?: number;
-          id?: string;
-          owner_id?: string | null;
-          source?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "game_image_hashes_game_id_fkey";
-            columns: ["game_id"];
-            isOneToOne: false;
-            referencedRelation: "games";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "game_image_hashes_owner_id_fkey";
-            columns: ["owner_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       game_images: {
         Row: {
           attribution: string;
@@ -1200,16 +1158,8 @@ export type Database = {
           ties: number;
         }[];
       };
-      hex_to_hash: { Args: { p_hex: string }; Returns: number };
       i_use_sheet: { Args: { p_sheet: string }; Returns: boolean };
       is_admin: { Args: never; Returns: boolean };
-      match_game_images: {
-        Args: { p_hash: string; p_limit?: number; p_max_distance?: number };
-        Returns: {
-          distance: number;
-          game_id: string;
-        }[];
-      };
       merge_players: {
         Args: { p_keep: string; p_remove: string };
         Returns: undefined;
@@ -1234,10 +1184,6 @@ export type Database = {
         }[];
       };
       normalize_player_name: { Args: { p: string }; Returns: string };
-      save_photo_hash: {
-        Args: { p_game_id: string; p_hash: string };
-        Returns: undefined;
-      };
       save_play: { Args: { p: Json }; Returns: string };
       search_games: {
         Args: {
@@ -1314,10 +1260,6 @@ export type Database = {
           version_id: string;
           visibility: string;
         }[];
-      };
-      upsert_cover_hash: {
-        Args: { p_game_id: string; p_hash: string };
-        Returns: undefined;
       };
       upsert_external_game: { Args: { p: Json }; Returns: string };
       version_is_usable: { Args: { p_version: string }; Returns: boolean };

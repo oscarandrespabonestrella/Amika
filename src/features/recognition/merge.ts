@@ -1,6 +1,6 @@
 // Pure: no imports. Combines what each technique found into one ranked list.
 
-export type Reason = "code" | "title" | "image";
+export type Reason = "code" | "title";
 
 export type Signal = {
   reason: Reason;
@@ -22,8 +22,8 @@ export type Candidate = {
   reasons: Reason[];
 };
 
-const WEIGHT: Record<Reason, number> = { code: 0.95, title: 0.7, image: 0.35 };
-const ORDER: Reason[] = ["code", "title", "image"];
+const WEIGHT: Record<Reason, number> = { code: 0.95, title: 0.7 };
+const ORDER: Reason[] = ["code", "title"];
 
 export function mergeCandidates(signals: Signal[], limit = 5): Candidate[] {
   const groups = new Map<

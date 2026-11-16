@@ -10,13 +10,11 @@ const sig = (
 ): Signal => ({ reason, strength, gameId, externalId, name });
 
 describe("mergeCandidates", () => {
-  it("weights code above title above image", () => {
+  it("weights code above title", () => {
     const [code] = mergeCandidates([sig("code", 1, "a")]);
     const [title] = mergeCandidates([sig("title", 1, "a")]);
-    const [image] = mergeCandidates([sig("image", 1, "a")]);
     expect(code.score).toBeCloseTo(0.95, 10);
     expect(title.score).toBeCloseTo(0.7, 10);
-    expect(image.score).toBeCloseTo(0.35, 10);
   });
 
   it("scales by strength and caps the sum at 1", () => {
@@ -30,11 +28,11 @@ describe("mergeCandidates", () => {
     const merged = mergeCandidates([
       sig("title", 0.4, "a", "Catan"),
       sig("title", 0.9, "a", "Catan"),
-      sig("image", 0.5, "a", "Catan"),
+      sig("code", 0.3, "a", "Catan"),
     ]);
     expect(merged).toHaveLength(1);
-    expect(merged[0].reasons).toEqual(["title", "image"]);
-    expect(merged[0].score).toBeCloseTo(0.7 * 0.9 + 0.35 * 0.5, 10);
+    expect(merged[0].reasons).toEqual(["code", "title"]);
+    expect(merged[0].score).toBeCloseTo(0.95 * 0.3 + 0.7 * 0.9, 10);
   });
 
   it("merges a catalog hit and a BGG hit of the same game, and groups BGG-only hits by external id", () => {
@@ -63,6 +61,6 @@ describe("mergeCandidates", () => {
 
   it("returns nothing for no signals and ignores zero strength", () => {
     expect(mergeCandidates([])).toEqual([]);
-    expect(mergeCandidates([sig("image", 0, "a")])).toEqual([]);
+    expect(mergeCandidates([sig("title", 0, "a")])).toEqual([]);
   });
 });

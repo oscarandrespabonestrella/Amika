@@ -6,7 +6,6 @@ import type { Candidate } from "./merge";
 export type RecognizerInput = {
   gtin?: string;
   lines?: string[];
-  hash?: string;
 };
 
 export interface GameRecognizer {

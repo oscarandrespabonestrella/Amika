@@ -15,9 +15,8 @@
     "e2e": "playwright test",
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "db:types": "supabase gen types typescript --linked > src/lib/supabase/database.types.ts",
-    "recognition:backfill": "node --conditions=react-server --import tsx scripts/backfill-cover-hashes.mts",
-    "predev": "node scripts/copy-ocr-assets.mjs && node scripts/copy-model-assets.mjs",
-    "prebuild": "node scripts/copy-ocr-assets.mjs && node scripts/copy-model-assets.mjs",
+    "predev": "node scripts/copy-model-assets.mjs",
+    "prebuild": "node scripts/copy-model-assets.mjs",
     "recognition:eval": "node --conditions=react-server --import tsx scripts/eval-recognition.mts"
   },
   "dependencies": {
@@ -27,9 +26,6 @@
     "@hookform/resolvers": "^7.0.6",
     "@huggingface/transformers": "^4.3.2",
     "@supabase/supabase-js": "^2.119.0",
-    "@tesseract.js-data/eng": "^1.0.0",
-    "@tesseract.js-data/fra": "^1.0.0",
-    "@tesseract.js-data/spa": "^1.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -47,7 +43,6 @@
     "shadcn": "^4.23.0",
     "sharp": "^0.35.5",
     "tailwind-merge": "^3.7.0",
-    "tesseract.js": "^7.0.0",
     "tw-animate-css": "^1.4.0",
     "zod": "^4.6.7",
     "zxing-wasm": "^3.1.7"

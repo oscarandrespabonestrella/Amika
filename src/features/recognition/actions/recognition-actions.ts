@@ -4,17 +4,12 @@ import { auth } from "@clerk/nextjs/server";
 import { unstable_rethrow } from "next/navigation";
 import { logger } from "@/lib/logger";
 import { identifyGame } from "../identify";
-import {
-  identifyInputSchema,
-  learnBarcodeSchema,
-  savePhotoHashSchema,
-} from "../schemas";
+import { identifyInputSchema, learnBarcodeSchema } from "../schemas";
 import type { Candidate } from "../merge";
 import {
   createRecognitionDeps,
   learnBarcode,
   listCoverGames,
-  savePhotoHash,
   type RecognitionGame,
 } from "../services/recognition-service";
 
@@ -30,9 +25,8 @@ export type WriteActionResult =
   | Failure<"unauthenticated" | "invalid" | "not_found" | "limit" | "failed">;
 
 /**
- * Candidates for a photo from the three small signals the browser computed. The photo
- * itself never reaches the server: the input schema is strict (barcode, ≤ 3 short lines,
- * a 16-hex image hash and nothing else).
+ * Candidates from the small signals the browser computed. No image ever reaches the
+ * server: the input schema is strict (a barcode, ≤ 3 short lines and nothing else).
  */
 export async function identifyGameAction(
   input: unknown,
@@ -70,24 +64,6 @@ export async function learnBarcodeAction(
   } catch (error) {
     unstable_rethrow(error);
     logger.error("learnBarcode failed", error);
-    return { ok: false, error: "failed" };
-  }
-}
-
-export async function savePhotoHashAction(
-  input: unknown,
-): Promise<WriteActionResult> {
-  const { userId } = await auth();
-  if (!userId) return { ok: false, error: "unauthenticated" };
-
-  const parsed = savePhotoHashSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: "invalid" };
-
-  try {
-    return await savePhotoHash(parsed.data.gameId, parsed.data.hash);
-  } catch (error) {
-    unstable_rethrow(error);
-    logger.error("savePhotoHash failed", error);
     return { ok: false, error: "failed" };
   }
 }

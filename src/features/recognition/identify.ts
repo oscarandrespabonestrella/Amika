@@ -1,5 +1,5 @@
-// Pure orchestration (no server-only imports): turns the three small signals the browser
-// computed into ranked candidates. Data access is injected so it can be tested; the real
+// Pure orchestration (no server-only imports): turns the small signals the browser
+// computed (a barcode, title lines) into ranked candidates. Data access is injected so it can be tested; the real
 // implementation lives in services/recognition-service.ts.
 import { mergeCandidates, type Candidate, type Signal } from "./merge";
 import { textSimilarity } from "./text";
@@ -17,16 +17,12 @@ export type IdentifyDeps = {
       }
     | { ok: false; error: string }
   >;
-  /** `match_game_images`: nearest hashes the caller may see. */
-  matchImages(hash: string): Promise<{ gameId: string; distance: number }[]>;
-  gameNames(ids: string[]): Promise<Map<string, string>>;
 };
 
 /** What the browser sends (lines may be absent); the action validates it first. */
 export type IdentifyRequest = {
   gtin?: string;
   lines?: string[];
-  hash?: string;
 };
 
 export type IdentifyOutput = { candidates: Candidate[]; bggLimited: boolean };
@@ -35,8 +31,6 @@ export type IdentifyOutput = { candidates: Candidate[]; bggLimited: boolean };
 export const BGG_WEAK_BELOW = 0.6;
 /** Each BGG search counts against the user's rate limit: never more than this. */
 export const MAX_BGG_SEARCHES = 2;
-/** Hamming distance at which a picture match is worth nothing. */
-export const IMAGE_RADIUS = 12;
 const LOCAL_PER_LINE = 5;
 
 const LIMITED = new Set(["rate_limited", "unavailable"]);
@@ -48,7 +42,7 @@ export async function identifyGame(
   const signals: Signal[] = [];
   const lines = input.lines ?? [];
 
-  const [barcode, localByLine, images] = await Promise.all([
+  const [barcode, localByLine] = await Promise.all([
     input.gtin ? deps.findBarcode(input.gtin) : Promise.resolve(null),
     Promise.all(
       lines.map(async (line) => ({
@@ -56,7 +50,6 @@ export async function identifyGame(
         hits: (await deps.searchLocal(line)).slice(0, LOCAL_PER_LINE),
       })),
     ),
-    input.hash ? deps.matchImages(input.hash) : Promise.resolve([]),
   ]);
 
   if (barcode)
@@ -101,21 +94,6 @@ export async function identifyGame(
           name: hit.name,
           strength: textSimilarity(line, hit.name),
         });
-    }
-  }
-
-  if (images.length > 0) {
-    const names = await deps.gameNames(images.map((i) => i.gameId));
-    for (const match of images) {
-      const name = names.get(match.gameId);
-      if (!name) continue;
-      signals.push({
-        reason: "image",
-        gameId: match.gameId,
-        externalId: null,
-        name,
-        strength: Math.max(0, 1 - match.distance / IMAGE_RADIUS),
-      });
     }
   }
 

@@ -2,7 +2,6 @@
 export {
   identifyGameAction,
   learnBarcodeAction,
-  savePhotoHashAction,
   type IdentifyResult,
   type WriteActionResult,
 } from "./actions/recognition-actions";

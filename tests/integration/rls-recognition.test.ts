@@ -9,9 +9,6 @@ const G2 = "00000000-0000-4000-8000-0000000000a2"; // catalog game
 const G_B = "00000000-0000-4000-8000-0000000000a3"; // B's private custom game
 const GTIN = "9783161484100";
 const GTIN_2 = "0036000291452";
-const H_ONES = "ffffffffffffffff";
-const H_3BITS = "fffffffffffffff8"; // 3 bits away from H_ONES
-const H_ZERO = "0000000000000000";
 
 async function fixtures(c: Client) {
   await c.query(`insert into public.profiles (id) values ($1),($2)`, [A, B]);
@@ -45,13 +42,6 @@ const q = async <T extends object>(c: Client, sql: string, p: unknown[] = []) =>
 const count = async (c: Client, sql: string, p: unknown[] = []) =>
   (await c.query<{ n: number }>(`select count(*)::int n from ${sql}`, p))
     .rows[0].n;
-
-/** Privileged setup: a cover hash written the way the server does it (service_role). */
-const coverHash = (game: string, hash: string) => async (c: Client) => {
-  await c.query("set local role service_role");
-  await c.query("select public.upsert_cover_hash($1,$2)", [game, hash]);
-  await c.query("reset role");
-};
 
 describe.skipIf(!hasDb)("game_barcodes", () => {
   it("a user stores and reads their own barcode", async () => {
@@ -222,271 +212,32 @@ describe.skipIf(!hasDb)("game_barcodes", () => {
   });
 });
 
-describe.skipIf(!hasDb)("game_image_hashes and save_photo_hash", () => {
-  it("a user saves a photo hash for a visible game; it is theirs alone", async () => {
-    const rows = await asA(async (c) => {
-      await c.query(`select public.save_photo_hash($1,$2)`, [G1, H_ONES]);
-      // saving the same hash twice is a no-op
-      await c.query(`select public.save_photo_hash($1,$2)`, [G1, H_ONES]);
-      return q<{ source: string; owner_id: string }>(
+describe.skipIf(!hasDb)("retired image hashes (migration 0017)", () => {
+  it("the table and every function of the old picture-hash search are gone", async () => {
+    const present = await asA(async (c) => {
+      const rows = await q<{ name: string; found: string | null }>(
         c,
-        `select source, owner_id from public.game_image_hashes`,
+        `select n as name, coalesce(to_regclass(n)::text, to_regprocedure(n)::text) as found
+           from unnest(array[
+             'public.game_image_hashes',
+             'public.match_game_images(text,integer,integer)',
+             'public.save_photo_hash(uuid,text)',
+             'public.upsert_cover_hash(uuid,text)',
+             'public.hex_to_hash(text)'
+           ]) as n`,
       );
+      return rows.filter((r) => r.found !== null).map((r) => r.name);
     });
-    expect(rows).toEqual([{ source: "user_photo", owner_id: A }]);
-    const bSees = await asB(
-      (c) => count(c, "public.game_image_hashes"),
-      (c) =>
-        c
-          .query(
-            `insert into public.game_image_hashes (game_id, owner_id, source, hash)
-                  values ($1,$2,'user_photo',-1)`,
-            [G1, A],
-          )
-          .then(() => undefined),
-    );
-    expect(bSees).toBe(0);
+    expect(present).toEqual([]);
   });
 
-  it("rejects malformed hashes (22023) and games the user cannot see (P0002)", async () => {
-    for (const bad of [
-      "zz",
-      "FFFFFFFFFFFFFFFF",
-      "ffff",
-      "",
-      "fffffffffffffffff",
-    ]) {
-      const code = await asA((c) =>
-        pgErrorCode(c.query(`select public.save_photo_hash($1,$2)`, [G1, bad])),
-      );
-      expect(code, bad).toBe("22023");
-    }
-    const code = await asA((c) =>
-      pgErrorCode(
-        c.query(`select public.save_photo_hash($1,$2)`, [G_B, H_ONES]),
-      ),
-    );
-    expect(code).toBe("P0002");
-  });
-
-  it("is capped at 20 photo hashes per user and game", async () => {
-    const code = await asA(
-      (c) =>
-        pgErrorCode(
-          c.query(`select public.save_photo_hash($1,$2)`, [G1, H_ZERO]),
-        ),
-      (c) =>
-        c
-          .query(
-            `insert into public.game_image_hashes (game_id, owner_id, source, hash)
-             select $1, $2, 'user_photo', g from generate_series(1, 20) g`,
-            [G1, A],
-          )
-          .then(() => undefined),
-    );
-    expect(code).toBe("P0001");
-    const other = await asA(
-      (c) =>
-        pgErrorCode(
-          c.query(`select public.save_photo_hash($1,$2)`, [G2, H_ZERO]),
-        ),
-      (c) =>
-        c
-          .query(
-            `insert into public.game_image_hashes (game_id, owner_id, source, hash)
-             select $1, $2, 'user_photo', g from generate_series(1, 20) g`,
-            [G1, A],
-          )
-          .then(() => undefined),
-    );
-    expect(other).toBeNull(); // another game is unaffected
-    const def = await asA((c) =>
-      q<{ def: string }>(
+  it("game_barcodes is untouched", async () => {
+    const rows = await asA((c) =>
+      q<{ n: string | null }>(
         c,
-        `select pg_get_functiondef(p.oid) def from pg_proc p
-          join pg_namespace n on n.oid = p.pronamespace
-         where n.nspname = 'public' and p.proname = 'enforce_image_hash_cap'`,
+        "select to_regclass('public.game_barcodes')::text as n",
       ),
     );
-    expect(def[0].def).toContain("for update");
-  });
-
-  it("cover hashes: written only by the server, readable only for visible games", async () => {
-    const seenByA = await asA(
-      (c) => count(c, "public.game_image_hashes where source = 'cover'"),
-      async (c) => {
-        await coverHash(G1, H_ONES)(c);
-        await coverHash(G_B, H_ZERO)(c); // B's private game
-      },
-    );
-    expect(seenByA).toBe(1); // G1 only
-    const seenByB = await asB(
-      (c) => count(c, "public.game_image_hashes where source = 'cover'"),
-      async (c) => {
-        await coverHash(G1, H_ONES)(c);
-        await coverHash(G_B, H_ZERO)(c);
-      },
-    );
-    expect(seenByB).toBe(2); // the catalog game and their own custom game
-  });
-
-  it("an authenticated user cannot write cover rows or call upsert_cover_hash", async () => {
-    expect(
-      await asA((c) =>
-        pgErrorCode(
-          c.query(`select public.upsert_cover_hash($1,$2)`, [G1, H_ONES]),
-        ),
-      ),
-    ).toBe("42501");
-    expect(
-      await asA((c) =>
-        pgErrorCode(
-          c.query(
-            `insert into public.game_image_hashes (game_id, source, hash) values ($1,'cover',1)`,
-            [G1],
-          ),
-        ),
-      ),
-    ).toBe("42501");
-  });
-
-  it("upsert_cover_hash replaces the previous cover hash of a game", async () => {
-    const hashes = await asA(
-      (c) =>
-        q<{ distance: number }>(
-          c,
-          `select distance from public.match_game_images($1)`,
-          [H_ZERO],
-        ),
-      async (c) => {
-        await coverHash(G1, H_ONES)(c);
-        await coverHash(G1, H_ZERO)(c);
-      },
-    );
-    expect(hashes).toEqual([{ distance: 0 }]);
-  });
-});
-
-describe.skipIf(!hasDb)("match_game_images", () => {
-  it("finds an exact match at distance 0 and a near one at its distance", async () => {
-    const rows = await asA(
-      (c) =>
-        q<{ game_id: string; distance: number }>(
-          c,
-          `select * from public.match_game_images($1)`,
-          [H_ONES],
-        ),
-      async (c) => {
-        await coverHash(G1, H_ONES)(c);
-        await coverHash(G2, H_3BITS)(c);
-      },
-    );
-    expect(rows).toEqual([
-      { game_id: G1, distance: 0 },
-      { game_id: G2, distance: 3 },
-    ]);
-  });
-
-  it("returns nothing beyond the threshold and honors a custom one", async () => {
-    const setup = coverHash(G1, H_ZERO);
-    const far = await asA(
-      (c) => q(c, `select * from public.match_game_images($1)`, [H_ONES]),
-      setup,
-    );
-    expect(far).toEqual([]);
-    const loose = await asA(
-      (c) => q(c, `select * from public.match_game_images($1, 64)`, [H_ONES]),
-      setup,
-    );
-    expect(loose).toHaveLength(1);
-  });
-
-  it("merges cover and own photo into the minimum per game", async () => {
-    const rows = await asA(
-      (c) =>
-        q<{ game_id: string; distance: number }>(
-          c,
-          `select * from public.match_game_images($1)`,
-          [H_ONES],
-        ),
-      async (c) => {
-        await coverHash(G1, H_ZERO)(c); // 64 away: out of range on its own
-        await c.query(
-          `insert into public.game_image_hashes (game_id, owner_id, source, hash)
-           values ($1,$2,'user_photo',-1)`,
-          [G1, A],
-        );
-      },
-    );
-    expect(rows).toEqual([{ game_id: G1, distance: 0 }]);
-  });
-
-  it("never leaks another user's photo hashes", async () => {
-    const rows = await asB(
-      (c) => q(c, `select * from public.match_game_images($1)`, [H_ONES]),
-      (c) =>
-        c
-          .query(
-            `insert into public.game_image_hashes (game_id, owner_id, source, hash)
-             values ($1,$2,'user_photo',-1)`,
-            [G1, A],
-          )
-          .then(() => undefined),
-    );
-    expect(rows).toEqual([]);
-  });
-
-  it("rejects malformed input (22023) and clamps limit and distance", async () => {
-    expect(
-      await asA((c) =>
-        pgErrorCode(c.query(`select * from public.match_game_images('zz')`)),
-      ),
-    ).toBe("22023");
-    const many = await asA(
-      (c) =>
-        q(c, `select * from public.match_game_images($1, 1000, 1000)`, [
-          H_ONES,
-        ]),
-      async (c) => {
-        await coverHash(G1, H_ONES)(c);
-        await coverHash(G2, H_ZERO)(c);
-      },
-    );
-    expect(many).toHaveLength(2);
-    const one = await asA(
-      (c) =>
-        q(c, `select * from public.match_game_images($1, 64, 0)`, [H_ONES]),
-      async (c) => {
-        await coverHash(G1, H_ONES)(c);
-        await coverHash(G2, H_ZERO)(c);
-      },
-    );
-    expect(one).toHaveLength(1);
-  });
-
-  it("anon cannot execute any of the functions", async () => {
-    for (const call of [
-      `match_game_images('${H_ONES}')`,
-      `save_photo_hash('${G1}','${H_ONES}')`,
-    ]) {
-      const code = await withRole("anon", null, fixtures, (c) =>
-        pgErrorCode(c.query(`select * from public.${call}`)),
-      );
-      expect(code, call).toBe("42501");
-    }
-  });
-
-  it("deleting a game removes its hashes", async () => {
-    const n = await withRole(
-      "authenticated",
-      { sub: B },
-      async (c) => {
-        await fixtures(c);
-        await coverHash(G_B, H_ONES)(c);
-        await c.query(`delete from public.games where id = $1`, [G_B]);
-      },
-      (c) => count(c, "public.game_image_hashes"),
-    );
-    expect(n).toBe(0);
+    expect(rows[0].n).toBe("game_barcodes");
   });
 });

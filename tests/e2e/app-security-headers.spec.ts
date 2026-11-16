@@ -61,7 +61,7 @@ test.describe("security headers", () => {
   test("the self-hosted engines are served with the headers too", async ({
     request,
   }) => {
-    const res = await request.get("/tesseract/worker.min.js");
+    const res = await request.get("/opencv/opencv.js");
     expect(res.status()).toBe(200);
     expect(res.headers()["x-content-type-options"]).toBe("nosniff");
   });
@@ -101,40 +101,53 @@ test.describe("no CSP violations", () => {
     await context.close();
   });
 
-  test("WebAssembly OCR and its worker run under the policy", async ({
+  test("the on-device model (worker and ONNX WebAssembly) runs under the policy", async ({
     page,
   }) => {
     await watchViolations(page);
     await page.goto("/en/games");
-    const dataUrl = await page.evaluate(() => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 900;
-      canvas.height = 400;
-      const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, 900, 400);
-      ctx.fillStyle = "#000";
-      ctx.font = "bold 170px Arial, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("AZUL", 450, 200);
-      return canvas.toDataURL("image/png");
-    });
+    // Opt in: loads the embedding worker and the ONNX WebAssembly runtime.
     await page
-      .getByRole("region", { name: "Identify a game by photo" })
-      .locator('input[type="file"]:not([capture])')
-      .setInputFiles({
-        name: "box.png",
-        mimeType: "image/png",
-        buffer: Buffer.from(dataUrl.split(",")[1], "base64"),
-      });
-    await expect(page.getByRole("button", { name: "Cancel" })).toHaveCount(0, {
-      timeout: 90_000,
-    });
-    // The text step really ran (not skipped by a blocked worker or WebAssembly).
-    await expect(page.getByText("Reading the text took too long")).toHaveCount(
-      0,
-    );
+      .getByRole("button", { name: "Download (~85 MB) and enable" })
+      .click();
+    await expect(
+      page.getByRole("button", { name: /Scan with the camera/ }),
+    ).toBeVisible({ timeout: 90_000 });
     expect(await violations(page)).toEqual([]);
+  });
+
+  test("OpenCV loads, and its only CSP need is eval (known: resolve before CSP_ENFORCE=1)", async ({
+    page,
+  }) => {
+    await watchViolations(page);
+    await page.goto("/en/games");
+    // OpenCV is a big script that instantiates WebAssembly: load it the way the app does.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "/opencv/opencv.js";
+          script.onerror = () => reject(new Error("opencv.js blocked"));
+          script.onload = () => {
+            const cv = (window as unknown as { cv: unknown }).cv as
+              | Promise<unknown>
+              | { Mat?: unknown; onRuntimeInitialized?: () => void };
+            if (cv instanceof Promise) void cv.then(() => resolve());
+            else if (cv?.Mat) resolve();
+            else cv.onRuntimeInitialized = () => resolve();
+          };
+          document.head.appendChild(script);
+        }),
+    );
+    // opencv.js (Emscripten embind) builds its bindings with eval. The policy is Report-Only
+    // today, so it works; enforcing it needs 'unsafe-eval' on this page or OpenCV moved into
+    // a worker that carries its own CSP (docs/SECURITY.md section 17). Nothing else may be reported.
+    const reported = await violations(page);
+    expect(reported.length).toBeGreaterThan(0);
+    expect(
+      reported.filter(
+        (v) => !(v.directive === "script-src" && v.blocked === "eval"),
+      ),
+    ).toEqual([]);
   });
 });

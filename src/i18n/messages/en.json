@@ -748,56 +748,6 @@
     }
   },
   "Recognition": {
-    "title": "Identify a game by photo",
-    "intro": "Take or choose a photo of the front of the box, or of its barcode.",
-    "privacy": "The photo stays on your device. Only the text it contains and a small fingerprint of the picture are used to search.",
-    "take": "Take a photo",
-    "choose": "Choose a photo",
-    "cancel": "Cancel",
-    "stage": {
-      "prepare": "Preparing the photo…",
-      "code": "Looking for a barcode…",
-      "text": "Reading the title…",
-      "image": "Comparing the picture…",
-      "search": "Searching…"
-    },
-    "results": {
-      "title": "Best matches",
-      "list": "Matches"
-    },
-    "confidence": {
-      "high": "High confidence",
-      "medium": "Medium confidence",
-      "low": "Low confidence"
-    },
-    "reasons": {
-      "code": "Barcode",
-      "title": "Title",
-      "image": "Picture"
-    },
-    "confirm": "This is it",
-    "confirmFor": "This is it: {name}",
-    "importing": "Adding…",
-    "fromBgg": "Not in your catalog yet: it will be added from BoardGameGeek.",
-    "none": {
-      "title": "No match found",
-      "body": "We couldn't recognize this box. Try a sharper photo of the front, or search by hand."
-    },
-    "manual": "None of these: search by hand",
-    "notes": {
-      "bggLimited": "BoardGameGeek could not be searched right now, so only your catalog was used.",
-      "unsupported": "This browser cannot read text from photos, so only the picture was compared.",
-      "timedOut": "Reading the text took too long, so it was skipped."
-    },
-    "errors": {
-      "not_image": "That file is not an image.",
-      "too_large": "That photo is too large (20 MB maximum).",
-      "unreadable": "We couldn't read that photo. Try a JPEG or PNG.",
-      "timeout": "Reading the photo took too long.",
-      "unauthenticated": "Your session expired. Please sign in again.",
-      "invalid": "Something is wrong with that photo. Try another one.",
-      "failed": "Something went wrong. Please try again."
-    },
     "live": {
       "title": "Identify a game",
       "intro": "Point your camera at a game box and the app recognizes it live, or choose a photo.",

@@ -2,15 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import { identifyGame, type IdentifyDeps } from "./identify";
 import { mapRecognitionError } from "./errors";
 
-const HASH = "0123456789abcdef";
-
 function deps(over: Partial<IdentifyDeps> = {}) {
   return {
     findBarcode: vi.fn(async () => null),
     searchLocal: vi.fn(async () => []),
     searchExternal: vi.fn(async () => ({ ok: true as const, hits: [] })),
-    matchImages: vi.fn(async () => []),
-    gameNames: vi.fn(async () => new Map<string, string>()),
     ...over,
   } as IdentifyDeps & Record<keyof IdentifyDeps, ReturnType<typeof vi.fn>>;
 }
@@ -85,18 +81,17 @@ describe("identifyGame", () => {
     for (const error of ["rate_limited", "unavailable"] as const) {
       const d = deps({
         searchExternal: vi.fn(async () => ({ ok: false as const, error })),
-        matchImages: vi.fn(async () => [{ gameId: "g1", distance: 0 }]),
-        gameNames: vi.fn(async () => new Map([["g1", "Wingspan"]])),
+        findBarcode: vi.fn(async () => ({ gameId: "g1", name: "Wingspan" })),
       });
       const out = await identifyGame(
-        { lines: ["Alpha game", "Beta game"], hash: HASH },
+        { gtin: "9783161484100", lines: ["Alpha game", "Beta game"] },
         d,
       );
       expect(out.bggLimited, error).toBe(true);
       expect(d.searchExternal, error).toHaveBeenCalledTimes(1); // stops at the first refusal
       expect(out.candidates[0]).toMatchObject({
         gameId: "g1",
-        reasons: ["image"],
+        reasons: ["code"],
       });
     }
   });
@@ -112,48 +107,21 @@ describe("identifyGame", () => {
     expect(out).toEqual({ candidates: [], bggLimited: false });
   });
 
-  it("an image match alone never scores above 0.35", async () => {
-    const d = deps({
-      matchImages: vi.fn(async () => [{ gameId: "g1", distance: 0 }]),
-      gameNames: vi.fn(async () => new Map([["g1", "Azul"]])),
-    });
-    const out = await identifyGame({ hash: HASH }, d);
-    expect(out.candidates).toHaveLength(1);
-    expect(out.candidates[0].score).toBeLessThanOrEqual(0.35);
-    expect(out.candidates[0].reasons).toEqual(["image"]);
-  });
-
-  it("a nearer picture scores higher than a farther one", async () => {
-    const d = deps({
-      matchImages: vi.fn(async () => [
-        { gameId: "g1", distance: 2 },
-        { gameId: "g2", distance: 10 },
-      ]),
-      gameNames: vi.fn(
-        async () =>
-          new Map([
-            ["g1", "Near"],
-            ["g2", "Far"],
-          ]),
-      ),
-    });
-    const out = await identifyGame({ hash: HASH }, d);
-    expect(out.candidates.map((c) => c.name)).toEqual(["Near", "Far"]);
-  });
-
-  it("title and picture agreeing on the same game rank it first", async () => {
+  it("title and barcode agreeing on the same game rank it first", async () => {
     const d = deps({
       searchLocal: vi.fn(async () => [
         { id: "g1", name: "Wingspan" },
         { id: "g2", name: "Wingspan Asia" },
       ]),
-      matchImages: vi.fn(async () => [{ gameId: "g1", distance: 1 }]),
-      gameNames: vi.fn(async () => new Map([["g1", "Wingspan"]])),
+      findBarcode: vi.fn(async () => ({ gameId: "g1", name: "Wingspan" })),
     });
-    const out = await identifyGame({ lines: ["Wingspan"], hash: HASH }, d);
+    const out = await identifyGame(
+      { gtin: "9783161484100", lines: ["Wingspan"] },
+      d,
+    );
     expect(out.candidates[0]).toMatchObject({
       gameId: "g1",
-      reasons: ["title", "image"],
+      reasons: ["code", "title"],
     });
   });
 

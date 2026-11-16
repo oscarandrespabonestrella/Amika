@@ -112,7 +112,7 @@ export function buildCsp(env: HeaderEnv): string {
       "https://www.youtube-nocookie.com",
       ...CLERK_SHARED.frame,
     ],
-    "worker-src": ["'self'", "blob:"], // Tesseract runs in a Web Worker
+    "worker-src": ["'self'", "blob:"], // the embedding model runs in a Web Worker
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],

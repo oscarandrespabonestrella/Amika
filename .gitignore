@@ -47,7 +47,6 @@ next-env.d.ts
 /playwright/.clerk/
 
 # Self-hosted OCR and barcode engines copied from node_modules (scripts/copy-ocr-assets.mjs)
-/public/tesseract/
 /public/zxing/
 
 # Self-hosted live-recognition engines (scripts/copy-model-assets.mjs)

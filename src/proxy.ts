@@ -37,7 +37,7 @@ export const config = {
   matcher: [
     // Skip Next.js internals, the self-hosted OCR/barcode engines (.wasm, .gz, ... must
     // not get a locale prefix) and static files
-    "/((?!_next|tesseract/|zxing/|models/|ort/|opencv/|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!_next|zxing/|models/|ort/|opencv/|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     "/(api|trpc)(.*)",
   ],
 };

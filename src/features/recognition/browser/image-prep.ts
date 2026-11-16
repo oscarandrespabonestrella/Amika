@@ -1,8 +1,5 @@
-// Browser-only. Turns a photo file into a bounded canvas and a perceptual hash. Pure
-// helpers (fitWithin, grayFromRgba, hashFromRgba) are unit tested; the canvas parts are
-// exercised by the E2E suite.
-import { dHashFromGray, grayGrid } from "../dhash";
-
+// Browser-only. Turns a photo file into a bounded canvas. The pure helper (fitWithin) is
+// unit tested; the canvas part is exercised by the E2E suite.
 export const MAX_FILE_BYTES = 20 * 1024 * 1024;
 export const MAX_SIDE = 1280;
 
@@ -37,27 +34,6 @@ export function fitWithin(
   };
 }
 
-/** Luminance of RGBA pixels, transparency composited over white (like the server). */
-export function grayFromRgba(rgba: ArrayLike<number>): number[] {
-  const out = new Array<number>(rgba.length / 4);
-  for (let i = 0; i < out.length; i++) {
-    const a = rgba[i * 4 + 3] / 255;
-    const r = rgba[i * 4] * a + 255 * (1 - a);
-    const g = rgba[i * 4 + 1] * a + 255 * (1 - a);
-    const b = rgba[i * 4 + 2] * a + 255 * (1 - a);
-    out[i] = 0.299 * r + 0.587 * g + 0.114 * b;
-  }
-  return out;
-}
-
-export function hashFromRgba(
-  rgba: ArrayLike<number>,
-  width: number,
-  height: number,
-): string {
-  return dHashFromGray(grayGrid(grayFromRgba(rgba), width, height));
-}
-
 /**
  * Decodes the photo (honoring EXIF orientation) into a canvas of at most 1280 px on the
  * long side, on a white background. The file is never uploaded anywhere.
@@ -88,12 +64,4 @@ export async function prepareImage(file: File): Promise<PreparedImage> {
   } finally {
     bitmap.close();
   }
-}
-
-/** The 16-hex-character dHash of a prepared image. */
-export function imageHash(prepared: PreparedImage): string {
-  const ctx = prepared.canvas.getContext("2d", { willReadFrequently: true });
-  if (!ctx) throw new ImageError("unreadable");
-  const { data } = ctx.getImageData(0, 0, prepared.width, prepared.height);
-  return hashFromRgba(data, prepared.width, prepared.height);
 }

@@ -1,6 +1,3 @@
-import { after } from "next/server";
-// Deep import on purpose: the recognition barrel will import the catalog (a cycle).
-import { hashCover as hashCoverDefault } from "@/features/recognition/cover-hash";
 import "server-only";
 import { logger } from "@/lib/logger";
 import { BggError } from "../sources/bgg/errors";
@@ -85,48 +82,12 @@ export async function searchExternalGames(
 }
 
 /** Import one game into the global catalog (idempotent; atomic in the database). */
-/** Runs after the response (Next's `after`); injectable so tests can drive it. */
-type Defer = (job: () => Promise<void>) => void;
-
-export type ImportDeps = {
-  hashCover?: (url: string) => Promise<string | null>;
-  defer?: Defer;
-};
-
-/**
- * Best effort and off the critical path: hash the cover of a freshly imported game so a
- * photo of its box can be recognized later. It can never fail the import.
- */
-function scheduleCoverHash(
-  store: ImportStore,
-  gameId: string,
-  coverUrl: string | null,
-  deps: ImportDeps,
-) {
-  if (!coverUrl) return;
-  const hashCover = deps.hashCover ?? hashCoverDefault;
-  const job = async () => {
-    try {
-      const hash = await hashCover(coverUrl);
-      if (hash) await store.saveCoverHash(gameId, hash);
-    } catch (error) {
-      logger.error("cover hash failed", error, { gameId });
-    }
-  };
-  try {
-    (deps.defer ?? after)(job);
-  } catch (error) {
-    // e.g. called outside a request: skip silently, the backfill script catches up.
-    logger.error("could not schedule the cover hash", error, { gameId });
-  }
-}
-
+/** Import one game into the global catalog (idempotent; atomic in the database). */
 export async function importExternalGame(
   source: GameSource,
   externalId: string,
   userId: string,
   store: ImportStore = createSupabaseImportStore(),
-  deps: ImportDeps = {},
 ): Promise<ImportResult> {
   try {
     // Already imported: no external call and no quota used.
@@ -151,7 +112,6 @@ export async function importExternalGame(
 
     try {
       const gameId = await store.upsertGame(parsed.data);
-      scheduleCoverHash(store, gameId, parsed.data.coverUrl, deps);
       return { ok: true, gameId };
     } catch (error) {
       // Two users imported the same game at once: the other transaction won.

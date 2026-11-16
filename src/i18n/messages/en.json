@@ -631,5 +631,17 @@
       "back": "Back to sheets",
       "version": "Version {n}"
     }
+  },
+  "Players": {
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "invalid": "That isn't valid.",
+      "not_found": "That player isn't available.",
+      "exists": "You already have a player with that name. Merge them instead.",
+      "together": "These two players took part in the same match, so they can't be merged. Edit that match first.",
+      "in_use": "This player has matches, so it can't be deleted.",
+      "me_taken": "Another player is already marked as you.",
+      "failed": "Something went wrong. Please try again."
+    }
   }
 }

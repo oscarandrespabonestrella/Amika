@@ -37,6 +37,7 @@ export type PlayDetail = PlaySummary & {
   } | null;
   /** What was entered, per player in seat order (to prefill the form). */
   entries: {
+    playerId: string;
     name: string;
     manualTotal: number | null;
     values: Record<string, ScoreValue>;
@@ -60,7 +61,7 @@ export async function listPlaysForGame(
   const { data, error } = await createSupabaseServerClient()
     .from("plays")
     .select(
-      "id, played_on, duration_minutes, scoring_sheet_versions(scoring_sheets(title)), play_participants(display_name, seat, total_score, rank, is_winner)",
+      "id, played_on, duration_minutes, scoring_sheet_versions(scoring_sheets(title)), play_participants(seat, total_score, rank, is_winner, players(name))",
     )
     .eq("game_id", gameId)
     .order("played_on", { ascending: false })
@@ -76,7 +77,7 @@ export async function listPlaysForGame(
     participants: [...row.play_participants]
       .sort((a, b) => a.seat - b.seat)
       .map((p) => ({
-        name: p.display_name,
+        name: p.players?.name ?? "",
         total: p.total_score,
         rank: p.rank,
         isWinner: p.is_winner,
@@ -93,7 +94,7 @@ export async function getPlay(playId: string): Promise<PlayDetail | null> {
   const { data, error } = await createSupabaseServerClient()
     .from("plays")
     .select(
-      "id, game_id, played_on, duration_minutes, notes, scoring_version_id, scoring_sheet_versions(id, version, sheet_id, definition, scoring_sheets(title)), play_participants(display_name, seat, total_score, rank, is_winner, play_scores(category_key, value)), play_expansions(game_id)",
+      "id, game_id, played_on, duration_minutes, notes, scoring_version_id, scoring_sheet_versions(id, version, sheet_id, definition, scoring_sheets(title)), play_participants(seat, player_id, total_score, rank, is_winner, players(name), play_scores(category_key, value)), play_expansions(game_id)",
     )
     .eq("id", playId)
     .maybeSingle();
@@ -130,13 +131,14 @@ export async function getPlay(playId: string): Promise<PlayDetail | null> {
     expansionIds: data.play_expansions.map((e) => e.game_id),
     sheet,
     participants: people.map((p) => ({
-      name: p.display_name,
+      name: p.players?.name ?? "",
       total: p.total_score,
       rank: p.rank,
       isWinner: p.is_winner,
     })),
     entries: people.map((p) => ({
-      name: p.display_name,
+      playerId: p.player_id,
+      name: p.players?.name ?? "",
       manualTotal: sheet ? null : p.total_score,
       values: Object.fromEntries(
         p.play_scores.map((s) => [s.category_key, s.value as ScoreValue]),
@@ -180,6 +182,7 @@ type Computed = ReturnType<typeof computePlay>;
 /** The payload for `save_play`, built ONLY from the server's own computation. */
 function toPayload(
   computed: Computed,
+  playerIds: readonly (string | null)[],
   fields: {
     playId?: string;
     gameId: string;
@@ -192,8 +195,9 @@ function toPayload(
 ): Json {
   return {
     ...fields,
-    participants: computed.participants.map((p) => ({
+    participants: computed.participants.map((p, i) => ({
       seat: p.seat,
+      playerId: playerIds[i] ?? null,
       name: p.name,
       total: p.total,
       rank: p.rank,
@@ -234,14 +238,18 @@ export async function createPlay(input: CreatePlayInput): Promise<PlayOutcome> {
   if (!computed.ok) return "invalid";
 
   return callSavePlay(
-    toPayload(computed, {
-      gameId: input.gameId,
-      playedOn: input.playedOn,
-      durationMinutes: input.durationMinutes,
-      scoringVersionId: versionId,
-      notes: input.notes,
-      expansionIds: input.expansionIds,
-    }),
+    toPayload(
+      computed,
+      input.participants.map((p) => p.playerId),
+      {
+        gameId: input.gameId,
+        playedOn: input.playedOn,
+        durationMinutes: input.durationMinutes,
+        scoringVersionId: versionId,
+        notes: input.notes,
+        expansionIds: input.expansionIds,
+      },
+    ),
   );
 }
 
@@ -259,15 +267,19 @@ export async function updatePlay(
   if (!computed.ok) return "invalid";
 
   return callSavePlay(
-    toPayload(computed, {
-      playId: input.playId,
-      gameId: existing.gameId,
-      playedOn: input.playedOn,
-      durationMinutes: input.durationMinutes,
-      scoringVersionId: existing.sheet?.versionId ?? null,
-      notes: input.notes,
-      expansionIds: input.expansionIds,
-    }),
+    toPayload(
+      computed,
+      input.participants.map((p) => p.playerId),
+      {
+        playId: input.playId,
+        gameId: existing.gameId,
+        playedOn: input.playedOn,
+        durationMinutes: input.durationMinutes,
+        scoringVersionId: existing.sheet?.versionId ?? null,
+        notes: input.notes,
+        expansionIds: input.expansionIds,
+      },
+    ),
   );
 }
 

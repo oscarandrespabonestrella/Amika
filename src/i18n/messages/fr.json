@@ -631,5 +631,17 @@
       "back": "Retour aux feuilles",
       "version": "Version {n}"
     }
+  },
+  "Players": {
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
+      "invalid": "Ce n'est pas valide.",
+      "not_found": "Ce joueur n'est pas disponible.",
+      "exists": "Vous avez déjà un joueur portant ce nom. Fusionnez-les plutôt.",
+      "together": "Ces deux joueurs ont participé à la même partie, ils ne peuvent donc pas être fusionnés. Modifiez d'abord cette partie.",
+      "in_use": "Ce joueur a des parties, il ne peut donc pas être supprimé.",
+      "me_taken": "Un autre joueur est déjà marqué comme vous.",
+      "failed": "Une erreur est survenue. Réessayez."
+    }
   }
 }

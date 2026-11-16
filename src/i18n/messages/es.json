@@ -631,5 +631,17 @@
       "back": "Volver a las hojas",
       "version": "Versión {n}"
     }
+  },
+  "Players": {
+    "errors": {
+      "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+      "invalid": "Eso no es válido.",
+      "not_found": "Ese jugador no está disponible.",
+      "exists": "Ya tienes un jugador con ese nombre. Fusiónalos en su lugar.",
+      "together": "Estos dos jugadores participaron en la misma partida, así que no se pueden fusionar. Edita antes esa partida.",
+      "in_use": "Este jugador tiene partidas, así que no se puede eliminar.",
+      "me_taken": "Otro jugador ya está marcado como tú.",
+      "failed": "Algo ha salido mal. Inténtalo de nuevo."
+    }
   }
 }

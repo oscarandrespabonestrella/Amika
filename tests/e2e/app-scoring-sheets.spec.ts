@@ -126,6 +126,26 @@ test.describe("building a 7 Wonders sheet", () => {
     await expect(p.getByTestId("preview-total")).toHaveText("30");
   });
 
+  test("typing a label key by key keeps the focus on the field", async ({
+    page,
+  }) => {
+    await page.goto(`/en/games/${gameId}/sheets/new`);
+    await addCategory(page, "per_n");
+    const input = labelInput(page, 0);
+    await input.fill("");
+    await input.click();
+    // Real keystrokes: each one changes the label (and, for a new category, its key).
+    await input.pressSequentially("Military points");
+    await expect(input).toHaveValue("Military points");
+    await expect(input).toBeFocused();
+
+    // Other fields of the same card keep what was typed in them, too.
+    const every = card(page, 0).getByLabel("Every N");
+    await every.fill("5");
+    await input.pressSequentially(" extra");
+    await expect(every).toHaveValue("5");
+  });
+
   test("a bad entry is flagged and does not break the total", async ({
     page,
   }) => {

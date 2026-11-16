@@ -137,3 +137,23 @@ export function moveItem<T>(
   [next[index], next[target]] = [next[target], next[index]];
   return next;
 }
+
+/**
+ * Sets (or clears) one counter of a `set_bonus` value, keeping only counters that
+ * still exist on the sheet: a counter removed in the editor must not linger in the
+ * preview values, where the engine would reject it as unknown.
+ */
+export function updateCounters(
+  inputKeys: readonly string[],
+  record: Readonly<Record<string, number>>,
+  key: string,
+  value: number | undefined,
+): Record<string, number> | undefined {
+  const next: Record<string, number> = {};
+  for (const k of inputKeys) {
+    if (k === key || !Object.hasOwn(record, k)) continue;
+    next[k] = record[k];
+  }
+  if (value !== undefined) next[key] = value;
+  return Object.keys(next).length > 0 ? next : undefined;
+}

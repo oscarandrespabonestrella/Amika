@@ -42,6 +42,15 @@ type Props = {
 
 type Failure = Extract<ScoringResult, { ok: false }>;
 
+/**
+ * Each row keeps a client-only id for its whole life. React keys on it, not on the
+ * category key: an unsaved category's key follows its label, and a changing React
+ * key would remount the card (and drop focus) on every keystroke.
+ */
+type Row = { uid: number; category: Category };
+let nextUid = 0;
+const toRow = (category: Category): Row => ({ uid: nextUid++, category });
+
 export function SheetEditor({ gameId, gameName, initial }: Props) {
   const t = useTranslations("Scoring.editor");
   const tt = useTranslations("Scoring.types");
@@ -53,9 +62,10 @@ export function SheetEditor({ gameId, gameName, initial }: Props) {
 
   const [title, setTitle] = useState(initial?.title ?? "");
   const [locale, setLocale] = useState(initial?.locale ?? uiLocale);
-  const [categories, setCategories] = useState<Category[]>(
-    initial?.definition.categories ?? [],
+  const [rows, setRows] = useState<Row[]>(() =>
+    (initial?.definition.categories ?? []).map(toRow),
   );
+  const categories = useMemo(() => rows.map((row) => row.category), [rows]);
   const [newType, setNewType] = useState<CategoryType>("number");
   // Keys already saved in a version never change; new categories derive theirs from the label.
   const [frozenKeys, setFrozenKeys] = useState<ReadonlySet<string>>(
@@ -131,18 +141,22 @@ export function SheetEditor({ gameId, gameName, initial }: Props) {
   // --- editing -------------------------------------------------------------------
   function addCategory() {
     if (!canAddType(newType, keys)) return;
-    setCategories((current) => [
+    setRows((current) => [
       ...current,
-      newCategory(
-        newType,
-        t("newCategoryLabel"),
-        current.map((c) => c.key),
+      toRow(
+        newCategory(
+          newType,
+          t("newCategoryLabel"),
+          current.map((row) => row.category.key),
+        ),
       ),
     ]);
   }
 
   const replaceAt = (index: number, next: Category) =>
-    setCategories((current) => current.map((c, i) => (i === index ? next : c)));
+    setRows((current) =>
+      current.map((row, i) => (i === index ? { ...row, category: next } : row)),
+    );
 
   // --- saving --------------------------------------------------------------------
   function save() {
@@ -245,27 +259,34 @@ export function SheetEditor({ gameId, gameName, initial }: Props) {
           )}
 
           <ol className="flex flex-col gap-3">
-            {categories.map((category, index) => (
+            {rows.map(({ uid, category }, index) => (
               <CategoryEditor
-                key={category.key}
+                key={uid}
                 category={category}
                 index={index}
                 count={categories.length}
                 others={categories.filter((_, i) => i !== index)}
                 problems={[...(byCategory.get(index) ?? [])]}
                 onLabel={(label) =>
-                  setCategories((current) =>
-                    relabelCategory(current, index, label, frozenKeys),
-                  )
+                  setRows((current) => {
+                    const next = relabelCategory(
+                      current.map((row) => row.category),
+                      index,
+                      label,
+                      frozenKeys,
+                    );
+                    return current.map((row, i) => ({
+                      ...row,
+                      category: next[i],
+                    }));
+                  })
                 }
                 onChange={(next) => replaceAt(index, next)}
                 onMove={(delta) =>
-                  setCategories((current) => moveItem(current, index, delta))
+                  setRows((current) => moveItem(current, index, delta))
                 }
                 onRemove={() =>
-                  setCategories((current) =>
-                    current.filter((_, i) => i !== index),
-                  )
+                  setRows((current) => current.filter((_, i) => i !== index))
                 }
               />
             ))}

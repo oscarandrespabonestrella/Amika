@@ -5,6 +5,7 @@ import { useId, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/native-select";
+import { updateCounters } from "../draft";
 import type { Category, Definition } from "../engine/definition";
 import type { FieldErrorCode, ScoreValue } from "../engine/evaluate";
 
@@ -139,12 +140,16 @@ function Control({
                 <NumberEntry
                   id={`${id}-${input.key}`}
                   value={record[input.key]}
-                  onChange={(n) => {
-                    const next = { ...record };
-                    if (n === undefined) delete next[input.key];
-                    else next[input.key] = n;
-                    onChange(Object.keys(next).length > 0 ? next : undefined);
-                  }}
+                  onChange={(n) =>
+                    onChange(
+                      updateCounters(
+                        category.inputs.map((i) => i.key),
+                        record,
+                        input.key,
+                        n,
+                      ),
+                    )
+                  }
                   {...aria}
                 />
               </div>

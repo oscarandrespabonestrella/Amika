@@ -36,3 +36,16 @@ export const sheetRenameSchema = z.strictObject({
   title,
   locale,
 });
+
+/**
+ * The title of a copy: the source title (cut by whole characters, so an emoji is
+ * never split) plus the suffix, never longer than the title limit.
+ */
+export function composeCopyTitle(title: string, suffix: string): string {
+  const base = title.trim();
+  const tail = suffix.trim();
+  if (base === "") return Array.from(tail).slice(0, SHEET_TITLE_MAX).join("");
+  const room = Math.max(SHEET_TITLE_MAX - Array.from(tail).length - 1, 0);
+  const head = Array.from(base).slice(0, room).join("").trimEnd();
+  return `${head} ${tail}`;
+}

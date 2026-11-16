@@ -30,7 +30,7 @@ export function SheetsList({
   function copy(sheet: SheetSummary) {
     setError(null);
     startTransition(async () => {
-      const result = await copySheetAction(sheet.id, sheet.title);
+      const result = await copySheetAction(sheet.id);
       if (result.ok) router.push(`/games/${gameId}/sheets/${result.sheetId}`);
       else setError(result.error);
     });

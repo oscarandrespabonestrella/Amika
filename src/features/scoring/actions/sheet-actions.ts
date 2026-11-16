@@ -7,7 +7,6 @@ import { getTranslations } from "next-intl/server";
 import { logger } from "@/lib/logger";
 import { validateDefinition, type DefinitionIssue } from "../engine/validate";
 import {
-  SHEET_TITLE_MAX,
   sheetCreateSchema,
   sheetIdSchema,
   sheetRenameSchema,
@@ -128,15 +127,14 @@ export async function deleteSheetAction(
 
 export async function copySheetAction(
   sheetId: unknown,
-  currentTitle: unknown,
 ): Promise<ScoringResult<{ sheetId: string }>> {
   return run("copy", async () => {
     const parsed = sheetIdSchema.safeParse(sheetId);
-    if (!parsed.success || typeof currentTitle !== "string") return invalid();
+    if (!parsed.success) return invalid();
+    // The title comes from the stored sheet, never from the client.
     const suffix = (await getTranslations("Scoring"))("copySuffix");
-    const title = `${currentTitle.slice(0, SHEET_TITLE_MAX - suffix.length - 1).trim()} ${suffix}`;
 
-    const outcome = await copySheet(parsed.data, title);
+    const outcome = await copySheet(parsed.data, suffix);
     if (typeof outcome === "string") return { ok: false, error: outcome };
     return { ok: true, sheetId: outcome.sheetId };
   });

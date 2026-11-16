@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  composeCopyTitle,
+  SHEET_TITLE_MAX,
   sheetCreateSchema,
   sheetIdSchema,
   sheetRenameSchema,
@@ -82,5 +84,28 @@ describe("sheetVersionSchema / sheetRenameSchema / sheetIdSchema", () => {
     ).toBe(false);
     expect(sheetIdSchema.safeParse(ID).success).toBe(true);
     expect(sheetIdSchema.safeParse("nope").success).toBe(false);
+  });
+});
+
+describe("composeCopyTitle", () => {
+  it("appends the suffix", () => {
+    expect(composeCopyTitle("7 Wonders", "(copy)")).toBe("7 Wonders (copy)");
+  });
+
+  it("never exceeds the title limit, suffix included", () => {
+    const result = composeCopyTitle("x".repeat(200), "(copy)");
+    expect(Array.from(result)).toHaveLength(SHEET_TITLE_MAX);
+    expect(result.endsWith(" (copy)")).toBe(true);
+  });
+
+  it("does not split an emoji at the cut", () => {
+    const result = composeCopyTitle("🐦".repeat(100), "(copy)");
+    expect(Array.from(result).length).toBeLessThanOrEqual(SHEET_TITLE_MAX);
+    expect(result).not.toMatch(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/); // no lone surrogate
+    expect(result.endsWith(" (copy)")).toBe(true);
+  });
+
+  it("an empty title yields just the suffix, still a valid title", () => {
+    expect(composeCopyTitle("   ", "(copy)")).toBe("(copy)");
   });
 });

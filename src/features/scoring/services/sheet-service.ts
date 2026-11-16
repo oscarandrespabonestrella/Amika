@@ -5,6 +5,7 @@ import { logger } from "@/lib/logger";
 import type { Json } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { type Definition } from "../engine/definition";
+import { composeCopyTitle } from "../schemas";
 import { validateDefinition } from "../engine/validate";
 
 export type SheetSummary = {
@@ -216,13 +217,13 @@ export async function deleteSheet(sheetId: string): Promise<void> {
 /** A new, independent sheet whose first version is the source's latest definition. */
 export async function copySheet(
   sheetId: string,
-  title: string,
+  titleSuffix: string,
 ): Promise<CreateOutcome> {
   const source = await getSheet(sheetId);
   if (!source) return "not_found";
   return createSheet({
     gameId: source.gameId,
-    title,
+    title: composeCopyTitle(source.title, titleSuffix),
     locale: source.locale,
     definition: source.definition,
     copiedFrom: source.id,

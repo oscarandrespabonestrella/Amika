@@ -7,6 +7,7 @@ import {
   newCategory,
   relabelCategory,
   slugifyKey,
+  updateCounters,
 } from "./draft";
 import type { Category } from "./engine/definition";
 
@@ -166,5 +167,36 @@ describe("relabelCategory", () => {
   it("does not rename a category when the new label yields the same key", () => {
     const list = [num("coins", "Coins")];
     expect(relabelCategory(list, 0, "coins!", new Set())[0].key).toBe("coins");
+  });
+});
+
+describe("updateCounters", () => {
+  const inputs = ["tablets", "compass", "gears"];
+
+  it("sets one counter and keeps the others", () => {
+    expect(updateCounters(inputs, { tablets: 3 }, "compass", 2)).toEqual({
+      tablets: 3,
+      compass: 2,
+    });
+  });
+
+  it("removes a counter when it is cleared, and returns undefined when none is left", () => {
+    expect(
+      updateCounters(inputs, { tablets: 3, compass: 2 }, "compass", undefined),
+    ).toEqual({ tablets: 3 });
+    expect(
+      updateCounters(inputs, { tablets: 3 }, "tablets", undefined),
+    ).toBeUndefined();
+  });
+
+  it("drops counters whose input no longer exists on the sheet", () => {
+    expect(
+      updateCounters(
+        ["tablets", "compass"],
+        { tablets: 3, gears: 1 },
+        "compass",
+        2,
+      ),
+    ).toEqual({ tablets: 3, compass: 2 });
   });
 });

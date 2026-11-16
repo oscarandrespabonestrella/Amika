@@ -93,6 +93,7 @@ export async function saveSheetVersionAction(
     const outcome = await saveSheetVersion(
       parsed.data.sheetId,
       definition.definition,
+      parsed.data.baseVersion,
     );
     if (typeof outcome === "string") return { ok: false, error: outcome };
     return { ok: true, version: outcome.version };

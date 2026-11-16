@@ -226,6 +226,30 @@ describe.skipIf(!hasDb)("RLS: scoring sheets", () => {
     expect(code).toBe("23505");
   });
 
+  it("an explicit version must be the next one: a stale save loses with 23505", async () => {
+    const insert = (c: Client, version: number) =>
+      pgErrorCode(
+        c.query(
+          `insert into public.scoring_sheet_versions (sheet_id, version, definition) values ($1,$2,$3)`,
+          [S_A, version, DEF],
+        ),
+      );
+    // The fixture sheet has version 1: only 2 is next. A tab that still believes
+    // the latest is 1 and saves "2" after someone else saved "2" would send 2 again.
+    expect(await asA((c) => insert(c, 5))).toBe("23505");
+    expect(await asA((c) => insert(c, 1))).toBe("23505");
+    expect(await asA((c) => insert(c, 2))).toBeNull();
+    expect(
+      await asA(async (c) => {
+        expect(await insert(c, 2)).toBeNull();
+        await c.query("savepoint s");
+        const second = await insert(c, 2); // the stale tab
+        await c.query("rollback to savepoint s");
+        return second;
+      }),
+    ).toBe("23505");
+  });
+
   it("the 51st version of a sheet is refused", async () => {
     const result = await asA(
       (c) =>

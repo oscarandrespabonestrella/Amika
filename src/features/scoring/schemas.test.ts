@@ -43,13 +43,34 @@ describe("sheetCreateSchema", () => {
   });
 });
 
+describe("sheetVersionSchema baseVersion", () => {
+  it("is required and must be a positive integer", () => {
+    const base = { sheetId: ID, definition };
+    expect(sheetVersionSchema.safeParse(base).success).toBe(false);
+    for (const bad of [0, -1, 1.5, "2", null])
+      expect(
+        sheetVersionSchema.safeParse({ ...base, baseVersion: bad }).success,
+        String(bad),
+      ).toBe(false);
+    expect(
+      sheetVersionSchema.safeParse({ ...base, baseVersion: 3 }).success,
+    ).toBe(true);
+  });
+});
+
 describe("sheetVersionSchema / sheetRenameSchema / sheetIdSchema", () => {
   it("accept valid payloads and reject extra keys and non-uuids", () => {
     expect(
-      sheetVersionSchema.safeParse({ sheetId: ID, definition }).success,
+      sheetVersionSchema.safeParse({ sheetId: ID, definition, baseVersion: 1 })
+        .success,
     ).toBe(true);
     expect(
-      sheetVersionSchema.safeParse({ sheetId: ID, definition, v: 1 }).success,
+      sheetVersionSchema.safeParse({
+        sheetId: ID,
+        definition,
+        baseVersion: 1,
+        v: 1,
+      }).success,
     ).toBe(false);
     expect(
       sheetRenameSchema.safeParse({ sheetId: ID, title: "New", locale: "fr" })

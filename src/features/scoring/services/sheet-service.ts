@@ -147,7 +147,7 @@ export async function createSheet(input: {
     throw error;
   }
 
-  // `version` is assigned by a database trigger; the column is required by the types only.
+  // A new sheet starts at version 1 (the numbering trigger checks it is the next one).
   const { error: versionError } = await supabase
     .from("scoring_sheet_versions")
     .insert({
@@ -162,16 +162,21 @@ export async function createSheet(input: {
   return { sheetId: sheet.id };
 }
 
-/** Editing means a new version; old versions are immutable. */
+/**
+ * Editing means a new version; old versions are immutable. The save creates
+ * `baseVersion + 1` (the version the author loaded + 1): if someone saved in the
+ * meantime the database refuses with 23505 and we report a conflict.
+ */
 export async function saveSheetVersion(
   sheetId: string,
   definition: Definition,
+  baseVersion: number,
 ): Promise<SaveVersionOutcome> {
   const { data, error } = await createSupabaseServerClient()
     .from("scoring_sheet_versions")
     .insert({
       sheet_id: sheetId,
-      version: 1, // replaced by the numbering trigger
+      version: baseVersion + 1,
       definition: definition as unknown as Json,
     })
     .select("version")

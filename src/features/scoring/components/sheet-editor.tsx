@@ -177,6 +177,7 @@ export function SheetEditor({ gameId, gameName, initial }: Props) {
         const result = await saveSheetVersionAction({
           sheetId: initial.sheetId,
           definition,
+          baseVersion: saved.version,
         });
         if (!result.ok) return setFailure(result);
         version = result.version;

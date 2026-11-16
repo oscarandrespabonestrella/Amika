@@ -27,6 +27,8 @@ export const sheetCreateSchema = z.strictObject({
 export const sheetVersionSchema = z.strictObject({
   sheetId: z.uuid(),
   definition: z.unknown(),
+  /** The version the author was editing: the save creates `baseVersion + 1` or conflicts. */
+  baseVersion: z.number().int().min(1),
 });
 
 export const sheetRenameSchema = z.strictObject({

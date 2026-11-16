@@ -72,16 +72,48 @@ describe("createPlaySchema", () => {
     expect(create({ participants: [] }).success).toBe(false);
   });
 
-  it("accepts emoji, markup and duplicate names as plain text", () => {
+  it("accepts emoji and markup as plain text", () => {
     const result = create({
       participants: [
         { name: "🐦 Ana" },
         { name: "<img src=x onerror=1>" },
         { name: "Ana" },
-        { name: "Ana" },
       ],
     });
     expect(result.success).toBe(true);
+  });
+
+  it("playerId is optional (defaults to null) and must be a uuid", () => {
+    const parsed = create({ participants: [{ name: "Ana" }] });
+    expect(parsed.success && parsed.data.participants[0].playerId).toBeNull();
+    expect(
+      create({ participants: [{ name: "Ana", playerId: ID }] }).success,
+    ).toBe(true);
+    expect(
+      create({ participants: [{ name: "Ana", playerId: "nope" }] }).success,
+    ).toBe(false);
+  });
+
+  it("a player cannot appear twice: same playerId, or names that normalize alike", () => {
+    expect(
+      create({
+        participants: [
+          { name: "Ana", playerId: ID },
+          { name: "Anita", playerId: ID },
+        ],
+      }).success,
+    ).toBe(false);
+    for (const other of ["Ana", "ana ", " ANA", "Aná"])
+      expect(
+        create({ participants: [{ name: "Ana" }, { name: other }] }).success,
+        other,
+      ).toBe(false);
+  });
+
+  it("different players with similar names are accepted", () => {
+    expect(
+      create({ participants: [{ name: "Ana" }, { name: "Anna" }] }).success,
+    ).toBe(true);
   });
 
   it("rejects malformed dates", () => {

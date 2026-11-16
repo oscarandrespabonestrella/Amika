@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normalizePlayerName } from "@/features/players/normalize";
 import {
   KEY_PATTERN,
   SCORE_LIMITS,
@@ -22,6 +23,8 @@ export const PLAY_LIMITS = {
 export const playIdSchema = z.uuid();
 
 const participantSchema = z.strictObject({
+  /** A roster player; null = a new or typed name (the database creates or reuses it). */
+  playerId: z.uuid().nullable().default(null),
   name: z
     .string()
     .trim()
@@ -62,7 +65,21 @@ const shared = {
   participants: z
     .array(participantSchema)
     .min(1, { message: "required" })
-    .max(PLAY_LIMITS.maxParticipants, { message: "tooMany" }),
+    .max(PLAY_LIMITS.maxParticipants, { message: "tooMany" })
+    // One player, once per match: same roster entry, or names that normalize alike.
+    .refine(
+      (people) => {
+        const ids = people
+          .map((p) => p.playerId)
+          .filter((id): id is string => id !== null);
+        const names = people.map((p) => normalizePlayerName(p.name));
+        return (
+          new Set(ids).size === ids.length &&
+          new Set(names).size === names.length
+        );
+      },
+      { message: "duplicatePlayer" },
+    ),
 };
 
 export const createPlaySchema = z.strictObject({

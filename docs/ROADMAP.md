@@ -12,7 +12,7 @@
 | 4 | Game Center | Reglas (en + idiomas disponibles), FAQ, vídeos, galería, expansiones |
 | 5 | Partidas y puntuación | Registrar partida con config versionada y participantes por nombre |
 | 6 | Estadísticas | Personales y por juego, gráficos |
-| 7 | IA local | **7a** identificar juego por foto en el dispositivo (OCR, código de barras, hash de imagen; `docs/superpowers/specs/2026-11-16-fase7a-identificar-juego-design.md`) · **7b** lectura de hojas (pendiente) · IA externa opcional, apagada por defecto |
+| 7 | IA local | **7a** identificar juego por foto en el dispositivo (código de barras; OCR e hash retirados en 7a-2; `docs/superpowers/specs/2026-11-16-fase7a-identificar-juego-design.md`) · **7a-2** reconocimiento **en vivo con la cámara** (CLIP + ORB, opcional, apagado de serie; `docs/superpowers/specs/2026-11-16-fase7a2-reconocimiento-en-vivo-design.md`) · **7b** lectura de hojas (pendiente) · IA externa opcional, apagada por defecto |
 | 8 | Comunidad | Partidas compartidas con usuarios, amigos, grupos, admin avanzado |
 | 9 | Producción | Auditoría, a11y, rendimiento, monitorización, legal, despliegue |
 
@@ -86,6 +86,19 @@ Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.m
 | Medición con fotos reales (`npm run recognition:eval`) | **Hecha (2026-11-16, 15 fotos del usuario): resultado flojo**: título 2/15, imagen 1/15, combinado 3/15 en el top 5; código de barras sin medir (las fotos son del frente). Ver ADR-036 |
 | Verificar el adaptador de BGG con el token real | **Hecho**: búsqueda y ficha funcionan con la API real (la búsqueda tarda ~5 s) |
 | Pruebas | 507 unitarias, 217 RLS/SQL, 259 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+
+## Estado de la Fase 7a-2 (actualizado 2026-11-16)
+| Entrega | Estado |
+|---|---|
+| Reconocimiento en vivo con la cámara en el dispositivo: CLIP ViT-B/32 (modelo de 85 MB, Web Worker) como recuperador, ORB + RANSAC (OpenCV.js) como verificador, código de barras aprendido; la imagen no sale del dispositivo (verificado por E2E: ninguna petición no-GET lleva una imagen) | Hecho |
+| **Opcional, apagado de serie y por dispositivo**: tarjeta de activación con el aviso de ~85 MB antes de descargar nada; sección en Ajustes para desactivar y borrar la descarga | Hecho |
+| Elegir una foto de la galería usa el mismo motor | Hecho |
+| Punto de entrada: `GET /api/covers/[gameId]` (portada acotada, solo si el juego es visible) | Hecho |
+| Calibración con las 15 fotos del usuario (65 referencias): 10/15 reconocidas (todas «alta»), 5/15 «no estoy seguro», **0 equivocadas**; CLIP solo 11/15 | Hecha; ver ADR-037 (incluye la desviación de la puerta del plan) |
+| Migración 0017: se eliminan `game_image_hashes` y sus funciones; se retiran OCR (Tesseract), dHash, el hash al importar y el script de relleno | Hecho y aplicada en dev (con aprobación) |
+| Pruebas | 595 unitarias, 206 de integración (RLS/SQL), 243 E2E (7 nuevas de reconocimiento en vivo con cámara falsa) |
+| **Rendimiento en el móvil** | **Sin medir**: pendiente de que el usuario lo pruebe en su teléfono |
+| Antes de `CSP_ENFORCE=1` | Resolver que OpenCV.js usa `eval` (SECURITY §17 y ADR-037) |
 
 ## Estado de la Fase 6b (actualizado 2026-11-16)
 | Entrega | Estado |

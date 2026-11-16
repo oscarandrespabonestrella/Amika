@@ -146,11 +146,9 @@ Funciones SQL de **solo lectura**, `security invoker`, `stable`, `set search_pat
 - `game_score_series(game, limit = 100)`: puntuaciones de las **últimas `limit` partidas** (1–200; acotado a propósito porque un usuario puede tener 5 000), en orden cronológico; `seq` numera esas partidas de 1 a N (una partida sin puntuaciones conserva su número y no da filas).
 - `my_overview()`, `my_top_games(limit = 5)` y `head_to_head()` parten del jugador **«soy yo»** (`players.linked_user_id` = el usuario). Sin «soy yo»: ceros y `me_player_id` nulo, sin juegos y sin rivales. `head_to_head` cuenta solo partidas en las que **ambos tienen puesto** (una partida sin puntuaciones no dice quién ganó); los rivales sin partidas así no aparecen; los empates se cuentan aparte.
 
-## 9b. Reconocimiento local de juegos — implementado en 0016 (Fase 7a)
-Para identificar un juego por foto **en el dispositivo** (la foto no se envía): solo se guardan **códigos y hashes**, nunca imágenes. Los hashes viajan como **16 caracteres hexadecimales en minúscula** (un número JSON perdería precisión) y se guardan como `bigint`.
+## 9b. Reconocimiento local de juegos — 0016 (Fase 7a) y 0017 (Fase 7a-2)
+Para identificar un juego **en el dispositivo** (ninguna imagen se envía) solo se guardan **códigos de barras**, nunca imágenes. La migración 0017 (Fase 7a-2) **eliminó** `game_image_hashes`, `match_game_images`, `save_photo_hash`, `upsert_cover_hash`, `hex_to_hash` y `enforce_image_hash_cap`: el parecido de imágenes ahora se calcula en el navegador (vectores en IndexedDB, que son del dispositivo y no de la base de datos). Un test de integración comprueba que esos objetos ya no existen.
 - **`game_barcodes`** (`user_id`, `gtin` de 13 dígitos, `game_id`): códigos que el usuario ha enseñado a la aplicación. **Privados por usuario** (RLS solo del dueño); el juego debe ser visible; único por (`user_id`, `gtin`); solo se puede reapuntar `game_id`; tope de **500 por usuario** (el disparador bloquea la fila del perfil).
-- **`game_image_hashes`** (`game_id`, `owner_id` nulo, `source` `cover|user_photo`, `hash`): `cover` = hash de la portada de catálogo (uno por juego, sin dueño, escrito solo por el servidor con `service_role` mediante `upsert_cover_hash`, legible para quien ve el juego); `user_photo` = hash de una foto propia (solo del dueño; tope de **20 por usuario y juego**; se guarda con `save_photo_hash(juego, hash_hex)`).
-- **`match_game_images(hash_hex, max_distancia = 12, límite = 5)`** (`security invoker`): el mínimo por juego de la distancia de Hamming sobre las filas que el usuario puede ver; hash mal formado → `22023`.
 - `anon` no ejecuta ninguna función ni lee ninguna tabla.
 
 ## 10. Storage y fotos propias — implementado en 0003

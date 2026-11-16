@@ -366,5 +366,8 @@
       "invalidUrl": "Enter a valid https:// address.",
       "invalidVideo": "Enter a YouTube link or a video id."
     }
+  },
+  "Scoring": {
+    "copySuffix": "(copy)"
   }
 }

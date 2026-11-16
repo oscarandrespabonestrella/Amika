@@ -110,3 +110,7 @@ Logger central sin PII ni tokens; sin trazas al cliente. Monitorización (Sentry
 - **Salida acotada**: la serie de puntuaciones se limita a las últimas 200 partidas como máximo; el desglose por categoría, a las últimas 200 con hoja. Un usuario con 5 000 partidas no genera respuestas enormes.
 - **Contenido no confiable**: las definiciones de hoja guardadas se validan antes de evaluarlas (una inválida oculta el desglose y no lanza); los nombres de jugador y de juego se muestran siempre como texto.
 - **Sin datos nuevos de terceros**: Recharts se ejecuta en el navegador sobre datos ya cargados; no hay llamadas externas ni cookies nuevas.
+
+## 15. Fase 7a: reconocimiento local
+- **La foto no sale del dispositivo**: el reconocimiento (OCR, código de barras, hash de imagen) se ejecuta en el navegador; al servidor solo llegan como máximo 3 líneas de texto (≤ 80 caracteres), un código de barras y un hash de 64 bits.
+- **Tablas nuevas** (migración 0016): `game_barcodes` solo del dueño (tope 500, juego visible); `game_image_hashes`: los hashes de portada solo los escribe el servidor (`upsert_cover_hash`, solo `service_role`) y se leen únicamente para juegos visibles; los de fotos propias solo los ve su dueño (tope 20 por juego). `anon` no tiene acceso. Probado en `rls-recognition.test.ts`.

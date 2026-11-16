@@ -26,6 +26,9 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
+    // Self-hosted OCR/barcode engines copied from node_modules (scripts/copy-ocr-assets.mjs).
+    "public/tesseract/**",
+    "public/zxing/**",
     "out/**",
     "build/**",
     "next-env.d.ts",

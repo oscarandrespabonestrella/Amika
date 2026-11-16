@@ -20,7 +20,10 @@ const nm = (...p) => join(root, "node_modules", ...p);
 const out = (...p) => join(root, "public", ...p);
 
 const files = [
-  [nm("tesseract.js", "dist", "worker.min.js"), out("tesseract", "worker.min.js")],
+  [
+    nm("tesseract.js", "dist", "worker.min.js"),
+    out("tesseract", "worker.min.js"),
+  ],
   ...[
     "tesseract-core-lstm.wasm.js",
     "tesseract-core-simd-lstm.wasm.js",

@@ -29,6 +29,9 @@ const eslintConfig = defineConfig([
     // Self-hosted OCR/barcode engines copied from node_modules (scripts/copy-ocr-assets.mjs).
     "public/tesseract/**",
     "public/zxing/**",
+    "public/ort/**",
+    "public/opencv/**",
+    "public/models/**",
     "out/**",
     "build/**",
     "next-env.d.ts",

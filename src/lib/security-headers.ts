@@ -12,6 +12,8 @@ export type HeaderEnv = {
   nodeEnv: "production" | "development" | "test";
   clerkPublishableKey: string | undefined;
   supabaseUrl: string | undefined;
+  /** NEXT_PUBLIC_MODEL_BASE_URL: only an https URL adds an origin (to connect-src). */
+  modelBaseUrl?: string | undefined;
   /** Send the CSP enforcing (true) or as Content-Security-Policy-Report-Only (false). */
   cspEnforce: boolean;
 };
@@ -26,6 +28,18 @@ export function clerkFrontendHost(key: string | undefined): string | null {
     const decoded = Buffer.from(encoded, "base64").toString("utf8");
     const host = decoded.endsWith("$") ? decoded.slice(0, -1) : "";
     return host && HOST.test(host) ? host : null;
+  } catch {
+    return null;
+  }
+}
+
+function modelOrigin(url: string | undefined): string | null {
+  try {
+    if (!url) return null;
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" && !parsed.username && !parsed.password
+      ? parsed.origin
+      : null;
   } catch {
     return null;
   }
@@ -61,6 +75,8 @@ export function buildCsp(env: HeaderEnv): string {
   const clerkOrigin = clerk ? [`https://${clerk}`] : [];
   const supabaseHttp = supabase ? [`https://${supabase}`] : [];
   const supabaseWs = supabase ? [`wss://${supabase}`] : [];
+  const modelHost = modelOrigin(env.modelBaseUrl);
+  const modelHttp = modelHost ? [modelHost] : [];
 
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
@@ -88,6 +104,7 @@ export function buildCsp(env: HeaderEnv): string {
       ...CLERK_SHARED.connect,
       ...supabaseHttp,
       ...supabaseWs,
+      ...modelHttp,
       ...(dev ? ["ws://localhost:*", "http://localhost:*"] : []),
     ],
     "frame-src": [

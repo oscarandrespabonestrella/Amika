@@ -9,3 +9,6 @@ playwright/.clerk
 coverage
 public/tesseract
 public/zxing
+public/models
+public/ort
+public/opencv

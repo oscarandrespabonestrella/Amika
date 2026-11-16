@@ -12,6 +12,7 @@ const PK_TEST = `pk_test_${b64("sweet-owl-12.clerk.accounts.dev$")}`;
 const PK_LIVE = `pk_live_${b64("clerk.amika.example$")}`;
 
 const env = (over: Partial<HeaderEnv> = {}): HeaderEnv => ({
+  modelBaseUrl: undefined,
   nodeEnv: "production",
   clerkPublishableKey: PK_TEST,
   supabaseUrl: "https://abcd1234.supabase.co",
@@ -86,6 +87,26 @@ describe("buildCsp", () => {
     expect(dev).not.toContain("upgrade-insecure-requests");
     expect(directive(dev, "script-src")).toContain("'unsafe-eval'");
     expect(directive(dev, "connect-src")).toContain("ws://localhost:*");
+  });
+
+  it("allows a model hosted on another https origin to be downloaded (connect-src), nothing else", () => {
+    const other = buildCsp(
+      env({ modelBaseUrl: "https://models.example.com/clip/" }),
+    );
+    expect(directive(other, "connect-src")).toContain(
+      "https://models.example.com",
+    );
+    for (const bad of [
+      "/models/",
+      "http://insecure.example.com/",
+      "javascript:alert(1)",
+      "not a url",
+      undefined,
+    ])
+      expect(
+        directive(buildCsp(env({ modelBaseUrl: bad })), "connect-src"),
+        String(bad),
+      ).not.toMatch(/example.com/);
   });
 
   it("copes with missing hosts without printing null or undefined", () => {

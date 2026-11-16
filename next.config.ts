@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
               : "development",
           clerkPublishableKey: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
           supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+          modelBaseUrl: process.env.NEXT_PUBLIC_MODEL_BASE_URL,
           cspEnforce: process.env.CSP_ENFORCE === "1",
         }),
       },

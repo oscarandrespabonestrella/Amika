@@ -125,3 +125,7 @@ Construidas en `src/lib/security-headers.ts` (puro, con tests) y aplicadas a tod
 - **Compromiso conocido**: `script-src` incluye `'unsafe-inline'` (los scripts de hidratación de Next son en línea; una política con nonce obligaría a renderizar todas las páginas de forma dinámica). Mejora futura.
 - **Zod sin JIT en el navegador** (`components/zod-config.tsx`): Zod 4 sondea `new Function`; con una CSP estricta el navegador lo notificaría como violación aunque se capture.
 - **Ruta de los motores**: `/tesseract/*` y `/zxing/*` no pasan por el proxy de idiomas (sus `.wasm` y `.gz` recibían un prefijo `/en` y daban 404).
+
+## 17. Reconocimiento en vivo con cámara (Fase 7a-2, en curso)
+- **Apagado de serie y por dispositivo**: no se descarga ni se carga nada hasta que el usuario lo activa y confirma el aviso de la descarga (~85 MB). Solo `installModel` descarga el modelo; `createEmbedder` se niega a funcionar (sin descargar) si no está instalado.
+- **Motores autoalojados**: el modelo (`/models/`), el motor de ONNX Runtime (`/ort/`) y OpenCV.js (`/opencv/`) se sirven desde nuestro origen (copias en `public/`, fuera de git, hechas por `scripts/copy-model-assets.mjs`); `env.allowRemoteModels = false`: nunca se contacta con Hugging Face ni con una CDN en tiempo de ejecución. Esos directorios no pasan por el proxy de idiomas. Si el modelo se aloja en otro origen https (`NEXT_PUBLIC_MODEL_BASE_URL`), solo ese origen se añade a `connect-src`.

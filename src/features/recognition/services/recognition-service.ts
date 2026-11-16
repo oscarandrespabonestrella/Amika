@@ -109,3 +109,19 @@ export async function savePhotoHash(
   });
   return error ? failed(error) : { ok: true };
 }
+
+export type RecognitionGame = { id: string; name: string; coverUrl: string };
+
+/** Catalog games with a cover that the user can see (RLS), for building reference vectors. */
+export async function listCoverGames(limit = 300): Promise<RecognitionGame[]> {
+  const { data, error } = await createSupabaseServerClient()
+    .from("games")
+    .select("id, name, cover_url")
+    .not("cover_url", "is", null)
+    .order("name")
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []).flatMap((g) =>
+    g.cover_url ? [{ id: g.id, name: g.name, coverUrl: g.cover_url }] : [],
+  );
+}

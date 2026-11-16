@@ -30,20 +30,16 @@ import {
   coverJpeg,
   fetchCoverBytes,
 } from "../src/features/recognition/cover-fetch.ts";
-import {
-  levelFor,
-  type Level,
-} from "../src/features/recognition/embedding/confidence.ts";
+import { type Level } from "../src/features/recognition/embedding/confidence.ts";
 import {
   normalize,
   rankByCosine,
   type Reference,
 } from "../src/features/recognition/embedding/rank.ts";
-import { pickVerified } from "../src/features/recognition/embedding/resolve.ts";
 import {
-  LOCK_MIN_MARGIN,
-  LOCK_MIN_SIMILARITY,
-} from "../src/features/recognition/embedding/thresholds.ts";
+  decide,
+  singleFrameLock,
+} from "../src/features/recognition/embedding/resolve.ts";
 import {
   verifyOrb,
   type Cv,
@@ -335,18 +331,11 @@ async function main() {
     const orb = new Map<string, number>();
     for (const r of ranked.slice(0, 3))
       orb.set(r.gameId, verifyOrb(cv, photo, coverImages.get(r.gameId)!));
-    const verified = pickVerified(orb);
-    const locked =
-      top.score >= LOCK_MIN_SIMILARITY && margin >= LOCK_MIN_MARGIN;
-    const answerId = verified?.gameId ?? (locked ? top.gameId : null);
-    const answer = answerId ? ranked.find((r) => r.gameId === answerId)! : null;
-    const level = answer
-      ? levelFor({
-          similarity: answer.score,
-          margin: answer.gameId === top.gameId ? margin : 0,
-          orbInliers: orb.get(answer.gameId) ?? 0,
-        })
+    const decision = decide({ ranked, orb, lock: singleFrameLock(ranked) });
+    const answer = decision
+      ? ranked.find((r) => r.gameId === decision.gameId)!
       : null;
+    const level = decision?.level ?? null;
     const outcome: Row["outcome"] = !answer
       ? "not sure"
       : answer.gameId === truth

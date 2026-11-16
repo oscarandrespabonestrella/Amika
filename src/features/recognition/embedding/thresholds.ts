@@ -27,3 +27,6 @@ export const MEDIUM_MIN_MARGIN = 0.05;
 /** ORB + RANSAC inliers (frame vs cover) that make an answer "high" / "medium". */
 export const ORB_HIGH_INLIERS = 40;
 export const ORB_MEDIUM_INLIERS = 30;
+
+/** Below this top similarity a frame looks like nothing in the catalog: no ORB is spent on it. */
+export const VERIFY_MIN_SIMILARITY = 0.35;

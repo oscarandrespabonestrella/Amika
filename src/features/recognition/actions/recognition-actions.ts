@@ -13,7 +13,9 @@ import type { Candidate } from "../merge";
 import {
   createRecognitionDeps,
   learnBarcode,
+  listCoverGames,
   savePhotoHash,
+  type RecognitionGame,
 } from "../services/recognition-service";
 
 /** Result codes are translated by the UI (Recognition.errors.*). */
@@ -86,6 +88,23 @@ export async function savePhotoHashAction(
   } catch (error) {
     unstable_rethrow(error);
     logger.error("savePhotoHash failed", error);
+    return { ok: false, error: "failed" };
+  }
+}
+
+export type ListGamesResult =
+  | { ok: true; games: RecognitionGame[] }
+  | Failure<"unauthenticated" | "failed">;
+
+/** The games the live camera can recognize (those with a cover). Only called after opt-in. */
+export async function listRecognitionGamesAction(): Promise<ListGamesResult> {
+  const { userId } = await auth();
+  if (!userId) return { ok: false, error: "unauthenticated" };
+  try {
+    return { ok: true, games: await listCoverGames() };
+  } catch (error) {
+    unstable_rethrow(error);
+    logger.error("listRecognitionGames failed", error);
     return { ok: false, error: "failed" };
   }
 }

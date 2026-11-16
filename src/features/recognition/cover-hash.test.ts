@@ -129,8 +129,14 @@ describe("fetchCoverBytes", () => {
     ).toBeNull();
   });
 
+  it("accepts the large originals BoardGameGeek serves (2-5 MB) but not more", async () => {
+    expect(await fetchCoverBytes(OK, async () => png(3_000_000))).toHaveLength(
+      3_000_000,
+    );
+  });
+
   it("stops at the size cap instead of reading everything", async () => {
-    expect(await fetchCoverBytes(OK, async () => png(3_000_000))).toBeNull();
+    expect(await fetchCoverBytes(OK, async () => png(6_000_000))).toBeNull();
     expect(await fetchCoverBytes(OK, async () => png(300), {})).toHaveLength(
       300,
     );

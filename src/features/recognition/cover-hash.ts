@@ -16,7 +16,7 @@ const ALLOWED_HOSTS = [
 const MAX_REDIRECTS = 2;
 const REDIRECTS = new Set([301, 302, 303, 307, 308]);
 const DEFAULT_TIMEOUT_MS = 5000;
-const DEFAULT_MAX_BYTES = 2 * 1024 * 1024;
+const DEFAULT_MAX_BYTES = 5 * 1024 * 1024; // BGG originals reach 2-3 MB
 
 export function isAllowedCoverUrl(raw: string): boolean {
   let url: URL;

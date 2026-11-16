@@ -83,8 +83,8 @@ Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.m
 | Resultados ordenados con el motivo («Código», «Título», «Imagen») y confianza (nunca «seguro»); confirmación manual; el código y la foto confirmados se aprenden | Hecho |
 | Punto de extensión `GameRecognizer` (IA externa opcional: apagada, exige consentimiento explícito; ninguna implementada) | Hecho |
 | Cabeceras de seguridad y CSP compatible con WebAssembly | Hecho; **CSP en modo informe** hasta activar `CSP_ENFORCE=1` (ver SECURITY §16) |
-| Medición con fotos reales (`npm run recognition:eval -- <carpeta>`) y decisión sobre la señal de imagen | **Pendiente: faltan las fotos del usuario** (la señal de imagen se entrega sin medir) |
-| Verificar el adaptador de BGG con el token real | **Pendiente: falta `BGG_API_TOKEN` en `.env.local`** |
+| Medición con fotos reales (`npm run recognition:eval`) | **Hecha (2026-11-16, 15 fotos del usuario): resultado flojo**: título 2/15, imagen 1/15, combinado 3/15 en el top 5; código de barras sin medir (las fotos son del frente). Ver ADR-036 |
+| Verificar el adaptador de BGG con el token real | **Hecho**: búsqueda y ficha funcionan con la API real (la búsqueda tarda ~5 s) |
 | Pruebas | 507 unitarias, 217 RLS/SQL, 259 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
 
 ## Estado de la Fase 6b (actualizado 2026-11-16)

@@ -3,7 +3,7 @@
  * technique and combined, using the SAME code the app uses (barcode check digits, OCR
  * line cleaning, dHash, candidate merging). Not part of CI: it needs real photos.
  *
- *   npm run recognition:eval -- <folder> [--lang en|es|fr]
+ *   npm run recognition:eval -- <folder> [--lang en|es|fr] [--labels <file>]
  *   npm run recognition:eval -- --self-test        # no photos, no database
  *
  * <folder> holds the photos (jpg, png, webp) and a labels.json mapping each file name to
@@ -34,7 +34,11 @@ const args = process.argv.slice(2);
 const selfTest = args.includes("--self-test");
 const langAt = args.indexOf("--lang");
 const langFlag = langAt >= 0 ? args[langAt + 1] : undefined;
-const folder = args.find((a) => !a.startsWith("--") && a !== langFlag);
+const labelsAt = args.indexOf("--labels");
+const labelsFlag = labelsAt >= 0 ? args[labelsAt + 1] : undefined;
+const folder = args.find(
+  (a) => !a.startsWith("--") && a !== langFlag && a !== labelsFlag,
+);
 const LANGS: Record<string, string[]> = {
   en: ["eng"],
   es: ["eng", "spa"],
@@ -152,7 +156,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 async function main() {
   if (selfTest) return runSelfTest();
 
-  if (!folder || !existsSync(join(folder, "labels.json"))) {
+  if (!folder || !existsSync(labelsFlag ?? join(folder, "labels.json"))) {
     console.error(
       "Usage: npm run recognition:eval -- <folder with photos and labels.json> [--lang en|es|fr]",
     );
@@ -171,7 +175,7 @@ async function main() {
   await db.connect();
 
   const labels: Labels = JSON.parse(
-    readFileSync(join(folder, "labels.json"), "utf8"),
+    readFileSync(labelsFlag ?? join(folder, "labels.json"), "utf8"),
   );
   const catalog = (
     await db.query<{ id: string; name: string }>(

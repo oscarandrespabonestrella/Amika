@@ -5,10 +5,9 @@ import { parseSearchResponse, parseThingResponse } from "./parse";
 /**
  * BoardGameGeek XML API2 client.
  *
- * UNVERIFIED until the API token is approved: the base URL, the
- * `Authorization: Bearer` header and the 202/429 behaviour follow BGG's public
- * documentation as we know it. Everything BGG-specific lives in this file and
- * `parse.ts`, so a correction is a one-place change (see bgg.contract.test.ts).
+ * Verified against the live API (2026-11-16, see bgg.contract.test.ts): the base URL and
+ * the `Authorization: Bearer` header work. Everything BGG-specific lives in this file and
+ * `parse.ts`, so a correction is a one-place change.
  */
 
 const BASE_URL = "https://boardgamegeek.com/xmlapi2";

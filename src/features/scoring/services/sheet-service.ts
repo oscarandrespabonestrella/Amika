@@ -310,6 +310,8 @@ export async function copySheet(
 ): Promise<CreateOutcome> {
   const source = await getSheet(sheetId);
   if (!source) return "not_found";
+  // Readable by whoever used it, but a disabled sheet cannot be copied (and republished).
+  if (source.disabled && !source.ownedByMe) return "not_found";
   return createSheet({
     gameId: source.gameId,
     title: composeCopyTitle(source.title, titleSuffix),

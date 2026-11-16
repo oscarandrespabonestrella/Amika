@@ -85,15 +85,17 @@ export function CommunitySheets({
               >
                 {t("view")}
               </Link>
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11 px-4"
-                disabled={pending}
-                onClick={() => copy(sheet.sheetId)}
-              >
-                {pending ? t("copying") : t("copy")}
-              </Button>
+              {!sheet.disabled && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-11 px-4"
+                  disabled={pending}
+                  onClick={() => copy(sheet.sheetId)}
+                >
+                  {pending ? t("copying") : t("copy")}
+                </Button>
+              )}
             </div>
           </li>
         ))}

@@ -357,6 +357,39 @@ test.describe("moderation", () => {
     });
   });
 
+  test("an administrator can open their own match that used a community sheet", async ({
+    browser,
+  }) => {
+    // The administrator policy lets them read EVERY vote; the page must still find only
+    // their own (Alpha has 45 votes from other people).
+    const playId = await withDb(async (c) => {
+      const play = await c.query<{ id: string }>(
+        `insert into public.plays (created_by, game_id, scoring_version_id)
+         values ($1,$2,$3) returning id`,
+        [userK, gameId, versionIds[ALPHA]],
+      );
+      await c.query(
+        `insert into public.play_participants (play_id, seat, display_name, total_score, rank, is_winner)
+         values ($1,0,'Kay',null,null,false)`,
+        [play.rows[0].id],
+      );
+      return play.rows[0].id;
+    });
+    await asUser(browser, "k", async (page) => {
+      const response = await page.goto(`/en/games/${gameId}/plays/${playId}`);
+      expect(response?.status()).toBe(200);
+      await expect(
+        page.getByRole("heading", { level: 1, name: "Match" }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("region", { name: "How accurate was this sheet?" }),
+      ).toBeVisible();
+    });
+    await withDb((c) =>
+      c.query(`delete from public.plays where id = $1`, [playId]),
+    );
+  });
+
   test("a regular user cannot call the admin functions", async () => {
     const result = await withDb(async (c) => {
       await c.query("begin");
@@ -516,6 +549,12 @@ test.describe("using community sheets in a match", () => {
       ).toBeVisible();
     });
     await asUser(browser, "j", async (page) => {
+      // Having used a disabled sheet is no way around the moderation: it can still be
+      // read (the match needs it) but it cannot be copied and republished.
+      await page.goto(sheetUrl(ALPHA));
+      await expect(page.getByText(/This sheet is disabled/)).toBeVisible();
+      await expect(page.getByRole("button", { name: "Copy" })).toHaveCount(0);
+
       await page.goto(sheetsUrl());
       expect(await communityTitles(page)).not.toContain(ALPHA);
 

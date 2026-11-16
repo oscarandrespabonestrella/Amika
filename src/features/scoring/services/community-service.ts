@@ -99,10 +99,14 @@ export async function unpublishSheet(
 /** The viewer's own vote on a version (RLS: nobody else's). */
 export async function getMyVote(versionId: string): Promise<MyVote> {
   if (!z.uuid().safeParse(versionId).success) return null;
+  const { userId } = await auth();
+  if (!userId) return null;
+  // Administrators can read every vote: ask for the viewer's own explicitly.
   const { data, error } = await createSupabaseServerClient()
     .from("scoring_votes")
     .select("kind, reason")
     .eq("version_id", versionId)
+    .eq("user_id", userId)
     .maybeSingle();
   if (error) throw error;
   return data

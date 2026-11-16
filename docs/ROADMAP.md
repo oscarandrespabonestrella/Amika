@@ -77,10 +77,10 @@ Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.m
 ## Estado de la Fase 5c (actualizado 2026-11-16)
 | Entrega | Estado |
 |---|---|
-| Migraciones 0011–0012: publicar (solo catálogo, 5 al día), votos, ranking de Wilson, funciones de administrador, borrado de cuenta con hojas anónimas, permisos por columna, topes sin carrera | Hecho y aplicado en dev; 27 tests de RLS nuevos (151 en total) |
+| Migraciones 0011–0013: publicar (solo catálogo, 5 al día), votos, ranking de Wilson, funciones de administrador, borrado de cuenta con hojas anónimas, permisos por columna, topes sin carrera | Hecho y aplicado en dev; 29 tests de RLS nuevos (153 en total) |
 | Sección «Hojas de la comunidad» en la página de hojas, vista de solo lectura con copiar, publicar/despublicar, selector de hoja agrupado con la mejor por defecto | Hecho |
 | Aviso 👍 / «total incorrecto» (con motivo) tras una partida con la hoja de otro; verificar/desactivar y ver avisos (administrador) | Hecho |
-| Pruebas | 353 unitarias, 151 RLS/SQL, 190 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+| Pruebas | 353 unitarias, 153 RLS/SQL, 191 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
 
 ## Estado de la Fase 5b (actualizado 2026-11-16)
 | Entrega | Estado |

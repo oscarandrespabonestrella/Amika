@@ -364,6 +364,31 @@ describe.skipIf(!hasDb)("votes", () => {
     expect(await asA(vote(V_A, P_A, "up", null))).toBe("42501");
   });
 
+  it("not by moving an existing vote onto one's own sheet (the UPDATE route)", async () => {
+    const P_AC = "00000000-0000-4000-8000-0000000000e9"; // A's match on C's sheet
+    const moved = await asA(
+      async (c) =>
+        (
+          await c.query(
+            `update public.scoring_votes set version_id = $1, play_id = $2 where version_id = $3`,
+            [V_A, P_A, V_C],
+          )
+        ).rowCount,
+      async (c) => {
+        // A legitimately votes on C's sheet (privileged fixtures stand in for that vote).
+        await c.query(
+          `insert into public.plays (id, created_by, game_id, scoring_version_id) values ($1,$2,$3,$4)`,
+          [P_AC, A, G1, V_C],
+        );
+        await c.query(
+          `insert into public.scoring_votes (version_id, user_id, play_id, kind) values ($1,$2,$3,'up')`,
+          [V_C, A, P_AC],
+        );
+      },
+    ).catch((error: { code?: string }) => error.code);
+    expect(moved).toBe("42501");
+  });
+
   it("one vote per user and version, but it can change and be removed", async () => {
     const result = await asC(async (c) => {
       await c.query(
@@ -607,6 +632,37 @@ describe.skipIf(!hasDb)("admin functions", () => {
       },
     );
     expect(cleared).toBeNull();
+  });
+
+  it("a new version clears the verified badge (verification applies to what the admin saw)", async () => {
+    const result = await asA(
+      async (c) => {
+        const before = (
+          await c.query(
+            `select verified_at is not null v from public.scoring_sheets where id = $1`,
+            [S_A],
+          )
+        ).rows[0].v;
+        await c.query(
+          `insert into public.scoring_sheet_versions (sheet_id, definition) values ($1,$2)`,
+          [S_A, DEF],
+        );
+        const after = (
+          await c.query(
+            `select verified_at is null v, verified_by is null b from public.scoring_sheets where id = $1`,
+            [S_A],
+          )
+        ).rows[0];
+        return { before, after };
+      },
+      async (c) => {
+        await c.query(
+          `update public.scoring_sheets set verified_at = now(), verified_by = $2 where id = $1`,
+          [S_A, ADMIN],
+        );
+      },
+    );
+    expect(result).toEqual({ before: true, after: { v: true, b: true } });
   });
 
   it("admin_sheet_flags returns the reasons to admins only", async () => {

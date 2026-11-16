@@ -78,14 +78,16 @@ export function SheetView({
       </header>
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button
-          type="button"
-          className="h-11 px-5"
-          disabled={pending}
-          onClick={copy}
-        >
-          {pending ? tc("copying") : tc("copy")}
-        </Button>
+        {!sheet.disabled && (
+          <Button
+            type="button"
+            className="h-11 px-5"
+            disabled={pending}
+            onClick={copy}
+          >
+            {pending ? tc("copying") : tc("copy")}
+          </Button>
+        )}
         <div aria-live="polite">
           {error && (
             <p role="alert" className="text-sm text-destructive">

@@ -82,7 +82,7 @@ Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.m
 | Desglose por categoría (puntos medios, calculados con el motor, para la versión de hoja más usada) | Hecho |
 | Página «Estadísticas» (nueva entrada de navegación): mi historial, juegos más jugados y cara a cara; sin «soy yo» explica y enlaza a Mis jugadores | Hecho |
 | Gráficos: shadcn Chart sobre Recharts 3; paleta `--chart-1..5` validada (ADR-035); máximo 5 series; cada gráfico con su tabla equivalente | Hecho |
-| Pruebas | 391 unitarias, 197 RLS/SQL, 235 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+| Pruebas | 394 unitarias, 197 RLS/SQL, 235 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
 
 ## Estado de la Fase 6a (actualizado 2026-11-16)
 | Entrega | Estado |

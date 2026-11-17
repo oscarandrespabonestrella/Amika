@@ -13,8 +13,16 @@ export type EnsurePackDeps = {
   loadManifest?: () => Promise<PackManifest>;
 };
 
+/** The only dynamic import of the manifest: one chunk, loaded after the opt-in. */
+const loadManifestModule = () => import("./manifest");
+
 const defaultLoadManifest = async () =>
-  (await import("./manifest")).getPackManifest();
+  (await loadManifestModule()).getPackManifest();
+
+/** Name and BGG rank of a pack game id, from the same lazily loaded manifest. */
+export async function loadPackGameInfo() {
+  return (await loadManifestModule()).packGameInfo;
+}
 
 export async function ensurePack(
   store: ReferenceStore,

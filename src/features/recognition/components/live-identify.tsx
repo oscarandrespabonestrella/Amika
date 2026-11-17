@@ -10,6 +10,18 @@ import { useRecognitionSetup } from "../live/use-activation";
 import { useLiveRecognition } from "../live/use-live-recognition";
 import { ActivationCard } from "./recognition-settings";
 
+const ADD_ERROR_KEYS = [
+  "unavailable",
+  "rate_limited",
+  "not_found",
+  "unauthenticated",
+] as const;
+
+/** An import error code the UI has a message for; anything else reads as "failed". */
+function addErrorKey(code: string): (typeof ADD_ERROR_KEYS)[number] | "failed" {
+  return ADD_ERROR_KEYS.find((k) => k === code) ?? "failed";
+}
+
 /**
  * "Identify a game": point the camera at a box and it answers live, or pick a photo. The
  * camera frames never leave the device; the feature is opt-in (model download) per device.
@@ -21,6 +33,7 @@ export function LiveIdentify() {
   const live = useLiveRecognition();
   const galleryRef = useRef<HTMLInputElement>(null);
   const [opening, setOpening] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
   const { state, videoRef, canvasRef } = live;
   const busy = state.phase !== "idle";
 
@@ -29,6 +42,20 @@ export function LiveIdentify() {
     await live.confirm(gameId);
     live.stop();
     router.push(`/games/${gameId}`);
+  }
+
+  /** A game of the BGG top 500 that is not in the catalog: import it, then open it. */
+  async function addPack(gameId: string) {
+    setOpening(true);
+    setAddError(null);
+    const result = await live.addAndOpen(gameId);
+    if (!result.ok) {
+      setOpening(false);
+      setAddError(result.error);
+      return;
+    }
+    live.stop();
+    router.push(`/games/${result.gameId}`);
   }
 
   return (
@@ -165,21 +192,45 @@ export function LiveIdentify() {
                   {t(`confidence.${state.answer.level}`)}
                 </Badge>
               </div>
+              {state.answer.pack && (
+                <p className="text-sm text-muted-foreground">
+                  {t("packRank", { rank: state.answer.pack.rank })}
+                </p>
+              )}
               {state.answer.level === "low" && (
                 <p className="text-sm text-muted-foreground">
                   {t("lowWarning")}
                 </p>
               )}
+              {addError && (
+                <p role="alert" className="text-sm text-destructive">
+                  {t(`addErrors.${addErrorKey(addError)}`)}
+                </p>
+              )}
               <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  className="h-11"
-                  disabled={opening}
-                  aria-label={t("confirmFor", { name: state.answer.name })}
-                  onClick={() => void accept(state.answer!.gameId)}
-                >
-                  {t("confirm")}
-                </Button>
+                {state.answer.pack ? (
+                  <Button
+                    type="button"
+                    className="h-11"
+                    disabled={opening}
+                    aria-label={t("addAndOpenFor", {
+                      name: state.answer.name,
+                    })}
+                    onClick={() => void addPack(state.answer!.gameId)}
+                  >
+                    {opening ? t("adding") : t("addAndOpen")}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    className="h-11"
+                    disabled={opening}
+                    aria-label={t("confirmFor", { name: state.answer.name })}
+                    onClick={() => void accept(state.answer!.gameId)}
+                  >
+                    {t("confirm")}
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="outline"

@@ -761,6 +761,17 @@
       "confirm": "This is it",
       "confirmFor": "This is it: {name}",
       "notThis": "Not this one",
+      "packRank": "Ranked #{rank} on BoardGameGeek. Not in your catalog yet.",
+      "addAndOpen": "Add to catalog and open",
+      "addAndOpenFor": "Add {name} to the catalog and open it",
+      "adding": "Adding…",
+      "addErrors": {
+        "unavailable": "BoardGameGeek is not available right now, so the game cannot be added.",
+        "rate_limited": "Too many games added today. Try again later.",
+        "not_found": "BoardGameGeek could not find this game.",
+        "unauthenticated": "Sign in to add games.",
+        "failed": "The game could not be added. Try again."
+      },
       "lowWarning": "Not very sure. Check it is the right box.",
       "alsoLike": "Also similar: {names}",
       "confidence": {

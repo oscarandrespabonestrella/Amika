@@ -77,7 +77,13 @@ export async function learnBarcode(
   return updated.error ? failed(updated.error) : { ok: true };
 }
 
-export type RecognitionGame = { id: string; name: string; coverUrl: string };
+export type RecognitionGame = {
+  id: string;
+  name: string;
+  coverUrl: string;
+  /** BoardGameGeek id when the game was imported from BGG (hides its pack entry). */
+  bggId: string | null;
+};
 
 /** Most catalog games the live camera indexes; beyond it the list is reported incomplete. */
 export const MAX_COVER_GAMES = 2000;
@@ -87,16 +93,20 @@ const PAGE = 1000; // the API's default row cap per request
  * Catalog games with a cover that the user can see (RLS), for building reference vectors.
  * Paged (stable order: name, id) up to MAX_COVER_GAMES; `complete` is false when there are more.
  */
-export async function listCoverGames(): Promise<{
+export async function listCoverGames(
+  db: Pick<
+    ReturnType<typeof createSupabaseServerClient>,
+    "from"
+  > = createSupabaseServerClient(),
+): Promise<{
   games: RecognitionGame[];
   complete: boolean;
 }> {
-  const db = createSupabaseServerClient();
   const games: RecognitionGame[] = [];
   for (let from = 0; from <= MAX_COVER_GAMES; from += PAGE) {
     const { data, error } = await db
       .from("games")
-      .select("id, name, cover_url")
+      .select("id, name, cover_url, game_external_ids(source, external_id)")
       .not("cover_url", "is", null)
       .order("name")
       .order("id")
@@ -104,7 +114,14 @@ export async function listCoverGames(): Promise<{
     if (error) throw error;
     for (const g of data ?? [])
       if (g.cover_url)
-        games.push({ id: g.id, name: g.name, coverUrl: g.cover_url });
+        games.push({
+          id: g.id,
+          name: g.name,
+          coverUrl: g.cover_url,
+          bggId:
+            g.game_external_ids?.find((e) => e.source === "bgg")?.external_id ??
+            null,
+        });
     if ((data?.length ?? 0) < PAGE) break;
   }
   return games.length > MAX_COVER_GAMES

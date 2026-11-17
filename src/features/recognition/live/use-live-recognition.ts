@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { importGameAction } from "@/features/catalog/actions/catalog-actions";
 import {
   identifyGameAction,
   learnBarcodeAction,
@@ -14,6 +15,10 @@ import {
   ModelNotInstalledError,
 } from "../embedding/activation";
 import { ModelLoadError, type Embedder } from "../embedding/model";
+import { addPackGame } from "../pack/add";
+import { ensurePack, loadPackGameInfo } from "../pack/install";
+import type { PackGameInfo } from "../pack/manifest";
+import { assembleReferences } from "../pack/merge";
 import {
   openReferenceStore,
   type ReferenceStore,
@@ -33,7 +38,11 @@ export type LiveError =
   | "model_failed"
   | "failed";
 
-export type Answer = Decision & { name: string };
+/** `pack` is set when the answer is a game of the BGG top-500 pack that is not in the catalog. */
+export type Answer = Decision & {
+  name: string;
+  pack?: { bggId: string; rank: number };
+};
 
 export type LiveState = {
   phase: "idle" | "starting" | "scanning";
@@ -82,6 +91,10 @@ export function useLiveRecognition() {
   const storeRef = useRef<ReferenceStore | null>(null);
   const sessionRef = useRef<ReturnType<typeof createSession> | null>(null);
   const namesRef = useRef(new Map<string, string>());
+  /** Set once the pack is installed; loaded lazily so the manifest stays out of first-load JS. */
+  const packInfoRef = useRef<((id: string) => PackGameInfo | null) | null>(
+    null,
+  );
   const coversRef = useRef(new Map<string, Frame>());
   const abortRef = useRef<AbortController | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -161,6 +174,9 @@ export function useLiveRecognition() {
       namesRef.current = new Map(games.map((g) => [g.id, g.name]));
       const store = (storeRef.current ??= await openReferenceStore());
       abortRef.current = new AbortController();
+      // The pack normally came with the opt-in; this retries it if that download failed.
+      const pack = await ensurePack(store, { signal: abortRef.current.signal });
+      packInfoRef.current = pack.installed ? await loadPackGameInfo() : null;
       await buildReferences({
         games: games.map((g) => ({ id: g.id, coverUrl: g.coverUrl })),
         store,
@@ -174,7 +190,7 @@ export function useLiveRecognition() {
       });
       if (run !== runRef.current) throw new Error("stopped");
 
-      const refs = await store.all();
+      const refs = assembleReferences(await store.all(), games);
       setState((s) => ({ ...s, noGames: refs.length === 0 }));
       const session = createSession({
         embed: (frame) => embedder.embed(frame as ImageData),
@@ -210,8 +226,21 @@ export function useLiveRecognition() {
     lastVecRef.current = u.vec;
     gtinRef.current = u.gtin;
     const names = namesRef.current;
-    const answer = u.decision
-      ? { ...u.decision, name: names.get(u.decision.gameId) ?? "" }
+    const info = (id: string) => packInfoRef.current?.(id) ?? null;
+    const nameOf = (id: string) => names.get(id) ?? info(id)?.name ?? "";
+    const answer: Answer | null = u.decision
+      ? {
+          ...u.decision,
+          name: nameOf(u.decision.gameId),
+          ...(info(u.decision.gameId)
+            ? {
+                pack: {
+                  bggId: info(u.decision.gameId)!.bggId,
+                  rank: info(u.decision.gameId)!.rank,
+                },
+              }
+            : {}),
+        }
       : null;
     setState((s) => ({
       ...s,
@@ -223,7 +252,7 @@ export function useLiveRecognition() {
         .slice(0, 2)
         .map((c) => ({
           gameId: c.gameId,
-          name: names.get(c.gameId) ?? "",
+          name: nameOf(c.gameId),
           similarity: c.similarity,
         })),
     }));
@@ -342,6 +371,20 @@ export function useLiveRecognition() {
     if (gtin) await learnBarcodeAction({ gtin, gameId }).catch(() => undefined);
   }, []);
 
+  /**
+   * A pack game is not in the catalog yet: import it from BoardGameGeek (the action checks
+   * the session and the daily quota), then remember this frame for the imported game.
+   */
+  const addAndOpen = useCallback(
+    (gameId: string) =>
+      addPackGame(gameId, {
+        info: (id) => packInfoRef.current?.(id) ?? null,
+        importGame: (bggId) => importGameAction(bggId),
+        confirm,
+      }),
+    [confirm],
+  );
+
   /** "Not this one": never answer this game again in this session. */
   const reject = useCallback((gameId: string) => {
     sessionRef.current?.exclude(gameId);
@@ -380,6 +423,7 @@ export function useLiveRecognition() {
     start,
     stop,
     confirm,
+    addAndOpen,
     reject,
     analyzePhoto,
   };

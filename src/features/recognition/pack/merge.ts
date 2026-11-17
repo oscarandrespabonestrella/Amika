@@ -4,6 +4,24 @@ import type { Reference } from "../embedding/rank";
 
 export const PACK_PREFIX = "bgg:";
 
+/**
+ * The store holds catalog covers, learned vectors and pack entries in one list: split it
+ * and apply the catalog-wins rule with the BGG ids of the user's catalog games.
+ */
+export function assembleReferences(
+  all: Reference[],
+  games: { bggId: string | null }[],
+): Reference[] {
+  const catalogBggIds = new Set(
+    games.flatMap((g) => (g.bggId ? [g.bggId] : [])),
+  );
+  return mergeReferences(
+    all.filter((r) => r.kind !== "pack"),
+    all.filter((r) => r.kind === "pack"),
+    catalogBggIds,
+  );
+}
+
 export function mergeReferences(
   catalog: Reference[],
   pack: Reference[],

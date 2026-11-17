@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { getPackManifest, packCoverUrl, packManifestSchema } from "./manifest";
+import {
+  getPackManifest,
+  packCoverUrl,
+  packGameInfo,
+  packManifestSchema,
+} from "./manifest";
 
 describe("pack manifest", () => {
   it("the committed manifest is valid and has unique BGG ids in rank order", () => {
@@ -52,5 +57,24 @@ describe("pack manifest", () => {
       packManifestSchema.safeParse({ ...base, vectors: "../secret.bin" })
         .success,
     ).toBe(false);
+  });
+});
+
+describe("packGameInfo", () => {
+  it("describes a pack id (name and BGG rank) and nothing else", () => {
+    const first = getPackManifest().games[0];
+    expect(packGameInfo(`bgg:${first.bggId}`)).toEqual({
+      bggId: first.bggId,
+      name: first.name,
+      rank: first.rank,
+    });
+    for (const id of [
+      "bgg:999999999",
+      `${first.bggId}`,
+      "bgg:__proto__",
+      "00000000-0000-4000-8000-0000000000a1",
+      "",
+    ])
+      expect(packGameInfo(id), id).toBeNull();
   });
 });

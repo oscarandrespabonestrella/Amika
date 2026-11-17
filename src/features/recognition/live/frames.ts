@@ -2,6 +2,7 @@
 // plain RGBA frames the recognition code works on. Nothing here sends anything anywhere
 // except the cover request to /api/covers/[gameId].
 import { fitWithin } from "../browser/image-prep";
+import { PACK_PREFIX } from "../pack/merge";
 import type { Frame } from "./session";
 
 /** The current camera frame, scaled so its long side is at most `maxSide`; null until ready. */
@@ -25,6 +26,13 @@ export function grabFrame(
   return { data, width, height };
 }
 
+/** Our own cover endpoint for a game: catalog games by uuid, pack games by BGG id. */
+export function coverEndpoint(gameId: string): string {
+  return gameId.startsWith(PACK_PREFIX)
+    ? `/api/covers/pack/${encodeURIComponent(gameId.slice(PACK_PREFIX.length))}`
+    : `/api/covers/${gameId}`;
+}
+
 /**
  * The cover of a game as a frame, through our own endpoint (it checks the user can see the
  * game and fetches the image safely). The browser caches it (Cache-Control: private).
@@ -34,7 +42,7 @@ export async function fetchCoverFrame(
   fetchImpl: typeof fetch = fetch,
   maxSide = 512,
 ): Promise<Frame> {
-  const response = await fetchImpl(`/api/covers/${gameId}`, {
+  const response = await fetchImpl(coverEndpoint(gameId), {
     credentials: "same-origin",
   });
   if (!response.ok) throw new Error(`cover ${gameId}: ${response.status}`);

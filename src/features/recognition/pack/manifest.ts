@@ -27,10 +27,25 @@ export type PackManifest = z.infer<typeof packManifestSchema>;
 
 let parsed: PackManifest | undefined;
 let byId: Map<string, string> | undefined;
+let infoById: Map<string, PackGameInfo> | undefined;
+
+export type PackGameInfo = { bggId: string; name: string; rank: number };
 
 export function getPackManifest(): PackManifest {
   parsed ??= packManifestSchema.parse(raw);
   return parsed;
+}
+
+/** Name and BGG rank of a pack game id (`bgg:<bggId>`); null for anything else. */
+export function packGameInfo(gameId: string): PackGameInfo | null {
+  if (!gameId.startsWith("bgg:")) return null;
+  infoById ??= new Map(
+    getPackManifest().games.map((g) => [
+      g.bggId,
+      { bggId: g.bggId, name: g.name, rank: g.rank },
+    ]),
+  );
+  return infoById.get(gameId.slice(4)) ?? null;
 }
 
 /** The cover URL listed for a BGG id; null for anything else (a Map, so no prototype keys). */

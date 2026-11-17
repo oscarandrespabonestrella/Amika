@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { normalize, type Reference } from "../embedding/rank";
 import { EMBED_DIM } from "../embedding/thresholds";
-import { mergeReferences } from "./merge";
+import { assembleReferences, mergeReferences } from "./merge";
 
 const v = normalize(
   new Array(EMBED_DIM).fill(0).map((_, i) => (i === 0 ? 1 : 0)),
@@ -33,5 +33,23 @@ describe("mergeReferences", () => {
     const pack = [ref("bgg:13", "pack")];
     expect(mergeReferences([], pack, new Set(["13"]))).toEqual([]);
     expect(mergeReferences([], pack, new Set())).toHaveLength(1);
+  });
+});
+
+describe("assembleReferences", () => {
+  it("splits the store's single list into catalog and pack and applies the catalog-wins rule", () => {
+    const all = [
+      ref("uuid-13", "cover"),
+      ref("uuid-13", "learned"),
+      ref("bgg:13", "pack"),
+      ref("bgg:14", "pack"),
+    ];
+    const out = assembleReferences(all, [{ bggId: "13" }, { bggId: null }]);
+    expect(out.map((r) => r.gameId)).toEqual(["uuid-13", "uuid-13", "bgg:14"]);
+  });
+
+  it("keeps every pack entry when no catalog game has a BGG id", () => {
+    const all = [ref("bgg:1", "pack"), ref("uuid-x", "cover")];
+    expect(assembleReferences(all, [{ bggId: null }])).toHaveLength(2);
   });
 });

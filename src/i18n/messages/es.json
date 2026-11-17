@@ -761,6 +761,17 @@
       "confirm": "Es este",
       "confirmFor": "Es este: {name}",
       "notThis": "No es este",
+      "packRank": "Nº {rank} en BoardGameGeek. Aún no está en tu catálogo.",
+      "addAndOpen": "Añadir al catálogo y abrir",
+      "addAndOpenFor": "Añadir {name} al catálogo y abrirlo",
+      "adding": "Añadiendo…",
+      "addErrors": {
+        "unavailable": "BoardGameGeek no está disponible ahora, así que no se puede añadir el juego.",
+        "rate_limited": "Has añadido demasiados juegos hoy. Inténtalo más tarde.",
+        "not_found": "BoardGameGeek no encontró este juego.",
+        "unauthenticated": "Inicia sesión para añadir juegos.",
+        "failed": "No se pudo añadir el juego. Inténtalo de nuevo."
+      },
       "lowWarning": "No estoy muy seguro. Comprueba que sea la caja correcta.",
       "alsoLike": "También se parece a: {names}",
       "confidence": {

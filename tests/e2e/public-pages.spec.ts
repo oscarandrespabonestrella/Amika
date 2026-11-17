@@ -96,8 +96,23 @@ test.describe("theme (Adaptive)", () => {
     await context.close();
   });
 
-  test("follows a light system preference", async ({ browser }) => {
+  test("is dark by default even when the system prefers light", async ({
+    browser,
+  }) => {
     const context = await browser.newContext({ colorScheme: "light" });
+    const page = await context.newPage();
+    await page.goto("/en");
+    await expect(page.locator("html")).toHaveClass(/dark/);
+    await context.close();
+  });
+
+  test("follows a light system preference once the user chose System", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ colorScheme: "light" });
+    await context.addInitScript(() =>
+      window.localStorage.setItem("theme", "system"),
+    );
     const page = await context.newPage();
     await page.goto("/en");
     await expect(page.locator("html")).not.toHaveClass(/dark/);

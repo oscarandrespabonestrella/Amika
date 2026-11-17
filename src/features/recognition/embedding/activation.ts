@@ -10,6 +10,7 @@ import {
   type Progress,
   type WorkerLike,
 } from "./model";
+import { openReferenceStore } from "./reference-store";
 
 export const MODEL_ID = "clip-vit-base-patch32";
 /** Shown to the user before the download starts. */
@@ -88,6 +89,21 @@ export async function removeModel(): Promise<void> {
   if (!cache) return;
   for (const request of await cache.keys())
     if (request.url.includes(`/${MODEL_ID}/`)) await cache.delete(request);
+}
+
+/**
+ * "Disable and delete data": turns the feature off and frees everything it left on this
+ * device: the model (Cache API) and the stored vectors (IndexedDB), including the ones
+ * learned from the user's own camera frames.
+ */
+export async function removeAllData(factory?: IDBFactory): Promise<void> {
+  setEnabled(false);
+  await removeModel();
+  try {
+    await (await openReferenceStore(factory)).clear();
+  } catch {
+    // nothing stored, or storage unavailable: nothing to free
+  }
 }
 
 /**

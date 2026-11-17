@@ -13,14 +13,21 @@ export async function buildReferences(opts: {
   embedCover(gameId: string): Promise<Vec>;
   onProgress?(done: number, total: number): void;
   signal?: AbortSignal;
+  /**
+   * Remove the vectors of games missing from `games`. Pass false when the list may be
+   * incomplete (cut by a cap, or the listing failed): a missing game is then not a deleted one.
+   */
+  purge?: boolean;
 }): Promise<BuildResult> {
-  const { games, store, embedCover, onProgress, signal } = opts;
+  const { games, store, embedCover, onProgress, signal, purge = true } = opts;
   const result: BuildResult = { built: 0, skipped: 0, failed: [] };
 
   // Games that left the catalog take their vectors (covers and learned) with them.
-  const known = new Set(games.map((g) => g.id));
-  const stored = new Set((await store.all()).map((r) => r.gameId));
-  for (const id of stored) if (!known.has(id)) await store.remove(id);
+  if (purge) {
+    const known = new Set(games.map((g) => g.id));
+    const stored = new Set((await store.all()).map((r) => r.gameId));
+    for (const id of stored) if (!known.has(id)) await store.remove(id);
+  }
 
   let done = 0;
   for (const game of games) {

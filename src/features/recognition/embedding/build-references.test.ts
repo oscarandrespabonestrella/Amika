@@ -131,6 +131,23 @@ describe("buildReferences", () => {
     expect((await store.all()).map((r) => r.gameId)).toEqual(["g1"]);
   });
 
+  it("does not purge anything when the game list is incomplete (purge: false)", async () => {
+    const store = await fresh();
+    await store.putCover("beyond-the-cap", "u", vec(1));
+    await store.addLearned("beyond-the-cap", vec(2));
+    await buildReferences({
+      games: [game(1)],
+      store,
+      embedCover: async () => vec(4),
+      purge: false,
+    });
+    expect((await store.all()).map((r) => r.gameId).sort()).toEqual([
+      "beyond-the-cap",
+      "beyond-the-cap",
+      "g1",
+    ]);
+  });
+
   it("keeps the learned vectors of games that stay", async () => {
     const store = await fresh();
     await store.addLearned("g1", vec(9));

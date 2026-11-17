@@ -79,16 +79,35 @@ export async function learnBarcode(
 
 export type RecognitionGame = { id: string; name: string; coverUrl: string };
 
-/** Catalog games with a cover that the user can see (RLS), for building reference vectors. */
-export async function listCoverGames(limit = 300): Promise<RecognitionGame[]> {
-  const { data, error } = await createSupabaseServerClient()
-    .from("games")
-    .select("id, name, cover_url")
-    .not("cover_url", "is", null)
-    .order("name")
-    .limit(limit);
-  if (error) throw error;
-  return (data ?? []).flatMap((g) =>
-    g.cover_url ? [{ id: g.id, name: g.name, coverUrl: g.cover_url }] : [],
-  );
+/** Most catalog games the live camera indexes; beyond it the list is reported incomplete. */
+export const MAX_COVER_GAMES = 2000;
+const PAGE = 1000; // the API's default row cap per request
+
+/**
+ * Catalog games with a cover that the user can see (RLS), for building reference vectors.
+ * Paged (stable order: name, id) up to MAX_COVER_GAMES; `complete` is false when there are more.
+ */
+export async function listCoverGames(): Promise<{
+  games: RecognitionGame[];
+  complete: boolean;
+}> {
+  const db = createSupabaseServerClient();
+  const games: RecognitionGame[] = [];
+  for (let from = 0; from <= MAX_COVER_GAMES; from += PAGE) {
+    const { data, error } = await db
+      .from("games")
+      .select("id, name, cover_url")
+      .not("cover_url", "is", null)
+      .order("name")
+      .order("id")
+      .range(from, from + PAGE - 1);
+    if (error) throw error;
+    for (const g of data ?? [])
+      if (g.cover_url)
+        games.push({ id: g.id, name: g.name, coverUrl: g.cover_url });
+    if ((data?.length ?? 0) < PAGE) break;
+  }
+  return games.length > MAX_COVER_GAMES
+    ? { games: games.slice(0, MAX_COVER_GAMES), complete: false }
+    : { games, complete: true };
 }

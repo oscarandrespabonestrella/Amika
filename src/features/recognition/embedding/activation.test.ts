@@ -1,3 +1,4 @@
+import { IDBFactory } from "fake-indexeddb";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createEmbedder,
@@ -6,9 +7,12 @@ import {
   MODEL_ID,
   modelStatus,
   ModelNotInstalledError,
+  removeAllData,
   removeModel,
   setEnabled,
 } from "./activation";
+import { openReferenceStore } from "./reference-store";
+import { EMBED_DIM } from "./thresholds";
 import type { WorkerLike } from "./model";
 import type { FromWorker, ToWorker } from "./protocol";
 
@@ -201,5 +205,23 @@ describe("removeModel", () => {
     vi.stubGlobal("caches", undefined);
     vi.stubGlobal("localStorage", fakeStorage(true));
     await expect(removeModel()).resolves.toBeUndefined();
+  });
+});
+
+describe("removeAllData", () => {
+  it("turns the feature off, deletes the model and empties the stored vectors", async () => {
+    const c = fakeCaches([ONNX]);
+    vi.stubGlobal("caches", c.api);
+    const factory = new IDBFactory();
+    const vec = new Float32Array(EMBED_DIM);
+    vec[0] = 1;
+    const store = await openReferenceStore(factory);
+    await store.putCover("g1", "u1", vec);
+    await store.addLearned("g1", vec); // derived from the user's own camera frames
+    setEnabled(true);
+    await removeAllData(factory);
+    expect(isEnabled()).toBe(false);
+    expect(c.urls.size).toBe(0);
+    expect(await (await openReferenceStore(factory)).all()).toEqual([]);
   });
 });

@@ -168,6 +168,20 @@ describe("decide", () => {
     ).toBeNull();
   });
 
+  it("a lock whose ORB evidence is not clearly ahead of a runner-up is never high", () => {
+    // pickVerified refuses (45 < 2 x 30): the lock branch must not turn it into "high".
+    const d = decide({
+      ranked: [row("a", 0.8), row("b", 0.5)],
+      orb: new Map([
+        ["a", 45],
+        ["b", 30],
+      ]),
+      lock: lock("a", 0.8, 0.3),
+    });
+    expect(d).toMatchObject({ gameId: "a", via: "clip" });
+    expect(d?.level).not.toBe("high");
+  });
+
   it("a lock without verification: the level comes from similarity and lead (never high)", () => {
     const d = decide({
       ranked: [row("a", 0.8), row("b", 0.5)],

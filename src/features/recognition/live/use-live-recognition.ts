@@ -169,6 +169,8 @@ export function useLiveRecognition() {
         onProgress: (done, total) =>
           setState((s) => ({ ...s, progress: { done, total } })),
         signal: abortRef.current.signal,
+        // a failed or capped listing must never delete stored (incl. learned) vectors
+        purge: listed.ok && listed.complete,
       });
       if (run !== runRef.current) throw new Error("stopped");
 

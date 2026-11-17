@@ -5,7 +5,7 @@ import {
   installModel,
   isEnabled,
   modelStatus,
-  removeModel,
+  removeAllData,
   setEnabled,
 } from "../embedding/activation";
 
@@ -74,8 +74,7 @@ export function useRecognitionSetup(): Setup {
   const cancel = useCallback(() => abortRef.current?.abort(), []);
 
   const remove = useCallback(async () => {
-    setEnabled(false);
-    await removeModel();
+    await removeAllData();
     setActive(false);
   }, []);
 

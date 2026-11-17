@@ -107,12 +107,17 @@ export function decide(input: {
 
   if (lock) {
     const inliers = orb.get(lock.gameId) ?? 0;
+    // Same rule as pickVerified: ORB evidence only counts toward "high" when it is clearly
+    // ahead of every other verified candidate (two editions or reprints look alike).
+    const outshone = [...orb.entries()].some(
+      ([id, n]) => id !== lock.gameId && LEAD_RATIO * n > inliers,
+    );
     return {
       gameId: lock.gameId,
       level: levelFor({
         similarity: lock.similarity,
         margin: lock.margin,
-        orbInliers: inliers,
+        orbInliers: outshone ? 0 : inliers,
       }),
       similarity: lock.similarity,
       margin: lock.margin,

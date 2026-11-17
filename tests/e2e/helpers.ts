@@ -36,6 +36,9 @@ export const TEST_USERS = {
   n: { email: "bglib-e2e-n+clerk_test@example.com", firstName: "E2E Nina" },
   // Live camera recognition and the cover endpoint (app-covers / app-live-recognition).
   o: { email: "bglib-e2e-o+clerk_test@example.com", firstName: "E2E Olga" },
+  // Friends and shared live matches (app-shared-plays.spec.ts): the owner and a guest.
+  p: { email: "bglib-e2e-p+clerk_test@example.com", firstName: "E2E Pablo" },
+  q: { email: "bglib-e2e-q+clerk_test@example.com", firstName: "E2E Quinn" },
 } as const;
 
 export const STATE_FILE = {
@@ -54,6 +57,8 @@ export const STATE_FILE = {
   m: "playwright/.clerk/user-m.json",
   n: "playwright/.clerk/user-n.json",
   o: "playwright/.clerk/user-o.json",
+  p: "playwright/.clerk/user-p.json",
+  q: "playwright/.clerk/user-q.json",
 } as const;
 
 function clerk() {

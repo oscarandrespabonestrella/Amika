@@ -8,6 +8,8 @@ export type Player = {
   name: string;
   /** "This is me": the player linked to the owner's own account. */
   isMe: boolean;
+  /** The friend this name is linked to (Phase 8a), when it is not "me". */
+  friendId: string | null;
   matchCount: number;
 };
 
@@ -21,6 +23,7 @@ const pgCode = (error: unknown) => (error as { code?: string } | null)?.code;
 
 /** The roster (RLS: only the signed-in user's own players), most played first. */
 export async function listPlayers(): Promise<Player[]> {
+  const { userId } = await auth();
   const { data, error } = await createSupabaseServerClient()
     .from("players")
     .select("id, name, linked_user_id, play_participants(count)");
@@ -30,7 +33,11 @@ export async function listPlayers(): Promise<Player[]> {
     .map((row) => ({
       id: row.id,
       name: row.name,
-      isMe: row.linked_user_id !== null,
+      isMe: row.linked_user_id !== null && row.linked_user_id === userId,
+      friendId:
+        row.linked_user_id !== null && row.linked_user_id !== userId
+          ? row.linked_user_id
+          : null,
       matchCount: row.play_participants[0]?.count ?? 0,
     }))
     .sort(

@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LinkFriend } from "@/features/friends/components/link-friend";
+import type { Friend } from "@/features/friends";
 import { NativeSelect } from "@/components/ui/native-select";
 import {
   deletePlayerAction,
@@ -24,7 +26,13 @@ type Mode =
   | { kind: "delete"; id: string };
 
 /** The roster: rename, merge into another player, delete when unused, mark "me". */
-export function PlayersManager({ players }: { players: Player[] }) {
+export function PlayersManager({
+  players,
+  friends = [],
+}: {
+  players: Player[];
+  friends?: Friend[];
+}) {
   const t = useTranslations("Players");
   const te = useTranslations("Players.errors");
   const [mode, setMode] = useState<Mode | null>(null);
@@ -60,6 +68,14 @@ export function PlayersManager({ players }: { players: Player[] }) {
                   {t("matches", { count: player.matchCount })}
                 </Badge>
               </div>
+              {!player.isMe && (
+                <LinkFriend
+                  playerId={player.id}
+                  playerName={player.name}
+                  friendId={player.friendId}
+                  friends={friends}
+                />
+              )}
 
               {here?.kind === "rename" && (
                 <div className="flex flex-wrap items-end gap-3">

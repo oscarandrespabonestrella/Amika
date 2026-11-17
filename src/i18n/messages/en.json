@@ -554,7 +554,9 @@
       "mySheetsGroup": "My sheets",
       "communityGroup": "Community sheets",
       "verifiedSuffix": "(verified)",
-      "managePlayers": "Manage players"
+      "managePlayers": "Manage players",
+      "live": "Start as a live match",
+      "liveHint": "Friends you invite can watch it live and fill in their own points."
     },
     "errors": {
       "unauthenticated": "Your session expired. Please sign in again.",
@@ -813,6 +815,7 @@
     }
   },
   "Friends": {
+    "elsewhereLink": "Matches played elsewhere",
     "title": "Friends",
     "subtitle": "People you play with. Share a link to add a friend; there is no public search.",
     "myLink": {
@@ -893,7 +896,9 @@
       "already_invited": "That person is already in this match.",
       "closed": "This match is closed.",
       "limit": "You reached a limit. Try again later."
-    }
+    },
+    "editPoints": "Edit points",
+    "cancel": "Cancel"
   },
   "Elsewhere": {
     "title": "Played elsewhere",

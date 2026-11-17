@@ -6,6 +6,7 @@ import {
   listMyLinkRequests,
 } from "@/features/plays/services/sharing-service";
 import { assertLocale } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
 
 export default async function FriendsPage({
   params,
@@ -25,6 +26,12 @@ export default async function FriendsPage({
       <header className="flex flex-col gap-1">
         <h1 className="text-3xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground">{t("subtitle")}</p>
+        <Link
+          href="/plays/elsewhere"
+          className="w-fit text-sm text-primary underline-offset-4 hover:underline"
+        >
+          {t("elsewhereLink")}
+        </Link>
       </header>
       <FriendsPanel
         friends={friends}

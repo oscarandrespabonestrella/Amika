@@ -1,6 +1,7 @@
 import { Users } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EmptyState } from "@/components/empty-state";
+import { listFriends } from "@/features/friends";
 import { listPlayers } from "@/features/players";
 import { PlayersManager } from "@/features/players/components/players-manager";
 import { assertLocale } from "@/i18n/locale";
@@ -12,9 +13,10 @@ export default async function PlayersPage({
   const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [t, players] = await Promise.all([
+  const [t, players, friends] = await Promise.all([
     getTranslations("Players"),
     listPlayers(),
+    listFriends(),
   ]);
 
   return (
@@ -31,7 +33,7 @@ export default async function PlayersPage({
           description={t("emptyDescription")}
         />
       ) : (
-        <PlayersManager players={players} />
+        <PlayersManager players={players} friends={friends} />
       )}
     </div>
   );

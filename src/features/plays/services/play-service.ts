@@ -1,4 +1,5 @@
 import "server-only";
+import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
 import type { Json } from "@/lib/supabase/database.types";
@@ -14,6 +15,9 @@ import type { CreatePlayInput, UpdatePlayInput } from "../schemas";
 
 export type PlaySummary = {
   id: string;
+  /** 'open' = a live match; false `mine` = shared with me by another owner. */
+  status: "open" | "closed";
+  mine: boolean;
   playedOn: string;
   durationMinutes: number | null;
   sheetTitle: string | null;
@@ -72,7 +76,7 @@ export async function listPlaysForGame(
   const { data, error } = await createSupabaseServerClient()
     .from("plays")
     .select(
-      "id, played_on, duration_minutes, scoring_sheet_versions(scoring_sheets(title)), play_participants(seat, display_name, total_score, rank, is_winner)",
+      "id, status, owner_id, played_on, duration_minutes, scoring_sheet_versions(scoring_sheets(title)), play_participants(seat, display_name, total_score, rank, is_winner)",
     )
     .eq("game_id", gameId)
     .order("played_on", { ascending: false })
@@ -80,8 +84,11 @@ export async function listPlaysForGame(
     .limit(limit);
   if (error) throw error;
 
+  const { userId } = await auth();
   return (data ?? []).map((row) => ({
     id: row.id,
+    status: row.status as "open" | "closed",
+    mine: row.owner_id === userId,
     playedOn: row.played_on,
     durationMinutes: row.duration_minutes,
     sheetTitle: row.scoring_sheet_versions?.scoring_sheets?.title ?? null,
@@ -150,6 +157,7 @@ export async function getPlay(playId: string): Promise<PlayDetail | null> {
     id: data.id,
     gameId: data.game_id,
     ownerId: data.owner_id ?? "",
+    mine: data.owner_id === (await auth()).userId,
     status: data.status as "open" | "closed",
     playedOn: data.played_on,
     durationMinutes: data.duration_minutes,

@@ -141,6 +141,8 @@ export function PlayForm({
   const date = playedOn !== "" ? playedOn : today;
   const [duration, setDuration] = useState(start.duration);
   const [notes, setNotes] = useState(start.notes);
+  // A live match starts open: friends can be invited and fill their own points.
+  const [live, setLive] = useState(false);
   const [sheetId, setSheetId] = useState(start.sheetId);
   const [expansionIds, setExpansionIds] = useState(start.expansionIds);
   const [rows, setRows] = useState<Row[]>(start.rows);
@@ -255,12 +257,15 @@ export function PlayForm({
         : await createPlayAction({
             gameId,
             sheetId: sheetId || null,
+            status: live ? "open" : "closed",
             ...common,
           });
       if (!result.ok) return setFailure(result.error);
       if (editing) {
         setBaseline(snapshot(current));
         setNotice(true);
+      } else if (live) {
+        router.replace(`/games/${gameId}/plays/${result.playId}/live`);
       } else {
         const usedOthersSheet =
           sheetId !== "" && sheets.some((s) => s.id === sheetId && !s.isMine);
@@ -551,6 +556,22 @@ export function PlayForm({
         <p id="save-hint" className="text-sm text-destructive">
           {t("problems")}
         </p>
+      )}
+
+      {!editing && (
+        <label className="flex items-start gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={live}
+            onChange={(event) => setLive(event.target.checked)}
+            className="mt-1 size-4"
+            data-testid="live-toggle"
+          />
+          <span>
+            <span className="font-medium">{t("live")}</span>
+            <span className="block text-muted-foreground">{t("liveHint")}</span>
+          </span>
+        </label>
       )}
 
       <div className="flex flex-wrap items-center gap-3">

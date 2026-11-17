@@ -48,7 +48,11 @@ export function PlaysPanel({
           {plays.map((play) => (
             <li key={play.id}>
               <Link
-                href={`/games/${gameId}/plays/${play.id}`}
+                href={
+                  play.mine && play.status === "closed"
+                    ? `/games/${gameId}/plays/${play.id}`
+                    : `/games/${gameId}/plays/${play.id}/live`
+                }
                 className="flex flex-col gap-1.5 rounded-xl border border-border p-3 outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <span className="flex flex-wrap items-center gap-2 text-sm">

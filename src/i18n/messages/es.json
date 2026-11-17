@@ -554,7 +554,9 @@
       "mySheetsGroup": "Mis hojas",
       "communityGroup": "Hojas de la comunidad",
       "verifiedSuffix": "(verificada)",
-      "managePlayers": "Gestionar jugadores"
+      "managePlayers": "Gestionar jugadores",
+      "live": "Empezar como partida en directo",
+      "liveHint": "Los amigos que invites podrán verla en directo y rellenar sus propios puntos."
     },
     "errors": {
       "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",
@@ -813,6 +815,7 @@
     }
   },
   "Friends": {
+    "elsewhereLink": "Partidas jugadas en otros sitios",
     "title": "Amigos",
     "subtitle": "Las personas con las que juegas. Comparte un enlace para añadir a un amigo; no hay búsqueda pública.",
     "myLink": {
@@ -893,7 +896,9 @@
       "already_invited": "Esa persona ya está en esta partida.",
       "closed": "Esta partida está cerrada.",
       "limit": "Alcanzaste un límite. Inténtalo más tarde."
-    }
+    },
+    "editPoints": "Editar puntos",
+    "cancel": "Cancelar"
   },
   "Elsewhere": {
     "title": "Jugadas en otros sitios",

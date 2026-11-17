@@ -554,7 +554,9 @@
       "mySheetsGroup": "Mes feuilles",
       "communityGroup": "Feuilles de la communauté",
       "verifiedSuffix": "(vérifiée)",
-      "managePlayers": "Gérer les joueurs"
+      "managePlayers": "Gérer les joueurs",
+      "live": "Commencer en direct",
+      "liveHint": "Les amis que vous invitez peuvent la suivre en direct et saisir leurs propres points."
     },
     "errors": {
       "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
@@ -813,6 +815,7 @@
     }
   },
   "Friends": {
+    "elsewhereLink": "Parties jouées ailleurs",
     "title": "Amis",
     "subtitle": "Les personnes avec qui vous jouez. Partagez un lien pour ajouter un ami ; il n'y a pas de recherche publique.",
     "myLink": {
@@ -893,7 +896,9 @@
       "already_invited": "Cette personne est déjà dans cette partie.",
       "closed": "Cette partie est terminée.",
       "limit": "Vous avez atteint une limite. Réessayez plus tard."
-    }
+    },
+    "editPoints": "Modifier les points",
+    "cancel": "Annuler"
   },
   "Elsewhere": {
     "title": "Jouées ailleurs",

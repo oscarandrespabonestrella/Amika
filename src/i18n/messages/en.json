@@ -23,7 +23,8 @@
     "games": "Games",
     "settings": "Settings",
     "library": "Library",
-    "stats": "Statistics"
+    "stats": "Statistics",
+    "friends": "Friends"
   },
   "Home": {
     "title": "Welcome back",
@@ -810,5 +811,103 @@
         "failed": "Something went wrong. Please try again."
       }
     }
+  },
+  "Friends": {
+    "title": "Friends",
+    "subtitle": "People you play with. Share a link to add a friend; there is no public search.",
+    "myLink": {
+      "title": "Invite a friend",
+      "hint": "The link works once and expires in 7 days.",
+      "create": "Create a link",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "revoke": "Cancel link"
+    },
+    "listTitle": "Your friends",
+    "empty": "No friends yet. Create a link and send it to someone.",
+    "remove": "Remove",
+    "removeConfirm": "Remove {name}? Matches you share are kept.",
+    "removeYes": "Yes, remove",
+    "keep": "Keep",
+    "invitesTitle": "Match invitations",
+    "invite": "{who} added you to a match of {game}.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "linkTitle": "Name requests",
+    "linkRequest": "{owner} says “{player}” is you in {plays, plural, one {# match} other {# matches}}.",
+    "join": {
+      "title": "Friend invitation",
+      "description": "Accept to become friends with whoever sent you this link.",
+      "accept": "Accept invitation",
+      "done": "You are now friends."
+    },
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "invalid": "This link is not valid, was already used or has expired.",
+      "own": "This is your own link.",
+      "limit": "You reached a limit. Try again later.",
+      "failed": "Something went wrong. Please try again.",
+      "not_found": "That is not available.",
+      "not_friend": "You are not friends with that person.",
+      "custom_game": "Matches of your own games cannot be shared.",
+      "already_invited": "That person is already in this match.",
+      "closed": "This match is closed."
+    }
+  },
+  "Live": {
+    "title": "Live match",
+    "open": "Open",
+    "closed": "Closed",
+    "connected": "Live",
+    "offline": "Reconnecting…",
+    "back": "Back to the match",
+    "yourColumn": "Your column",
+    "provisional": "provisional",
+    "total": "Total",
+    "save": "Save my points",
+    "saved": "Saved",
+    "noSheet": "This match has no score sheet, so points are entered by the owner.",
+    "close": "Close match",
+    "closeConfirm": "Close the match? Totals and the winner are fixed and nobody can edit points afterwards.",
+    "closeYes": "Yes, close",
+    "closedNote": "The match is closed.",
+    "inviteTitle": "Invite a friend to a seat",
+    "inviteSeat": "Seat",
+    "inviteFriend": "Friend",
+    "invitePick": "Choose a friend",
+    "inviteSend": "Send invitation",
+    "invited": "Invitation sent",
+    "waiting": "waiting for a reply",
+    "joined": "joined",
+    "declined": "declined",
+    "openLive": "Open live view",
+    "leave": "Leave this match",
+    "leaveConfirm": "Leave? The others keep the match.",
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "invalid": "That is not valid.",
+      "failed": "Something went wrong. Please try again.",
+      "not_found": "That is not available.",
+      "not_friend": "You are not friends with that person.",
+      "custom_game": "Matches of your own games cannot be shared.",
+      "already_invited": "That person is already in this match.",
+      "closed": "This match is closed.",
+      "limit": "You reached a limit. Try again later."
+    }
+  },
+  "Elsewhere": {
+    "title": "Played elsewhere",
+    "subtitle": "Matches you played of games you do not own, for example at a friend's house.",
+    "empty": "No matches yet. They appear when a friend adds you to a match of a game that is not in your library.",
+    "with": "With {owner}",
+    "openMatch": "Open",
+    "live": "Live"
+  },
+  "LinkFriend": {
+    "label": "Link {name} to a friend",
+    "pick": "Choose a friend",
+    "send": "Send request",
+    "sent": "Request sent. It becomes official when your friend accepts.",
+    "unlink": "Unlink"
   }
 }

@@ -23,7 +23,8 @@
     "games": "Juegos",
     "settings": "Ajustes",
     "library": "Biblioteca",
-    "stats": "Estadísticas"
+    "stats": "Estadísticas",
+    "friends": "Amigos"
   },
   "Home": {
     "title": "Te damos la bienvenida",
@@ -810,5 +811,103 @@
         "failed": "Algo salió mal. Inténtalo de nuevo."
       }
     }
+  },
+  "Friends": {
+    "title": "Amigos",
+    "subtitle": "Las personas con las que juegas. Comparte un enlace para añadir a un amigo; no hay búsqueda pública.",
+    "myLink": {
+      "title": "Invitar a un amigo",
+      "hint": "El enlace sirve una vez y caduca en 7 días.",
+      "create": "Crear un enlace",
+      "copy": "Copiar enlace",
+      "copied": "Copiado",
+      "revoke": "Cancelar enlace"
+    },
+    "listTitle": "Tus amigos",
+    "empty": "Aún no tienes amigos. Crea un enlace y envíaselo a alguien.",
+    "remove": "Quitar",
+    "removeConfirm": "¿Quitar a {name}? Las partidas que compartís se conservan.",
+    "removeYes": "Sí, quitar",
+    "keep": "Conservar",
+    "invitesTitle": "Invitaciones a partidas",
+    "invite": "{who} te añadió a una partida de {game}.",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "linkTitle": "Solicitudes de nombre",
+    "linkRequest": "{owner} dice que «{player}» eres tú en {plays, plural, one {# partida} other {# partidas}}.",
+    "join": {
+      "title": "Invitación de amistad",
+      "description": "Acepta para ser amigo de quien te envió este enlace.",
+      "accept": "Aceptar invitación",
+      "done": "Ya sois amigos."
+    },
+    "errors": {
+      "unauthenticated": "Tu sesión caducó. Inicia sesión de nuevo.",
+      "invalid": "Este enlace no es válido, ya se usó o ha caducado.",
+      "own": "Este es tu propio enlace.",
+      "limit": "Alcanzaste un límite. Inténtalo más tarde.",
+      "failed": "Algo salió mal. Inténtalo de nuevo.",
+      "not_found": "Eso no está disponible.",
+      "not_friend": "No eres amigo de esa persona.",
+      "custom_game": "Las partidas de tus propios juegos no se pueden compartir.",
+      "already_invited": "Esa persona ya está en esta partida.",
+      "closed": "Esta partida está cerrada."
+    }
+  },
+  "Live": {
+    "title": "Partida en directo",
+    "open": "Abierta",
+    "closed": "Cerrada",
+    "connected": "En directo",
+    "offline": "Reconectando…",
+    "back": "Volver a la partida",
+    "yourColumn": "Tu columna",
+    "provisional": "provisional",
+    "total": "Total",
+    "save": "Guardar mis puntos",
+    "saved": "Guardado",
+    "noSheet": "Esta partida no tiene hoja de puntuación, así que los puntos los escribe quien la creó.",
+    "close": "Cerrar partida",
+    "closeConfirm": "¿Cerrar la partida? Los totales y el ganador quedan fijados y nadie podrá editar puntos después.",
+    "closeYes": "Sí, cerrar",
+    "closedNote": "La partida está cerrada.",
+    "inviteTitle": "Invitar a un amigo a un asiento",
+    "inviteSeat": "Asiento",
+    "inviteFriend": "Amigo",
+    "invitePick": "Elige un amigo",
+    "inviteSend": "Enviar invitación",
+    "invited": "Invitación enviada",
+    "waiting": "esperando respuesta",
+    "joined": "se unió",
+    "declined": "rechazó",
+    "openLive": "Abrir vista en directo",
+    "leave": "Salir de esta partida",
+    "leaveConfirm": "¿Salir? Los demás conservan la partida.",
+    "errors": {
+      "unauthenticated": "Tu sesión caducó. Inicia sesión de nuevo.",
+      "invalid": "Eso no es válido.",
+      "failed": "Algo salió mal. Inténtalo de nuevo.",
+      "not_found": "Eso no está disponible.",
+      "not_friend": "No eres amigo de esa persona.",
+      "custom_game": "Las partidas de tus propios juegos no se pueden compartir.",
+      "already_invited": "Esa persona ya está en esta partida.",
+      "closed": "Esta partida está cerrada.",
+      "limit": "Alcanzaste un límite. Inténtalo más tarde."
+    }
+  },
+  "Elsewhere": {
+    "title": "Jugadas en otros sitios",
+    "subtitle": "Partidas que jugaste de juegos que no tienes, por ejemplo en casa de un amigo.",
+    "empty": "Aún no hay partidas. Aparecen cuando un amigo te añade a una partida de un juego que no está en tu biblioteca.",
+    "with": "Con {owner}",
+    "openMatch": "Abrir",
+    "live": "En directo"
+  },
+  "LinkFriend": {
+    "label": "Vincular a {name} con un amigo",
+    "pick": "Elige un amigo",
+    "send": "Enviar solicitud",
+    "sent": "Solicitud enviada. Será oficial cuando tu amigo acepte.",
+    "unlink": "Desvincular"
   }
 }

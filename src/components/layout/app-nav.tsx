@@ -1,6 +1,13 @@
 "use client";
 
-import { BarChart3, BookMarked, Dice5, Home, Settings } from "lucide-react";
+import {
+  BarChart3,
+  BookMarked,
+  Dice5,
+  Home,
+  Settings,
+  Users,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -10,6 +17,7 @@ const ITEMS = [
   { href: "/games", key: "games", icon: Dice5 },
   { href: "/library", key: "library", icon: BookMarked },
   { href: "/stats", key: "stats", icon: BarChart3 },
+  { href: "/friends", key: "friends", icon: Users },
   { href: "/settings", key: "settings", icon: Settings },
 ] as const;
 
@@ -25,7 +33,7 @@ export function AppNav({ variant }: AppNavProps) {
       className={cn(
         variant === "sidebar" && "flex flex-col gap-1",
         variant === "bottom" &&
-          "fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden",
+          "fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden",
       )}
     >
       {ITEMS.map(({ href, key, icon: Icon }) => {

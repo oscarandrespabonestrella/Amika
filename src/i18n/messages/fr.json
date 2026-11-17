@@ -23,7 +23,8 @@
     "games": "Jeux",
     "settings": "Réglages",
     "library": "Bibliothèque",
-    "stats": "Statistiques"
+    "stats": "Statistiques",
+    "friends": "Amis"
   },
   "Home": {
     "title": "Bon retour",
@@ -810,5 +811,103 @@
         "failed": "Une erreur s'est produite. Veuillez réessayer."
       }
     }
+  },
+  "Friends": {
+    "title": "Amis",
+    "subtitle": "Les personnes avec qui vous jouez. Partagez un lien pour ajouter un ami ; il n'y a pas de recherche publique.",
+    "myLink": {
+      "title": "Inviter un ami",
+      "hint": "Le lien ne sert qu'une fois et expire dans 7 jours.",
+      "create": "Créer un lien",
+      "copy": "Copier le lien",
+      "copied": "Copié",
+      "revoke": "Annuler le lien"
+    },
+    "listTitle": "Vos amis",
+    "empty": "Aucun ami pour l'instant. Créez un lien et envoyez-le à quelqu'un.",
+    "remove": "Retirer",
+    "removeConfirm": "Retirer {name} ? Les parties que vous partagez sont conservées.",
+    "removeYes": "Oui, retirer",
+    "keep": "Garder",
+    "invitesTitle": "Invitations à des parties",
+    "invite": "{who} vous a ajouté à une partie de {game}.",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "linkTitle": "Demandes de nom",
+    "linkRequest": "{owner} indique que « {player} » c'est vous dans {plays, plural, one {# partie} other {# parties}}.",
+    "join": {
+      "title": "Invitation d'ami",
+      "description": "Acceptez pour devenir ami avec la personne qui vous a envoyé ce lien.",
+      "accept": "Accepter l'invitation",
+      "done": "Vous êtes maintenant amis."
+    },
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
+      "invalid": "Ce lien n'est pas valide, a déjà servi ou a expiré.",
+      "own": "C'est votre propre lien.",
+      "limit": "Vous avez atteint une limite. Réessayez plus tard.",
+      "failed": "Une erreur s'est produite. Réessayez.",
+      "not_found": "Ce n'est pas disponible.",
+      "not_friend": "Vous n'êtes pas ami avec cette personne.",
+      "custom_game": "Les parties de vos propres jeux ne peuvent pas être partagées.",
+      "already_invited": "Cette personne est déjà dans cette partie.",
+      "closed": "Cette partie est terminée."
+    }
+  },
+  "Live": {
+    "title": "Partie en direct",
+    "open": "Ouverte",
+    "closed": "Terminée",
+    "connected": "En direct",
+    "offline": "Reconnexion…",
+    "back": "Retour à la partie",
+    "yourColumn": "Votre colonne",
+    "provisional": "provisoire",
+    "total": "Total",
+    "save": "Enregistrer mes points",
+    "saved": "Enregistré",
+    "noSheet": "Cette partie n'a pas de feuille de score : les points sont saisis par son créateur.",
+    "close": "Terminer la partie",
+    "closeConfirm": "Terminer la partie ? Les totaux et le gagnant sont figés et personne ne pourra modifier les points ensuite.",
+    "closeYes": "Oui, terminer",
+    "closedNote": "La partie est terminée.",
+    "inviteTitle": "Inviter un ami sur une place",
+    "inviteSeat": "Place",
+    "inviteFriend": "Ami",
+    "invitePick": "Choisissez un ami",
+    "inviteSend": "Envoyer l'invitation",
+    "invited": "Invitation envoyée",
+    "waiting": "en attente de réponse",
+    "joined": "a rejoint",
+    "declined": "a refusé",
+    "openLive": "Ouvrir la vue en direct",
+    "leave": "Quitter cette partie",
+    "leaveConfirm": "Quitter ? Les autres gardent la partie.",
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
+      "invalid": "Ce n'est pas valide.",
+      "failed": "Une erreur s'est produite. Réessayez.",
+      "not_found": "Ce n'est pas disponible.",
+      "not_friend": "Vous n'êtes pas ami avec cette personne.",
+      "custom_game": "Les parties de vos propres jeux ne peuvent pas être partagées.",
+      "already_invited": "Cette personne est déjà dans cette partie.",
+      "closed": "Cette partie est terminée.",
+      "limit": "Vous avez atteint une limite. Réessayez plus tard."
+    }
+  },
+  "Elsewhere": {
+    "title": "Jouées ailleurs",
+    "subtitle": "Parties de jeux que vous ne possédez pas, par exemple chez un ami.",
+    "empty": "Aucune partie pour l'instant. Elles apparaissent quand un ami vous ajoute à une partie d'un jeu absent de votre bibliothèque.",
+    "with": "Avec {owner}",
+    "openMatch": "Ouvrir",
+    "live": "En direct"
+  },
+  "LinkFriend": {
+    "label": "Lier {name} à un ami",
+    "pick": "Choisissez un ami",
+    "send": "Envoyer la demande",
+    "sent": "Demande envoyée. Elle sera officielle quand votre ami acceptera.",
+    "unlink": "Délier"
   }
 }

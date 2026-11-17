@@ -565,7 +565,13 @@
       "verifiedSuffix": "(vérifiée)",
       "managePlayers": "Gérer les joueurs",
       "live": "Commencer en direct",
-      "liveHint": "Les amis que vous invitez peuvent la suivre en direct et saisir leurs propres points."
+      "liveHint": "Les amis que vous invitez peuvent la suivre en direct et saisir leurs propres points.",
+      "scores": "Scores",
+      "categoriesLabel": "Catégories de score",
+      "decrease": "Diminuer {label}",
+      "increase": "Augmenter {label}",
+      "manualFor": "Points totaux – {player}",
+      "summary": "Classement"
     },
     "errors": {
       "unauthenticated": "Votre session a expiré. Reconnectez-vous.",

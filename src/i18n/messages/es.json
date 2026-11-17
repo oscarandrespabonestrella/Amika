@@ -565,7 +565,13 @@
       "verifiedSuffix": "(verificada)",
       "managePlayers": "Gestionar jugadores",
       "live": "Empezar como partida en directo",
-      "liveHint": "Los amigos que invites podrán verla en directo y rellenar sus propios puntos."
+      "liveHint": "Los amigos que invites podrán verla en directo y rellenar sus propios puntos.",
+      "scores": "Puntuación",
+      "categoriesLabel": "Categorías de puntuación",
+      "decrease": "Restar a {label}",
+      "increase": "Sumar a {label}",
+      "manualFor": "Puntos totales – {player}",
+      "summary": "Clasificación"
     },
     "errors": {
       "unauthenticated": "Tu sesión ha caducado. Inicia sesión de nuevo.",

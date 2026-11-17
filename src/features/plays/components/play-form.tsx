@@ -16,11 +16,7 @@ import {
   type Player,
 } from "@/features/players/client";
 import type { SheetOption } from "@/features/scoring";
-import {
-  IntField,
-  ScoreFields,
-  type ScoreValue,
-} from "@/features/scoring/client";
+import type { ScoreValue } from "@/features/scoring/client";
 import {
   createPlayAction,
   deletePlayAction,
@@ -29,6 +25,7 @@ import {
 } from "../actions/play-actions";
 import { computePlay } from "../compute";
 import { PLAY_LIMITS } from "../schemas";
+import { ScoreBoard } from "./score-board";
 import type { PlayDetail } from "../services/play-service";
 
 type Props = {
@@ -459,35 +456,6 @@ export function PlayForm({
                     </button>
                   </div>
 
-                  {definition ? (
-                    <ScoreFields
-                      key={`${row.uid}-${sheetId}`}
-                      definition={definition}
-                      values={row.values}
-                      errors={errors}
-                      onChange={(key, value) =>
-                        setRow(row.uid, {
-                          values: { ...row.values, [key]: value },
-                        })
-                      }
-                    />
-                  ) : (
-                    <div className="flex flex-col gap-1.5">
-                      <IntField
-                        optional
-                        id={`manual-${index}`}
-                        label={t("manualTotal")}
-                        value={row.manual}
-                        onChange={(manual) => setRow(row.uid, { manual })}
-                      />
-                      {errors.manual && (
-                        <p className="text-sm text-destructive">
-                          {ts(`fieldErrors.${errors.manual}`)}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
                   <div className="flex flex-wrap items-center gap-3 border-t border-border pt-3 text-sm">
                     <span>
                       {t("total")}:{" "}
@@ -541,6 +509,33 @@ export function PlayForm({
         </div>
       </section>
 
+      <section aria-labelledby="scores-title" className="flex flex-col gap-3">
+        <h2 id="scores-title" className="text-lg font-semibold tracking-tight">
+          {t("scores")}
+        </h2>
+        <ScoreBoard
+          key={sheetId}
+          definition={definition}
+          rows={rows.map((row, index) => ({
+            uid: row.uid,
+            label: row.name.trim() || t("player", { n: index + 1 }),
+            values: row.values,
+            manual: row.manual,
+            errors: computation.participants[index]?.errors ?? {},
+          }))}
+          onValue={(uid, key, value) =>
+            setRows((cur) =>
+              cur.map((r) =>
+                r.uid === uid
+                  ? { ...r, values: { ...r.values, [key]: value } }
+                  : r,
+              ),
+            )
+          }
+          onManual={(uid, manual) => setRow(uid, { manual })}
+        />
+      </section>
+
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="play-notes">{t("notes")}</Label>
         <Textarea
@@ -559,26 +554,28 @@ export function PlayForm({
       )}
 
       {!editing && (
-        <label className="flex items-start gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={live}
-            onChange={(event) => setLive(event.target.checked)}
-            className="mt-1 size-4"
-            data-testid="live-toggle"
-          />
-          <span>
-            <span className="font-medium">{t("live")}</span>
+        <label className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 text-sm">
+          <span className="min-w-0 flex-1">
+            <span className="block font-medium">{t("live")}</span>
             <span className="block text-muted-foreground">{t("liveHint")}</span>
           </span>
+          <input
+            type="checkbox"
+            role="switch"
+            checked={live}
+            onChange={(event) => setLive(event.target.checked)}
+            className="relative h-7 w-12 shrink-0 cursor-pointer appearance-none rounded-full border border-border bg-muted transition-colors outline-none before:absolute before:top-0.5 before:left-0.5 before:size-5 before:rounded-full before:bg-foreground before:transition-transform before:content-[''] checked:border-primary checked:bg-primary checked:before:translate-x-5 checked:before:bg-primary-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+            data-testid="live-toggle"
+          />
         </label>
       )}
 
-      <div className="flex flex-wrap items-center gap-3">
+      {/* Stays in reach while scoring; on a phone it rides above the bottom navigation. */}
+      <div className="sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 -mx-4 flex flex-wrap items-center gap-3 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0 md:mx-0 md:rounded-2xl md:border">
         <Button
           type="submit"
           size="lg"
-          className="h-11 px-6"
+          className="h-12 flex-1 rounded-xl px-6 text-base sm:flex-none"
           disabled={!canSave}
           aria-describedby={showProblems ? "save-hint" : undefined}
         >

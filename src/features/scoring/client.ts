@@ -4,6 +4,7 @@
 export { evaluate } from "./engine/evaluate";
 export type { FieldErrorCode, ScoreValue } from "./engine/evaluate";
 export type { Definition } from "./engine/definition";
+export { CategoryInput } from "./components/category-input";
 export { IntField } from "./components/int-field";
 export { ScoreFields } from "./components/score-fields";
 export { pickDefaultSheet } from "./ranking";

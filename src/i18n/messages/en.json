@@ -565,7 +565,13 @@
       "verifiedSuffix": "(verified)",
       "managePlayers": "Manage players",
       "live": "Start as a live match",
-      "liveHint": "Friends you invite can watch it live and fill in their own points."
+      "liveHint": "Friends you invite can watch it live and fill in their own points.",
+      "scores": "Scores",
+      "categoriesLabel": "Score categories",
+      "decrease": "Decrease {label}",
+      "increase": "Increase {label}",
+      "manualFor": "Total points – {player}",
+      "summary": "Standings"
     },
     "errors": {
       "unauthenticated": "Your session expired. Please sign in again.",

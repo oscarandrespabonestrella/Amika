@@ -132,16 +132,24 @@ const player = (page: Page, n: number) =>
 const save = (page: Page) => page.getByRole("button", { name: "Save match" });
 const panel = (page: Page) => page.getByRole("region", { name: "Matches" });
 
+/** The score field of one player in one category: it lives behind that category's tab. */
+async function scoreInput(page: Page, name: string, label: string) {
+  const input = page.getByLabel(`${label} – ${name}`, { exact: true });
+  const tabs = page.getByRole("tab");
+  for (let i = 0; i < (await tabs.count()) && !(await input.isVisible()); i++)
+    await tabs.nth(i).click();
+  return input;
+}
+
 async function fillPlayer(
   page: Page,
   n: number,
   name: string,
   entries: Record<string, string> = {},
 ) {
-  const group = player(page, n);
   await pickPlayer(page, n, name);
   for (const [label, value] of Object.entries(entries))
-    await group.getByLabel(label, { exact: true }).fill(value);
+    await (await scoreInput(page, name, label)).fill(value);
 }
 
 const openNew = async (page: Page) => {
@@ -325,9 +333,7 @@ test.describe("logging matches", () => {
     await page.getByLabel("Score sheet").selectOption({ label: MANUAL });
     await expect(page.getByTestId("total-0")).toHaveText("Nothing recorded");
     await page.getByLabel("Score sheet").selectOption({ label: SHEET_TITLE });
-    await expect(
-      player(page, 1).getByLabel("Military", { exact: true }),
-    ).toHaveValue("");
+    await expect(await scoreInput(page, "Ivy", "Military")).toHaveValue("");
   });
 });
 
@@ -463,11 +469,9 @@ test.describe("editing and deleting", () => {
     ).toBeVisible();
     await expect(page.getByLabel("Score sheet")).toBeDisabled();
     await expect(save(page)).toBeDisabled(); // nothing changed yet
-    await expect(
-      player(page, 1).getByLabel("Military", { exact: true }),
-    ).toHaveValue("6");
+    await expect(await scoreInput(page, "Ana", "Military")).toHaveValue("6");
 
-    await player(page, 2).getByLabel("Military", { exact: true }).fill("40");
+    await (await scoreInput(page, "Bo", "Military")).fill("40");
     await expect(page.getByTestId("total-1")).toHaveText("40");
     await expect(
       player(page, 2).getByText("Winner", { exact: true }),

@@ -424,9 +424,11 @@ test.describe("using community sheets in a match", () => {
     name: string,
     military: string,
   ) => {
-    const group = page.getByRole("group", { name: `Player ${n}` });
     await pickPlayer(page, n, name);
-    await group.getByLabel("Military", { exact: true }).fill(military);
+    const input = page.getByLabel(`Military – ${name}`, { exact: true });
+    const militaryTab = page.getByRole("tab", { name: "Military" });
+    if (!(await input.isVisible())) await militaryTab.click();
+    await input.fill(military);
   };
 
   test("the picker groups my sheets and community sheets and preselects the verified one", async ({
@@ -575,11 +577,8 @@ test.describe("using community sheets in a match", () => {
       ).toBeVisible();
       await expect(page.getByLabel("Score sheet")).toBeDisabled();
       await expect(page.locator("#play-sheet option")).toHaveText(ALPHA);
-      await expect(
-        page
-          .getByRole("group", { name: "Player 1" })
-          .getByLabel("Military", { exact: true }),
-      ).toHaveValue("6");
+      await page.getByRole("tab", { name: "Military" }).click();
+      await expect(page.getByLabel(/^Military – /).first()).toHaveValue("6");
     });
     await asUser(browser, "k", async (page) => {
       await page.goto(sheetUrl(ALPHA));
@@ -650,11 +649,8 @@ test.describe("using community sheets in a match", () => {
         page.getByRole("heading", { level: 1, name: "Match" }),
       ).toBeVisible();
       await expect(page.locator("#play-sheet option")).toHaveText(S1);
-      await expect(
-        page
-          .getByRole("group", { name: "Player 1" })
-          .getByLabel("Military", { exact: true }),
-      ).toHaveValue("5");
+      await page.getByRole("tab", { name: "Military" }).click();
+      await expect(page.getByLabel(/^Military – /).first()).toHaveValue("5");
     });
   });
 

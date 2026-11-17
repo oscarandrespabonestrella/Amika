@@ -87,8 +87,7 @@ async function logMatch(page: Page, entries: [string, string][]) {
     if (n > 2) await page.getByRole("button", { name: "Add player" }).click();
     await pickPlayer(page, n, name);
     await page
-      .getByRole("group", { name: `Player ${n}` })
-      .getByLabel("Total points")
+      .getByLabel(`Total points – ${name}`, { exact: true })
       .fill(total);
   }
   await page.getByRole("button", { name: "Save match" }).click();
@@ -157,10 +156,12 @@ test.describe("creating players from matches", () => {
     await page.goto(`/en/games/${gameId}/plays/new`);
     await pickPlayer(page, 1, "Søren");
     await pickPlayer(page, 2, "Soren");
-    for (const n of [1, 2])
+    for (const [n, name] of [
+      [1, "Søren"],
+      [2, "Soren"],
+    ] as const)
       await page
-        .getByRole("group", { name: `Player ${n}` })
-        .getByLabel("Total points")
+        .getByLabel(`Total points – ${name}`, { exact: true })
         .fill(String(n));
     await page.getByRole("button", { name: "Save match" }).click();
     await expect(

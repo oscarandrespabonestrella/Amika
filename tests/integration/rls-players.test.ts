@@ -215,7 +215,7 @@ describe.skipIf(!hasDb)("RLS: players", () => {
           user,
         ]),
       );
-    expect(await asA(link(PL_ANA, B))).toBe("23514"); // somebody else: not in Phase 6
+    expect(await asA(link(PL_ANA, B))).toBe("42501"); // somebody else: only through a confirmed request (Phase 8a)
     expect(await asA(link(PL_ANA, A))).toBeNull();
     expect(await asA(link(PL_ANA, null))).toBeNull();
     const second = await asA(async (c) => {

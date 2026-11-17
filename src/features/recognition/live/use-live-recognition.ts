@@ -18,7 +18,7 @@ import { ModelLoadError, type Embedder } from "../embedding/model";
 import { addPackGame } from "../pack/add";
 import { ensurePack, loadPackGameInfo } from "../pack/install";
 import type { PackGameInfo } from "../pack/manifest";
-import { assembleReferences } from "../pack/merge";
+import { assembleReferences, PACK_PREFIX } from "../pack/merge";
 import {
   openReferenceStore,
   type ReferenceStore,
@@ -190,7 +190,9 @@ export function useLiveRecognition() {
       });
       if (run !== runRef.current) throw new Error("stopped");
 
-      const refs = assembleReferences(await store.all(), games);
+      const refs = assembleReferences(await store.all(), games, {
+        includePack: packInfoRef.current !== null,
+      });
       setState((s) => ({ ...s, noGames: refs.length === 0 }));
       const session = createSession({
         embed: (frame) => embedder.embed(frame as ImageData),
@@ -364,6 +366,8 @@ export function useLiveRecognition() {
 
   /** "This is it": remember this frame for the game and, if a barcode is in view, teach it. */
   const confirm = useCallback(async (gameId: string) => {
+    // A pack game is not a catalog game yet: it goes through "Add to catalog and open".
+    if (gameId.startsWith(PACK_PREFIX)) return;
     const vec = lastVecRef.current;
     if (vec && storeRef.current)
       await storeRef.current.addLearned(gameId, vec).catch(() => undefined);

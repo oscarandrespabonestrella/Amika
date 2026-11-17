@@ -121,6 +121,30 @@ describe("ensurePack", () => {
     expect(await store.all()).toEqual([]);
   });
 
+  it("reports aborted when the user cancelled, so the opt-in can stay off", async () => {
+    const store = await openReferenceStore(new IDBFactory());
+    const controller = new AbortController();
+    controller.abort();
+    const f = vi.fn(async (_url: unknown, init?: RequestInit) => {
+      if (init?.signal?.aborted) throw new DOMException("x", "AbortError");
+      return new Response(body as BodyInit);
+    });
+    const result = await ensurePack(store, {
+      fetchImpl: asFetch(f),
+      loadManifest: async () => manifest(),
+      signal: controller.signal,
+    });
+    expect(result).toEqual({ installed: false, games: 0, aborted: true });
+    // a plain failure is not an abort
+    const failed = await ensurePack(store, {
+      fetchImpl: asFetch(
+        vi.fn(async () => new Response(null, { status: 404 })),
+      ),
+      loadManifest: async () => manifest(),
+    });
+    expect(failed.aborted).toBeFalsy();
+  });
+
   it("a manifest that fails to load reports not installed without a request", async () => {
     const store = await openReferenceStore(new IDBFactory());
     const fetchImpl = okFetch();

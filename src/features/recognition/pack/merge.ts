@@ -11,13 +11,16 @@ export const PACK_PREFIX = "bgg:";
 export function assembleReferences(
   all: Reference[],
   games: { bggId: string | null }[],
+  options: { includePack?: boolean } = {},
 ): Reference[] {
+  const { includePack = true } = options;
   const catalogBggIds = new Set(
     games.flatMap((g) => (g.bggId ? [g.bggId] : [])),
   );
   return mergeReferences(
     all.filter((r) => r.kind !== "pack"),
-    all.filter((r) => r.kind === "pack"),
+    // A pack that could not be named (its manifest failed to load) must not answer at all.
+    includePack ? all.filter((r) => r.kind === "pack") : [],
     catalogBggIds,
   );
 }

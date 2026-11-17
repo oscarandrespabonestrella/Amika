@@ -53,3 +53,22 @@ describe("assembleReferences", () => {
     expect(assembleReferences(all, [{ bggId: null }])).toHaveLength(2);
   });
 });
+
+describe("assembleReferences without a usable pack", () => {
+  it("drops the stored pack rows when the pack cannot be named (includePack: false)", () => {
+    const all = [
+      ref("uuid-1", "cover"),
+      ref("bgg:9", "pack"),
+      ref("uuid-1", "learned"),
+    ];
+    const out = assembleReferences(all, [{ bggId: null }], {
+      includePack: false,
+    });
+    expect(out.map((r) => r.gameId)).toEqual(["uuid-1", "uuid-1"]);
+  });
+
+  it("keeps them by default", () => {
+    const all = [ref("bgg:9", "pack")];
+    expect(assembleReferences(all, [])).toHaveLength(1);
+  });
+});

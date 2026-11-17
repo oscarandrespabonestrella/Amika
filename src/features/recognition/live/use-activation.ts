@@ -63,9 +63,14 @@ export function useRecognitionSetup(): Setup {
         controller.signal,
       );
       // Part of the same opt-in. A failure is not fatal: opening the camera retries it.
-      await ensurePack(await openReferenceStore(), {
+      const pack = await ensurePack(await openReferenceStore(), {
         signal: controller.signal,
       });
+      if (pack.aborted) {
+        // Cancelled in the last seconds: undo it all, as a Cancel during the model download does.
+        await removeAllData();
+        return;
+      }
       setEnabled(true);
       setActive(true);
     } catch (e) {

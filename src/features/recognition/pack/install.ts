@@ -27,7 +27,7 @@ export async function loadPackGameInfo() {
 export async function ensurePack(
   store: ReferenceStore,
   deps: EnsurePackDeps = {},
-): Promise<{ installed: boolean; games: number }> {
+): Promise<{ installed: boolean; games: number; aborted?: true }> {
   const {
     fetchImpl = fetch,
     signal,
@@ -57,6 +57,9 @@ export async function ensurePack(
     return { installed: true, games: manifest.games.length };
   } catch {
     // Offline, aborted, truncated, corrupt or storage full: the catalog still works.
-    return { installed: false, games: 0 };
+    // An abort is reported so that a Cancel pressed during the opt-in can stay a Cancel.
+    return signal?.aborted
+      ? { installed: false, games: 0, aborted: true }
+      : { installed: false, games: 0 };
   }
 }

@@ -1,6 +1,7 @@
 // Browser: the per-device store of recognition vectors (IndexedDB), with an in-memory
 // fallback when IndexedDB is unavailable or errors (private mode, blocked storage, quota).
 // Nothing here ever leaves the device.
+import { PACK_PREFIX } from "../pack/merge";
 import type { Reference, Vec } from "./rank";
 
 export type ReferenceStore = {
@@ -134,6 +135,7 @@ function idbStore(db: IDBDatabase): ReferenceStore {
       await finished(tx);
     },
     async addLearned(gameId, vec) {
+      if (gameId.startsWith(PACK_PREFIX)) return; // only catalog games learn
       const tx = db.transaction(STORE, "readwrite");
       const store = tx.objectStore(STORE);
       const at = nextStamp();
@@ -211,6 +213,7 @@ function memoryStore(): ReferenceStore {
       });
     },
     async addLearned(gameId, vec) {
+      if (gameId.startsWith(PACK_PREFIX)) return; // only catalog games learn
       const at = nextStamp();
       rows.set(`${gameId}:learned:${at}`, {
         key: `${gameId}:learned:${at}`,

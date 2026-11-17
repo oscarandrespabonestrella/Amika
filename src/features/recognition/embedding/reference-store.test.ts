@@ -163,3 +163,18 @@ describe("pack rows", () => {
     expect(await store.packVersion()).toBe("v2");
   });
 });
+
+describe("learned vectors of pack ids", () => {
+  it("addLearned ignores a pack id (bgg:<id>): only catalog games learn", async () => {
+    for (const store of [
+      await openReferenceStore(new IDBFactory()),
+      await openReferenceStore(undefined),
+    ]) {
+      await store.putPack([{ gameId: "bgg:1", vec: vec(3) }], "v1");
+      await store.addLearned("bgg:1", vec(4));
+      const refs = await store.all();
+      expect(refs.filter((r) => r.kind === "learned")).toEqual([]);
+      expect(refs).toHaveLength(1);
+    }
+  });
+});

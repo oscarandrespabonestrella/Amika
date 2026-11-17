@@ -18,7 +18,8 @@
     "predev": "node scripts/copy-model-assets.mjs",
     "prebuild": "node scripts/copy-model-assets.mjs",
     "recognition:eval": "node --conditions=react-server --import tsx scripts/eval-recognition.mts",
-    "recognition:pack": "node --conditions=react-server --import tsx scripts/build-reference-pack.mts"
+    "recognition:pack": "node --conditions=react-server --import tsx scripts/build-reference-pack.mts",
+    "catalog:seed-top500": "node --conditions=react-server --import tsx scripts/seed-catalog-top500.mts"
   },
   "dependencies": {
     "@clerk/localizations": "^4.24.8",

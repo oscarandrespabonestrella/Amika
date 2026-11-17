@@ -151,3 +151,4 @@ Construidas en `src/lib/security-headers.ts` (puro, con tests) y aplicadas a tod
 - **Borrado de cuenta**: antes de borrar el perfil se ejecuta `transfer_or_delete_plays` (solo `service_role`). Las partidas con otros miembros pasan a ellos; no se destruyen estadísticas ajenas.
 - **Límites**: 12 miembros por partida, 100 amigos, 10 enlaces activos, 30 invitaciones por usuario y día.
 - **Pendiente**: Realtime comparte el límite de conexiones del plan gratuito de Supabase; con ~10 usuarios no es un problema.
+- **Realtime y los DELETE**: Supabase no aplica RLS a los eventos DELETE de `postgres_changes` (solo a INSERT/UPDATE). Con `replica identity full` el evento puede traer la fila antigua; el spike (`scripts/realtime-spike.mts`) mostró que solo llega el identificador. Por eso la pantalla en directo **no se fía del DELETE**: ante uno vuelve a leer la partida con RLS. Lo que se filtra es, como mucho, el id de una fila borrada.

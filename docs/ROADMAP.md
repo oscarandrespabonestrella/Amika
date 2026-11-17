@@ -13,7 +13,7 @@
 | 5 | Partidas y puntuación | Registrar partida con config versionada y participantes por nombre |
 | 6 | Estadísticas | Personales y por juego, gráficos |
 | 7 | IA local | **7a** identificar juego por foto en el dispositivo (código de barras; OCR e hash retirados en 7a-2; `docs/superpowers/specs/2026-11-16-fase7a-identificar-juego-design.md`) · **7a-2** reconocimiento **en vivo con la cámara** (CLIP + ORB, opcional, apagado de serie; `docs/superpowers/specs/2026-11-16-fase7a2-reconocimiento-en-vivo-design.md`) · **7a-3** reconocer contra los **500 mejores de BGG** (paquete de vectores precalculado, `docs/superpowers/specs/2026-11-17-fase7a3-paquete-top500-design.md`) · **7b** lectura de hojas (**aplazada por decisión del usuario**: requiere mejor reconocimiento de imagen) · IA externa opcional, apagada por defecto |
-| 8 | Comunidad | Partidas compartidas con usuarios, amigos, grupos, admin avanzado |
+| 8 | Comunidad | **8a** amigos por enlace y partidas compartidas en directo, vincular nombres a usuarios y «Jugadas en otros sitios» (ADR-040; `docs/superpowers/specs/2026-11-17-fase8a-partidas-compartidas-design.md`; **hecha, pendiente de probar en el móvil con dos cuentas**) · **8b** grupos y estadísticas por grupo (pendiente) · **8c** admin avanzado (pendiente) |
 | 9 | Producción | Auditoría, a11y, rendimiento, monitorización, legal, despliegue |
 
 ## Fase 1 — tareas (revisadas)

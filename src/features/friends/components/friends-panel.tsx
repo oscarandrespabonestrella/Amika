@@ -248,10 +248,14 @@ export function FriendsPanel({ friends, invites, linkRequests }: Props) {
                 data-testid="friend"
                 className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border p-3"
               >
-                <span className="font-medium">{f.displayName}</span>
+                <span className="font-medium">
+                  {f.displayName || t("unnamed")}
+                </span>
                 {confirming === f.userId ? (
                   <span className="flex items-center gap-2 text-sm">
-                    {t("removeConfirm", { name: f.displayName })}
+                    {t("removeConfirm", {
+                      name: f.displayName || t("unnamed"),
+                    })}
                     <Button
                       size="sm"
                       variant="destructive"

@@ -48,8 +48,9 @@ test.beforeAll(async () => {
   userQ = await testUserId(TEST_USERS.q.email);
   await withDb((c) =>
     c.query(
-      `insert into public.profiles (id) values ($1),($2) on conflict do nothing`,
-      [userP, userQ],
+      `insert into public.profiles (id, display_name) values ($1,$3),($2,$4)
+       on conflict (id) do update set display_name = excluded.display_name`,
+      [userP, userQ, TEST_USERS.p.firstName, TEST_USERS.q.firstName],
     ),
   );
   await wipe();
@@ -140,7 +141,7 @@ test("two users become friends through a one-use link", async ({
   // The link is spent: a second use is refused.
   await q.goto(link);
   await q.getByRole("button", { name: "Accept invitation" }).click();
-  await expect(q.getByRole("alert")).toContainText("not valid");
+  await expect(q.getByText(/not valid, was already used/)).toBeVisible();
   await guest.close();
 
   await page.reload();

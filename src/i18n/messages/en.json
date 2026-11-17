@@ -816,6 +816,7 @@
   },
   "Friends": {
     "elsewhereLink": "Matches played elsewhere",
+    "unnamed": "Someone",
     "title": "Friends",
     "subtitle": "People you play with. Share a link to add a friend; there is no public search.",
     "myLink": {

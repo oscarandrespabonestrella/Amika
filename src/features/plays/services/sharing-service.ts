@@ -218,7 +218,9 @@ export async function listElsewherePlays(): Promise<ElsewherePlay[]> {
   const [plays, library] = await Promise.all([
     client
       .from("plays")
-      .select("id, game_id, played_on, status, owner_id, games(name)")
+      .select(
+        "id, game_id, played_on, status, owner_id, games!plays_game_id_fkey(name)",
+      )
       .neq("owner_id", userId)
       .order("played_on", { ascending: false })
       .limit(200),

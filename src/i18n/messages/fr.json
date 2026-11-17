@@ -816,6 +816,7 @@
   },
   "Friends": {
     "elsewhereLink": "Parties jouées ailleurs",
+    "unnamed": "Quelqu'un",
     "title": "Amis",
     "subtitle": "Les personnes avec qui vous jouez. Partagez un lien pour ajouter un ami ; il n'y a pas de recherche publique.",
     "myLink": {

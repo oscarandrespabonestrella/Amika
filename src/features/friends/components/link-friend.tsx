@@ -28,6 +28,7 @@ type Props = {
 export function LinkFriend({ playerId, playerName, friendId, friends }: Props) {
   const t = useTranslations("LinkFriend");
   const te = useTranslations("Friends.errors");
+  const tf = useTranslations("Friends");
   const router = useRouter();
   const [pick, setPick] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +39,7 @@ export function LinkFriend({ playerId, playerName, friendId, friends }: Props) {
     const friend = friends.find((f) => f.userId === friendId);
     return (
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <Badge variant="outline">{friend?.displayName ?? friendId}</Badge>
+        <Badge variant="outline">{friend?.displayName || tf("unnamed")}</Badge>
         <Button
           size="sm"
           variant="outline"
@@ -73,7 +74,7 @@ export function LinkFriend({ playerId, playerName, friendId, friends }: Props) {
         <option value="">{t("pick")}</option>
         {friends.map((f) => (
           <option key={f.userId} value={f.userId}>
-            {f.displayName}
+            {f.displayName || tf("unnamed")}
           </option>
         ))}
       </NativeSelect>

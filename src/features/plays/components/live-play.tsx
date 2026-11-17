@@ -346,6 +346,7 @@ function InviteForm({
   onInvite: (friendId: string, seat: number) => void;
 }) {
   const t = useTranslations("Live");
+  const tf = useTranslations("Friends");
   const [friendId, setFriendId] = useState("");
   const [seat, setSeat] = useState("");
   if (friends.length === 0 || seats.length === 0) return null;
@@ -385,7 +386,7 @@ function InviteForm({
             <option value="">{t("invitePick")}</option>
             {friends.map((f) => (
               <option key={f.userId} value={f.userId}>
-                {f.displayName}
+                {f.displayName || tf("unnamed")}
               </option>
             ))}
           </NativeSelect>

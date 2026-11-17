@@ -142,3 +142,12 @@ Construidas en `src/lib/security-headers.ts` (puro, con tests) y aplicadas a tod
 - **Datos de terceros**: los vectores derivan de portadas de BoardGameGeek; el volcado `boardgames_ranks.csv` es de uso con sus términos y **no está en el repo**. Uso personal y no comercial, con atribución. En el repo hay **una** portada real (62 KB, `tests/support/fixtures/pack-cover-224517.jpg`) solo como imagen de prueba del E2E: en un repo privado; **retirarla si el repo se hiciera público**.
 - **CSP**: sin cambios (mismo origen). Sigue pendiente lo de OpenCV.js y `eval` (§17).
 - **Pendiente**: sin checksum fijado de la descarga del modelo en build (§17); el paquete lo genera el desarrollador desde su máquina y se revisa en el diff de git.
+
+## 19. Fase 8a: amigos y partidas compartidas
+- **Descubrimiento de cuentas**: no hay búsqueda de usuarios. Una amistad nace de un enlace de un solo uso (122·2 bits aleatorios, caduca a los 7 días, revocable); canjear exige sesión y un clic. `friend_invites` y `friendships` tienen RLS sin políticas y sin permisos: todo pasa por funciones `security definer` que comprueban al llamante. `list_friends()` solo devuelve identificador, nombre y avatar.
+- **Qué ve quien no ha aceptado**: solo juego, quién invita y cuándo (`list_my_invites`). Ni participantes ni puntos. Un extraño o un invitado sin aceptar recibe 404 en la pantalla en directo y no recibe eventos de Realtime (probado en `rls-play-sharing.test.ts` y en el spike).
+- **Quién escribe qué**: el dueño escribe todo; un miembro aceptado solo los puntos de **su** participante y solo con la partida abierta (`can_write_scores`, aplicado por RLS y otra vez en `save_my_scores`). Un miembro no usa la hoja del dueño para sus propias partidas (`play_sheet`, no política).
+- **Vinculación**: `players.linked_user_id` solo puede ser el propio dueño o un amigo que aceptó una solicitud; un disparador lo exige y una actualización directa del cliente falla con 42501.
+- **Borrado de cuenta**: antes de borrar el perfil se ejecuta `transfer_or_delete_plays` (solo `service_role`). Las partidas con otros miembros pasan a ellos; no se destruyen estadísticas ajenas.
+- **Límites**: 12 miembros por partida, 100 amigos, 10 enlaces activos, 30 invitaciones por usuario y día.
+- **Pendiente**: Realtime comparte el límite de conexiones del plan gratuito de Supabase; con ~10 usuarios no es un problema.

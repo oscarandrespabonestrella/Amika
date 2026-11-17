@@ -13,7 +13,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border bg-card px-6 py-14 text-center">
-      <span className="grid size-12 place-items-center rounded-full bg-accent text-accent-foreground">
+      <span className="grid size-12 place-items-center rounded-full bg-tint text-tint-foreground">
         <Icon className="size-6" aria-hidden />
       </span>
       <h2 className="text-lg font-semibold tracking-tight">{title}</h2>

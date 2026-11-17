@@ -115,46 +115,51 @@ export function ScoreBoard({ definition, rows, onValue, onManual }: Props) {
         })}
       </div>
 
-      <ul
+      <div
         id="cat-panel"
         role="tabpanel"
         aria-labelledby={`cat-tab-${active.key}`}
-        className="flex flex-col gap-2"
       >
-        {rows.map((row) => {
-          const error = row.errors[active.key];
-          const stacked = active.type === "set_bonus";
-          return (
-            <li
-              key={`${row.uid}-${active.key}`}
-              className={cn(
-                "rounded-2xl border border-border bg-card p-3",
-                stacked
-                  ? "flex flex-col gap-3"
-                  : "flex flex-wrap items-center justify-between gap-3",
-              )}
-            >
-              <span className="min-w-0 truncate font-medium">{row.label}</span>
-              <CategoryInput
-                category={active}
-                subject={row.label}
-                value={row.values[active.key]}
-                invalid={error !== undefined}
-                describedBy={error ? `err-${row.uid}-${active.key}` : undefined}
-                onChange={(value) => onValue(row.uid, active.key, value)}
-              />
-              {error && (
-                <p
-                  id={`err-${row.uid}-${active.key}`}
-                  className="w-full text-sm text-destructive"
-                >
-                  {ts(`fieldErrors.${error}`)}
-                </p>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+        <ul className="flex flex-col gap-2">
+          {rows.map((row) => {
+            const error = row.errors[active.key];
+            const stacked = active.type === "set_bonus";
+            return (
+              <li
+                key={`${row.uid}-${active.key}`}
+                className={cn(
+                  "rounded-2xl border border-border bg-card p-3",
+                  stacked
+                    ? "flex flex-col gap-3"
+                    : "flex flex-wrap items-center justify-between gap-3",
+                )}
+              >
+                <span className="min-w-0 truncate font-medium">
+                  {row.label}
+                </span>
+                <CategoryInput
+                  category={active}
+                  subject={row.label}
+                  value={row.values[active.key]}
+                  invalid={error !== undefined}
+                  describedBy={
+                    error ? `err-${row.uid}-${active.key}` : undefined
+                  }
+                  onChange={(value) => onValue(row.uid, active.key, value)}
+                />
+                {error && (
+                  <p
+                    id={`err-${row.uid}-${active.key}`}
+                    className="w-full text-sm text-destructive"
+                  >
+                    {ts(`fieldErrors.${error}`)}
+                  </p>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 }

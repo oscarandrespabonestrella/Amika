@@ -87,7 +87,8 @@ async function logMatch(page: Page, entries: [string, string][]) {
     if (n > 2) await page.getByRole("button", { name: "Add player" }).click();
     await pickPlayer(page, n, name);
     await page
-      .getByLabel(`Total points – ${name}`, { exact: true })
+      .getByLabel(/^Total points – /)
+      .nth(index)
       .fill(total);
   }
   await page.getByRole("button", { name: "Save match" }).click();
@@ -161,7 +162,7 @@ test.describe("creating players from matches", () => {
       [2, "Soren"],
     ] as const)
       await page
-        .getByLabel(`Total points – ${name}`, { exact: true })
+        .getByLabel(`Total points – ${name.trim()}`, { exact: true })
         .fill(String(n));
     await page.getByRole("button", { name: "Save match" }).click();
     await expect(

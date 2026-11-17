@@ -1,0 +1,22 @@
+{
+  "version": "fixture",
+  "model": "clip-vit-base-patch32",
+  "dim": 512,
+  "vectors": "vectors-00000000.bin",
+  "games": [
+    {
+      "bggId": "224517",
+      "name": "Brass: Birmingham",
+      "year": 2018,
+      "rank": 1,
+      "coverUrl": "https://cf.geekdo-images.com/x3zxjr-Vw5iU4yDPg70Jgw__original/img/fixture/pic3490053.jpg"
+    },
+    {
+      "bggId": "342942",
+      "name": "Ark Nova",
+      "year": 2021,
+      "rank": 2,
+      "coverUrl": "https://cf.geekdo-images.com/SoU8p28Sk1s8MSvoM4N8pQ__original/img/fixture/pic6293412.jpg"
+    }
+  ]
+}

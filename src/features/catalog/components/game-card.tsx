@@ -33,7 +33,7 @@ export function GameCard({ game, extra, href }: GameCardProps) {
         href={href ?? `/games/${game.id}`}
         className="flex items-center gap-4 rounded-2xl border border-border bg-card p-3 transition-colors outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
       >
-        <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-accent text-accent-foreground">
+        <span className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-tint text-tint-foreground">
           {game.coverUrl ? (
             // External hotlinked image (BGG): next/image optimization is not applicable.
             // eslint-disable-next-line @next/next/no-img-element

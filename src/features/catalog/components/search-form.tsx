@@ -34,10 +34,10 @@ export function SearchForm({ params }: { params: SearchParams }) {
             maxLength={100}
             aria-label={t("label")}
             placeholder={t("placeholder")}
-            className="h-11 pl-9"
+            className="h-12 rounded-xl pl-9 focus-visible:border-primary"
           />
         </div>
-        <Button type="submit" size="lg" className="h-11 px-5">
+        <Button type="submit" size="lg" className="h-12 rounded-xl px-5">
           {t("submit")}
         </Button>
       </div>

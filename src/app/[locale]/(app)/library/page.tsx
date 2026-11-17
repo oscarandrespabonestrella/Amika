@@ -106,7 +106,7 @@ export default async function LibraryPage({
             className={cn(
               "inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
               chip.active
-                ? "border-primary bg-primary/10 text-foreground"
+                ? "border-foreground bg-foreground font-semibold text-background"
                 : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
@@ -119,7 +119,7 @@ export default async function LibraryPage({
           className={cn(
             "inline-flex min-h-10 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
             filters.favorites
-              ? "border-primary bg-primary/10 text-foreground"
+              ? "border-foreground bg-foreground font-semibold text-background"
               : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >

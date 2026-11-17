@@ -76,8 +76,8 @@ export function GameDetailView({
         {t("back")}
       </Link>
 
-      <header className="flex flex-col gap-5 sm:flex-row sm:items-start">
-        <div className="grid aspect-square w-full max-w-48 shrink-0 place-items-center overflow-hidden rounded-2xl bg-accent text-accent-foreground">
+      <header className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-start sm:text-left">
+        <div className="grid aspect-square w-full max-w-48 shrink-0 place-items-center overflow-hidden rounded-2xl bg-tint text-tint-foreground shadow-xl shadow-black/30">
           {cover ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -90,11 +90,11 @@ export function GameDetailView({
             <Dices className="size-14" aria-hidden />
           )}
         </div>
-        <div className="flex min-w-0 flex-col gap-3">
+        <div className="flex w-full min-w-0 flex-col gap-3">
           <h1 className="text-3xl font-semibold tracking-tight text-balance">
             {game.name}
           </h1>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap justify-center gap-1.5 sm:justify-start">
             {game.kind === "expansion" && (
               <Badge variant="secondary">{tg("kind.expansion")}</Badge>
             )}
@@ -103,9 +103,9 @@ export function GameDetailView({
             )}
           </div>
           {facts.length > 0 && (
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border text-center sm:grid-cols-4 sm:text-left">
               {facts.map((fact) => (
-                <div key={fact.label}>
+                <div key={fact.label} className="bg-card px-4 py-3">
                   <dt className="text-xs text-muted-foreground">
                     {fact.label}
                   </dt>

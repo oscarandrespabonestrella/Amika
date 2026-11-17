@@ -243,6 +243,7 @@
     "back": "Volver al inicio"
   },
   "Library": {
+    "add": "Añadir juegos",
     "title": "Mi biblioteca",
     "subtitle": "Los juegos que tienes o que tuviste.",
     "search": {

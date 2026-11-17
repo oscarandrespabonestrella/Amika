@@ -10,8 +10,10 @@ const handleI18n = createIntlMiddleware(routing);
  * the (app) layout, in every Server Action and in Postgres RLS
  * (see docs/SECURITY.md). Plain path check: Clerk deprecated createRouteMatcher.
  */
+// Every signed-in section: a signed-out visitor is sent to sign-in WITH `redirect_url`, so a
+// friend link (or any deep link) survives creating an account and lands where it pointed.
 const PROTECTED_PATH = new RegExp(
-  `^/(${routing.locales.join("|")})/(home|settings)(/|$)`,
+  `^/(${routing.locales.join("|")})/(home|settings|friends|games|library|stats|players|plays)(/|$)`,
 );
 
 export default clerkMiddleware(async (auth, req) => {

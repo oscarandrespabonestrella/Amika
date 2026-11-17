@@ -30,8 +30,10 @@ test("a signed-in visitor skips the landing page and gets a profile", async ({
 }) => {
   await page.goto("/en");
   await expect(page).toHaveURL(/\/en\/home$/);
+  // A profile created on this first visit takes its name from Clerk, so the greeting names
+  // the user (an unnamed profile made friends show up as "Someone").
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Welcome back",
+    /^Welcome back(, .+)?$/,
   );
 
   // Supabase accepted the Clerk token, and RLS let the user create their own row.

@@ -1,25 +1,23 @@
 "use client";
 
-import {
-  BarChart3,
-  BookMarked,
-  Dice5,
-  Home,
-  Settings,
-  Users,
-} from "lucide-react";
+import { BarChart3, BookMarked, Home, Settings, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-const ITEMS = [
+/** `also`: other sections that belong to the item (the games catalog is reached from "Add" in the library). */
+const ITEMS: readonly {
+  href: string;
+  key: "home" | "friends" | "library" | "stats" | "settings";
+  icon: typeof Home;
+  also?: readonly string[];
+}[] = [
   { href: "/home", key: "home", icon: Home },
-  { href: "/games", key: "games", icon: Dice5 },
-  { href: "/library", key: "library", icon: BookMarked },
+  { href: "/friends", key: "friends", icon: Users },
+  { href: "/library", key: "library", icon: BookMarked, also: ["/games"] },
   { href: "/stats", key: "stats", icon: BarChart3 },
-  { href: "/friends", key: "friends", icon: Users, sidebarOnly: true },
   { href: "/settings", key: "settings", icon: Settings },
-] as const;
+];
 
 type AppNavProps = { variant: "sidebar" | "bottom" };
 
@@ -36,10 +34,10 @@ export function AppNav({ variant }: AppNavProps) {
           "fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden",
       )}
     >
-      {ITEMS.filter(
-        (item) => variant === "sidebar" || !("sidebarOnly" in item),
-      ).map(({ href, key, icon: Icon }) => {
-        const active = pathname === href || pathname.startsWith(`${href}/`);
+      {ITEMS.map(({ href, key, icon: Icon, also }) => {
+        const active = [href, ...(also ?? [])].some(
+          (base) => pathname === base || pathname.startsWith(`${base}/`),
+        );
         return (
           <Link
             key={href}

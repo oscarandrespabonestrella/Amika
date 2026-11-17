@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { FriendsPanel } from "@/features/friends/components/friends-panel";
 import { listFriends } from "@/features/friends";
+import { ensureDisplayName } from "@/features/profiles";
 import {
   listMyInvites,
   listMyLinkRequests,
@@ -14,6 +15,8 @@ export default async function FriendsPage({
   const { locale: rawLocale } = await params;
   setRequestLocale(assertLocale(rawLocale));
 
+  // Fills my own name first when it is empty, so the people I am friends with can read it.
+  await ensureDisplayName();
   const [t, friends, invites, linkRequests] = await Promise.all([
     getTranslations("Friends"),
     listFriends(),

@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { unstable_rethrow } from "next/navigation";
+import { ensureDisplayName } from "@/features/profiles";
 import { logger } from "@/lib/logger";
 import { friendCodeSchema, userIdSchema } from "../schemas";
 import {
@@ -39,6 +40,7 @@ async function run<T extends object>(
 /** The browser builds the link `/friends/join/<code>` from its own origin. */
 export async function createFriendInviteAction() {
   return run<{ code: string }>("createInvite", async () => {
+    await ensureDisplayName(); // the friend will see this name
     const result = await createFriendInvite();
     return "error" in result
       ? { ok: false, error: result.error }
@@ -59,6 +61,7 @@ export async function redeemFriendInviteAction(code: unknown) {
   return run<{ friendId: string }>("redeemInvite", async () => {
     const parsed = friendCodeSchema.safeParse(code);
     if (!parsed.success) return { ok: false, error: "invalid" };
+    await ensureDisplayName(); // the inviter will see this name
     const result = await redeemFriendInvite(parsed.data);
     return "error" in result
       ? { ok: false, error: result.error }

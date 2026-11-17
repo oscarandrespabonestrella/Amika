@@ -33,10 +33,10 @@ test("navigation marks the current page and reaches settings", async ({
     "page",
   );
 
-  await nav.getByRole("link", { name: "Games" }).click();
-  await expect(page).toHaveURL(/\/en\/games$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Games");
-  await expect(nav.getByRole("link", { name: "Games" })).toHaveAttribute(
+  await nav.getByRole("link", { name: "Friends" }).click();
+  await expect(page).toHaveURL(/\/en\/friends$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Friends");
+  await expect(nav.getByRole("link", { name: "Friends" })).toHaveAttribute(
     "aria-current",
     "page",
   );
@@ -46,12 +46,12 @@ test("navigation marks the current page and reaches settings", async ({
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Settings");
 });
 
-test("the games navigation item stays active on a game's own pages", async ({
+test("the library navigation item stays active on the games catalog it adds from", async ({
   page,
 }) => {
   await page.goto("/en/games/new");
   const nav = page.locator("nav[aria-label='Main navigation']:visible");
-  await expect(nav.getByRole("link", { name: "Games" })).toHaveAttribute(
+  await expect(nav.getByRole("link", { name: "Library" })).toHaveAttribute(
     "aria-current",
     "page",
   );

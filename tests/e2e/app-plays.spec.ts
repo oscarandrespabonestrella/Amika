@@ -364,6 +364,10 @@ test.describe("players", () => {
     page,
   }) => {
     const url = `/en/games/${gameId}/plays/new`;
+    // page.request runs no JavaScript, so it cannot renew Clerk's 60 s session cookie: late in
+    // a long run it would get a handshake page instead of the form. Visiting a page first
+    // lets the browser renew it.
+    await page.goto("/en/home");
     const first = await (await page.request.get(url)).text();
     const second = await (await page.request.get(url)).text();
     const ids = (html: string) =>

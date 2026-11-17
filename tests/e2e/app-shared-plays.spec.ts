@@ -13,8 +13,9 @@ test.skip(!canRunAppTests, "Clerk keys / database not configured");
 test.use({ storageState: STATE_FILE.p });
 test.describe.configure({ mode: "serial" });
 
-// Own reserved id range (after 9906 roster): 9907 friends and shared live matches.
-const PREFIX = "9907";
+// Own reserved id range: 9911 (9907 is statistics, 9909 covers, 9910 live recognition).
+// Sharing a range with another spec made them delete each other's fixture games.
+const PREFIX = "9911";
 const GAME_NAME = "Shared Match Game E2E";
 const SEEN_SOON = { timeout: 20_000 }; // Realtime, or the 10 s fallback read
 
@@ -48,9 +49,11 @@ test.beforeAll(async () => {
   userQ = await testUserId(TEST_USERS.q.email);
   await withDb((c) =>
     c.query(
-      `insert into public.profiles (id, display_name) values ($1,$3),($2,$4)
-       on conflict (id) do update set display_name = excluded.display_name`,
-      [userP, userQ, TEST_USERS.p.firstName, TEST_USERS.q.firstName],
+      // Unnamed, as a profile created lazily is: the app must fill the name from Clerk, so a
+      // friend never sees "Someone" (a bug found on a real phone).
+      `insert into public.profiles (id, display_name) values ($1,''),($2,'')
+       on conflict (id) do update set display_name = ''`,
+      [userP, userQ],
     ),
   );
   await wipe();
@@ -252,4 +255,23 @@ test("deleting as owner passes the match to the other player", async ({
   const response = await q.goto(`/en/games/${gameId}/plays/${playId}/live`);
   expect(response?.status()).toBe(200);
   await guest.close();
+});
+
+test("a friend link opened while signed out survives creating an account", async ({
+  browser,
+}) => {
+  // Signed out: sent to sign-in WITH the link as redirect_url (the sign-up page carries it
+  // on), so after creating the account the invitation is still there.
+  const visitor = await browser.newContext({
+    storageState: { cookies: [], origins: [] },
+  });
+  const page = await visitor.newPage();
+  const code = "a".repeat(64);
+  await page.goto(`/en/friends/join/${code}`);
+  await expect(page).toHaveURL(
+    (url) =>
+      url.pathname === "/en/sign-in" &&
+      url.searchParams.get("redirect_url") === `/en/friends/join/${code}`,
+  );
+  await visitor.close();
 });

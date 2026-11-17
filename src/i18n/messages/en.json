@@ -243,6 +243,7 @@
     "back": "Back to start"
   },
   "Library": {
+    "add": "Add games",
     "title": "My library",
     "subtitle": "The games you own or used to own.",
     "search": {

@@ -60,9 +60,20 @@ export default async function LibraryPage({
 
   return (
     <div className="flex flex-col gap-8">
-      <header>
-        <h1 className="text-3xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("subtitle")}</p>
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight">
+            {t("title")}
+          </h1>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
+        </div>
+        {/* The games catalog (search, filters, your own games) lives behind "Add". */}
+        <Link
+          href="/games"
+          className={cn(buttonVariants({ size: "lg" }), "h-11 px-5")}
+        >
+          {t("add")}
+        </Link>
       </header>
 
       <Form action={`/${locale}/library`} role="search" className="flex gap-2">

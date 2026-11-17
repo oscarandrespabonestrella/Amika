@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/database.types";
 import type { ScoreValue } from "@/features/scoring/engine/evaluate";
 import { computePlay, type ParticipantInput } from "../compute";
+import type { LivePlay } from "../live/merge-play-state";
 import { getPlay } from "./play-service";
 
 export type ShareError =
@@ -249,4 +250,37 @@ export async function listElsewherePlays(): Promise<ElsewherePlay[]> {
     status: r.status as "open" | "closed",
     ownerName: (r.owner_id && names.get(r.owner_id)) || "",
   }));
+}
+
+/** The whole state of a live match, for the first render and for every re-read (RLS applies). */
+export async function getLivePlay(playId: string): Promise<LivePlay | null> {
+  const { data, error } = await db()
+    .from("plays")
+    .select(
+      "id, status, play_participants(id, seat, display_name, user_id, total_score, play_scores(category_key, value)), play_members(user_id, status)",
+    )
+    .eq("id", playId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  return {
+    id: data.id,
+    status: data.status as "open" | "closed",
+    participants: [...data.play_participants]
+      .sort((a, b) => a.seat - b.seat)
+      .map((p) => ({
+        id: p.id,
+        seat: p.seat,
+        name: p.display_name,
+        userId: p.user_id,
+        total: p.total_score,
+        scores: Object.fromEntries(
+          p.play_scores.map((s) => [s.category_key, s.value]),
+        ),
+      })),
+    members: data.play_members.map((m) => ({
+      userId: m.user_id,
+      status: m.status,
+    })),
+  };
 }

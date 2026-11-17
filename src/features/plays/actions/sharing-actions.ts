@@ -14,6 +14,7 @@ import {
 } from "../sharing-schemas";
 import {
   closePlay,
+  getLivePlay,
   inviteToPlay,
   leavePlay,
   linkPlayerToFriend,
@@ -118,4 +119,12 @@ export async function closePlayAction(playId: unknown) {
     if (!p.success) return { ok: false, error: "invalid" };
     return done(await closePlay(p.data));
   });
+}
+
+/** A fresh read of a live match, for the browser when Realtime cannot say what changed. */
+export async function getLivePlayAction(playId: unknown) {
+  const { userId } = await auth();
+  const p = playIdSchema.safeParse(playId);
+  if (!userId || !p.success) return null;
+  return getLivePlay(p.data);
 }

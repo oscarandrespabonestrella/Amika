@@ -65,6 +65,20 @@ describe("coverJpeg", () => {
     expect(await coverJpeg(bomb)).toBeNull();
   });
 
+  it("an offline caller can raise the pixel limit; the default still refuses", async () => {
+    // 27 MP, like some BGG originals (the pack generator needs them).
+    const big = await sharp({
+      create: { width: 5200, height: 5200, channels: 3, background: "#808080" },
+    })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+    expect(await coverJpeg(big)).toBeNull();
+    const out = await coverJpeg(big, { maxInputPixels: 64_000_000 });
+    expect(out).not.toBeNull();
+    const m = await meta(out!);
+    expect(Math.max(m.width!, m.height!)).toBe(512);
+  });
+
   it("refuses SVG, corrupt and empty input", async () => {
     const svg = new TextEncoder().encode(
       '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10"/></svg>',

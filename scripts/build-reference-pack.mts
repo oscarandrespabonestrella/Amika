@@ -173,8 +173,14 @@ async function main() {
         ? readFileSync(cached)
         : null;
       if (!jpeg) {
-        const bytes = await fetchCoverBytes(coverUrl);
-        jpeg = bytes ? await coverJpeg(bytes) : null;
+        const bytes = await fetchCoverBytes(coverUrl, fetch, {
+          maxBytes: 16 * 1024 * 1024, // a few PNG originals are 5-6 MB (the app's cap is 5 MB)
+          timeoutMs: 30_000,
+        });
+        // Some BGG originals are 27-32 MP: this offline script may decode more than the app's limit.
+        jpeg = bytes
+          ? await coverJpeg(bytes, { maxInputPixels: 64_000_000 })
+          : null;
         if (jpeg) writeFileSync(cached, jpeg);
       }
       if (jpeg) vec = await embed(await decode(jpeg, 512));

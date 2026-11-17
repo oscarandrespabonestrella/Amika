@@ -111,14 +111,18 @@ const COVER_SIDE = 512;
 /**
  * A cover as a small JPEG for the browser: EXIF-rotated, flattened over white, at most
  * 512 px on the long side (never enlarged), at most 25 megapixels to decode. Null for
- * anything that is not a decodable raster image (SVG, corrupt, empty).
+ * anything that is not a decodable raster image (SVG, corrupt, empty). The pixel limit is
+ * the guard of the public endpoints; only offline scripts pass a higher `maxInputPixels`.
  */
-export async function coverJpeg(bytes: Uint8Array): Promise<Uint8Array | null> {
+export async function coverJpeg(
+  bytes: Uint8Array,
+  options: { maxInputPixels?: number } = {},
+): Promise<Uint8Array | null> {
   if (bytes.byteLength === 0) return null;
   try {
     const { default: sharp } = await import("sharp");
     const image = sharp(Buffer.from(bytes), {
-      limitInputPixels: MAX_INPUT_PIXELS,
+      limitInputPixels: options.maxInputPixels ?? MAX_INPUT_PIXELS,
     });
     const { format } = await image.metadata();
     if (!format || format === "svg") return null; // never rasterize vector input

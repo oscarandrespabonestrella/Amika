@@ -3,14 +3,17 @@
  * CLIP vectors (the model in public/models), cosine ranking, ORB verification
  * (OpenCV.js) and the confidence levels of embedding/confidence.ts. Not part of CI.
  *
- *   npm run recognition:eval -- <folder> [--labels <file>] [--distractors <folder>]
+ *   npm run recognition:eval -- <folder> [--labels <file>] [--distractors <folder>] [--pack]
  *   npm run recognition:eval -- --self-test        # no photos, no database
  *
  * <folder> holds the photos (jpg, png, webp) and a labels.json mapping each file name to
  * the expected game: its catalog id (uuid) or its exact catalog name. The references are
  * the covers of the dev catalog (fetched through the same guarded code as the app);
  * --distractors adds more cover JPEGs (named <bggId>.jpg; those of games already in the
- * catalog are skipped) to resemble a bigger catalog. Keep your photos OUTSIDE the repo.
+ * catalog are skipped) to resemble a bigger catalog. --pack adds the committed reference pack
+ * (BoardGameGeek's top 500) the way the app does (a catalog game hides its pack entry) and also
+ * runs an "unknown box" check per photo: the same photo with its own game REMOVED from the
+ * references must never be answered at high or medium (it must end "not sure" or low). Keep your photos OUTSIDE the repo.
  * Needs the model (scripts/copy-model-assets.mjs), SUPABASE_DB_PASSWORD (.env.local) and
  * `supabase link`. BoardGameGeek is only used to download covers.
  */
@@ -40,6 +43,9 @@ import {
   singleFrameLock,
 } from "../src/features/recognition/embedding/resolve.ts";
 import { decode, loadEmbedder, MODELS } from "./lib/clip-node.mts";
+import { decodePack } from "../src/features/recognition/pack/format.ts";
+import { getPackManifest } from "../src/features/recognition/pack/manifest.ts";
+import { assembleReferences } from "../src/features/recognition/pack/merge.ts";
 import {
   verifyOrb,
   type Cv,
@@ -55,6 +61,7 @@ const flag = (name: string) => {
   return i >= 0 ? args[i + 1] : undefined;
 };
 const labelsFlag = flag("--labels");
+const usePack = args.includes("--pack");
 const distractorsDir = flag("--distractors");
 const folder = args.find(
   (a) => !a.startsWith("--") && a !== labelsFlag && a !== distractorsDir,
@@ -151,6 +158,8 @@ type Row = {
   level: Level | null;
   clipTop1Right: boolean;
   ms: number;
+  /** --pack: the same photo with its own game removed from the references. */
+  unknown?: { said: string | null; level: Level | null };
 };
 
 async function main() {
@@ -242,8 +251,58 @@ async function main() {
       });
       extra++;
     }
+  // The pack (BGG top 500): vectors from the committed files, covers for ORB on demand.
+  const packCovers = new Map<string, { name: string; coverUrl: string }>();
+  let packCount = 0;
+  if (usePack) {
+    const manifest = getPackManifest();
+    const vecs = decodePack(
+      new Uint8Array(
+        readFileSync(join("public", "reference-pack", manifest.vectors)),
+      ),
+      manifest.games.length,
+    );
+    manifest.games.forEach((g, i) => {
+      const id = `bgg:${g.bggId}`;
+      refs.push({ gameId: id, vec: vecs[i], kind: "pack" });
+      names.set(id, g.name);
+      packCovers.set(id, { name: g.name, coverUrl: g.coverUrl });
+    });
+    packCount = manifest.games.length;
+  }
+  // Same rule as the app: a catalog game hides its own pack entry.
+  const allRefs = usePack
+    ? assembleReferences(
+        refs,
+        catalog.map((g) => ({ bggId: g.bgg })),
+      )
+    : refs;
+  const packCoverImages = new Map<string, RgbaImage | null>();
+  async function coverOf(gameId: string): Promise<RgbaImage | null> {
+    const have = coverImages.get(gameId);
+    if (have) return have;
+    const info = packCovers.get(gameId);
+    if (!info) return null;
+    if (packCoverImages.has(gameId)) return packCoverImages.get(gameId)!;
+    const cached = join(
+      tmpdir(),
+      "amika-pack-cache",
+      "covers",
+      `${gameId.slice(4)}.jpg`,
+    );
+    let jpeg: Uint8Array | null = existsSync(cached)
+      ? readFileSync(cached)
+      : null;
+    if (!jpeg) {
+      const bytes = await fetchCoverBytes(info.coverUrl);
+      jpeg = bytes ? await coverJpeg(bytes) : null;
+    }
+    const image = jpeg ? await decode(jpeg, 512) : null;
+    packCoverImages.set(gameId, image);
+    return image;
+  }
   console.log(
-    `references: ${refs.length - extra} catalog covers + ${extra} distractors`,
+    `references: ${refs.length - extra - packCount} catalog covers + ${extra} distractors + ${packCount} pack games (${allRefs.length} used)`,
   );
 
   const rows: Row[] = [];
@@ -259,15 +318,18 @@ async function main() {
     }
     const started = Date.now();
     const photo = await decode(readFileSync(join(folder, file)));
-    const ranked = rankByCosine(await embed(photo), refs);
+    const photoVec = await embed(photo);
+    const ranked = rankByCosine(photoVec, allRefs);
     const top = ranked[0];
     const margin = ranked[1] ? top.score - ranked[1].score : 1;
 
     // The live pipeline's decision, for one frame: ORB re-ranks the CLIP top 3 (decisive
     // when strong), otherwise CLIP alone must clear the lock thresholds.
     const orb = new Map<string, number>();
-    for (const r of ranked.slice(0, 3))
-      orb.set(r.gameId, verifyOrb(cv, photo, coverImages.get(r.gameId)!));
+    for (const r of ranked.slice(0, 3)) {
+      const cover = await coverOf(r.gameId);
+      orb.set(r.gameId, cover ? verifyOrb(cv, photo, cover) : 0);
+    }
     const decision = decide({ ranked, orb, lock: singleFrameLock(ranked) });
     const answer = decision
       ? ranked.find((r) => r.gameId === decision.gameId)!
@@ -279,6 +341,31 @@ async function main() {
         ? "RECOGNIZED"
         : "WRONG";
     const rank = ranked.findIndex((r) => r.gameId === truth) + 1 || null;
+    // "Unknown box": the same photo, its own game (catalog entry AND pack entry) removed.
+    let unknown: Row["unknown"];
+    if (usePack) {
+      const truthBgg = catalog.find((g) => g.id === truth)?.bgg;
+      const without = allRefs.filter(
+        (r) => r.gameId !== truth && r.gameId !== `bgg:${truthBgg}`,
+      );
+      const rankedU = rankByCosine(photoVec, without);
+      const orbU = new Map<string, number>();
+      for (const r of rankedU.slice(0, 3)) {
+        const cover = await coverOf(r.gameId);
+        orbU.set(r.gameId, cover ? verifyOrb(cv, photo, cover) : 0);
+      }
+      const decisionU = decide({
+        ranked: rankedU,
+        orb: orbU,
+        lock: singleFrameLock(rankedU),
+      });
+      unknown = {
+        said: decisionU
+          ? (names.get(decisionU.gameId) ?? decisionU.gameId)
+          : null,
+        level: decisionU?.level ?? null,
+      };
+    }
     rows.push({
       file,
       rank,
@@ -286,6 +373,7 @@ async function main() {
       level,
       clipTop1Right: top.gameId === truth,
       ms: Date.now() - started,
+      unknown,
     });
     console.log(
       `${file.padEnd(7)} ${outcome.padEnd(10)} ${level ? "(" + level + ")" : ""}`.padEnd(
@@ -295,7 +383,10 @@ async function main() {
           answer && answer.gameId !== truth
             ? ` | said "${names.get(answer.gameId)}"`
             : ""
-        }`,
+        }` +
+        (unknown
+          ? ` | unknown-box: ${unknown.said ? `said "${unknown.said}" (${unknown.level})` : "not sure"}`
+          : ""),
     );
   }
 
@@ -308,7 +399,7 @@ async function main() {
   const clipTop1 = rows.filter((r) => r.clipTop1Right).length;
   const count = (l: Level) => rows.filter((r) => r.level === l).length;
   console.log(
-    `\n=== ${n} labeled photos against ${refs.length} references ===`,
+    `\n=== ${n} labeled photos against ${allRefs.length} references ===`,
   );
   console.log(
     `RECOGNIZED ${recognized.length}/${n}   not sure ${rows.filter((r) => r.outcome === "not sure").length}/${n}   WRONG ${wrong.length}/${n}`,
@@ -325,9 +416,20 @@ async function main() {
   console.log(
     `mean time per photo: ${Math.round(rows.reduce((sum, r) => sum + r.ms, 0) / Math.max(1, n))} ms`,
   );
-  const pass = wrongConfident.length === 0 && recognized.length >= 10;
+  const unknownConfident = rows.filter(
+    (r) =>
+      r.unknown && (r.unknown.level === "high" || r.unknown.level === "medium"),
+  );
+  if (usePack)
+    console.log(
+      `unknown-box check: ${rows.length - unknownConfident.length}/${n} ended not sure or low; confident answers on a box that is in NO reference: ${unknownConfident.length}${unknownConfident.length ? " -> " + unknownConfident.map((r) => r.file).join(", ") : ""}`,
+    );
+  const pass =
+    wrongConfident.length === 0 &&
+    unknownConfident.length === 0 &&
+    recognized.length >= 10;
   console.log(
-    `GATE (no wrong answer at high/medium AND >= 10 recognized): ${pass ? "PASS" : "FAIL"}`,
+    `GATE (no wrong answer at high/medium, none on an unknown box, AND >= 10 recognized): ${pass ? "PASS" : "FAIL"}`,
   );
 }
 

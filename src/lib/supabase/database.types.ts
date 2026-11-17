@@ -147,6 +147,84 @@ export type Database = {
           },
         ]
       }
+      friend_invites: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string
+          expires_at: string
+          revoked_at: string | null
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by: string
+          expires_at?: string
+          revoked_at?: string | null
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          revoked_at?: string | null
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friend_invites_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friend_invites_used_by_fkey"
+            columns: ["used_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      friendships: {
+        Row: {
+          created_at: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          created_at?: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          created_at?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friendships_user_a_fkey"
+            columns: ["user_a"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_user_b_fkey"
+            columns: ["user_b"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_barcodes: {
         Row: {
           created_at: string
@@ -745,6 +823,58 @@ export type Database = {
           },
         ]
       }
+      player_link_requests: {
+        Row: {
+          created_at: string
+          friend_id: string
+          id: string
+          owner_id: string
+          player_id: string
+          responded_at: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          friend_id: string
+          id?: string
+          owner_id: string
+          player_id: string
+          responded_at?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          friend_id?: string
+          id?: string
+          owner_id?: string
+          player_id?: string
+          responded_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_link_requests_friend_id_fkey"
+            columns: ["friend_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_link_requests_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_link_requests_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       players: {
         Row: {
           created_at: string
@@ -1201,8 +1331,12 @@ export type Database = {
           version: number
         }[]
       }
+      are_friends: { Args: { p_a: string; p_b: string }; Returns: boolean }
       can_write_scores: { Args: { p_participant: string }; Returns: boolean }
+      close_play: { Args: { p: Json; p_play: string }; Returns: undefined }
+      create_friend_invite: { Args: never; Returns: string }
       current_user_id: { Args: never; Returns: string }
+      delete_play: { Args: { p_play: string }; Returns: undefined }
       f_unaccent: { Args: { "": string }; Returns: string }
       game_score_series: {
         Args: { p_game_id: string; p_limit?: number }
@@ -1248,9 +1382,45 @@ export type Database = {
         }[]
       }
       i_use_sheet: { Args: { p_sheet: string }; Returns: boolean }
+      invite_to_play: {
+        Args: { p_friend: string; p_play: string; p_seat: number }
+        Returns: string
+      }
       is_admin: { Args: never; Returns: boolean }
       is_play_member: { Args: { p_play: string }; Returns: boolean }
       is_play_owner: { Args: { p_play: string }; Returns: boolean }
+      leave_play: { Args: { p_play: string }; Returns: undefined }
+      link_player_to_friend: {
+        Args: { p_friend: string; p_player: string }
+        Returns: string
+      }
+      list_friends: {
+        Args: never
+        Returns: {
+          avatar_path: string
+          display_name: string
+          user_id: string
+        }[]
+      }
+      list_my_invites: {
+        Args: never
+        Returns: {
+          game_name: string
+          invited_at: string
+          invited_by_name: string
+          member_id: string
+          play_id: string
+        }[]
+      }
+      list_my_link_requests: {
+        Args: never
+        Returns: {
+          owner_name: string
+          player_name: string
+          plays: number
+          request_id: string
+        }[]
+      }
       merge_players: {
         Args: { p_keep: string; p_remove: string }
         Returns: undefined
@@ -1284,6 +1454,21 @@ export type Database = {
           version: number
           version_id: string
         }[]
+      }
+      redeem_friend_invite: { Args: { p_code: string }; Returns: string }
+      remove_friend: { Args: { p_friend: string }; Returns: undefined }
+      respond_play_invite: {
+        Args: { p_accept: boolean; p_member: string }
+        Returns: undefined
+      }
+      respond_player_link: {
+        Args: { p_accept: boolean; p_request: string }
+        Returns: number
+      }
+      revoke_friend_invite: { Args: { p_code: string }; Returns: undefined }
+      save_my_scores: {
+        Args: { p_play: string; p_scores: Json }
+        Returns: undefined
       }
       save_play: { Args: { p: Json }; Returns: string }
       search_games: {
@@ -1362,6 +1547,12 @@ export type Database = {
           visibility: string
         }[]
       }
+      transfer_or_delete_plays: { Args: { p_user: string }; Returns: undefined }
+      transfer_play_ownership: {
+        Args: { p_from: string; p_play: string }
+        Returns: boolean
+      }
+      unlink_player: { Args: { p_player: string }; Returns: undefined }
       upsert_external_game: { Args: { p: Json }; Returns: string }
       version_is_usable: { Args: { p_version: string }; Returns: boolean }
     }

@@ -422,3 +422,78 @@ describe.skipIf(!hasDb)("shared saving and linking", () => {
     expect(code).not.toBeNull();
   });
 });
+
+describe.skipIf(!hasDb)("delete passes the match to the others", () => {
+  const accept = async (
+    c: Client,
+    as: (sub: string) => Promise<void>,
+    friend: string,
+    seat: number,
+  ) => {
+    const member = (await invite(c, P1, friend, seat)).rows[0].id;
+    await as(friend);
+    await respond(c, member, true);
+    await as(A);
+  };
+
+  it("borrar con miembros traspasa al más antiguo", async () => {
+    const r = await run(async (c, as) => {
+      await accept(c, as, B, 1);
+      await accept(c, as, C, 2);
+      await c.query("select public.delete_play($1)", [P1]);
+      const gone = await count(c, "public.plays where id = $1", [P1]);
+      await as(B);
+      const owner = (
+        await c.query(`select owner_id from public.plays where id = $1`, [P1])
+      ).rows[0]?.owner_id;
+      // the new owner can edit it: its participants now belong to B's roster
+      const mine = await count(
+        c,
+        `public.play_participants pp join public.players pl on pl.id = pp.player_id
+          where pp.play_id = $1 and pl.owner_id = $2`,
+        [P1, B],
+      );
+      await as(C);
+      return {
+        gone,
+        owner,
+        mine,
+        cSees: await count(c, "public.plays where id = $1", [P1]),
+      };
+    });
+    expect(r).toEqual({ gone: 0, owner: B, mine: 3, cSees: 1 });
+  });
+
+  it("borrar sin miembros elimina la partida", async () => {
+    const left = await run(async (c) => {
+      await c.query("select public.delete_play($1)", [P1]);
+      return count(c, "public.plays where id = $1", [P1]);
+    });
+    expect(left).toBe(0);
+  });
+
+  it("solo el dueño puede borrar la partida", async () => {
+    const code = await run(async (c, as) => {
+      await accept(c, as, B, 1);
+      await as(B);
+      return attempt(c, "select public.delete_play($1)", [P1]);
+    });
+    expect(code).toBe("42501");
+  });
+
+  it("transfer_or_delete_plays deja intactas las partidas con otros miembros y permite borrar la cuenta", async () => {
+    const r = await run(async (c, as) => {
+      await accept(c, as, B, 1);
+      await c.query("reset role");
+      await c.query("select public.transfer_or_delete_plays($1)", [A]);
+      await c.query("delete from public.profiles where id = $1", [A]); // no FK blocks it
+      await c.query("set local role authenticated");
+      await as(B);
+      return {
+        p1: await count(c, "public.plays where id = $1", [P1]),
+        p2: await count(c, "public.plays where id = $1", [P2]),
+      };
+    });
+    expect(r).toEqual({ p1: 1, p2: 0 });
+  });
+});

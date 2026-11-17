@@ -67,6 +67,12 @@ export async function deleteUserData(userId: string) {
     if (error) throw error;
   }
 
+  // Matches shared with other players pass to them; the rest are deleted with the account.
+  const { error: transferError } = await admin.rpc("transfer_or_delete_plays", {
+    p_user: userId,
+  });
+  if (transferError) throw transferError;
+
   const { error } = await admin.from("profiles").delete().eq("id", userId);
   if (error) throw error;
 }

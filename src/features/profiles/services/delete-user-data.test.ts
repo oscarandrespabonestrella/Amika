@@ -13,11 +13,16 @@ type Entry = { name: string; id: string | null };
 /** In-memory Storage: folder -> entries. */
 function fakeAdmin(
   tree: Record<string, Entry[]>,
-  opts: { removeError?: boolean; deleteError?: boolean } = {},
+  opts: {
+    removeError?: boolean;
+    deleteError?: boolean;
+    transferError?: boolean;
+  } = {},
 ) {
   const calls = {
     removed: [] as string[][],
     deletedProfile: [] as string[],
+    transferred: [] as string[],
     order: [] as string[],
   };
   const client = {
@@ -33,6 +38,11 @@ function fakeAdmin(
           return { error: opts.removeError ? new Error("storage down") : null };
         },
       }),
+    },
+    rpc: async (name: string, args: { p_user: string }) => {
+      calls.order.push(name);
+      calls.transferred.push(args.p_user);
+      return { error: opts.transferError ? new Error("transfer down") : null };
     },
     from: () => ({
       delete: () => ({
@@ -74,7 +84,12 @@ describe("deleteUserData", () => {
       "u1/g2/c.jpg",
     ]);
     expect(calls.deletedProfile).toEqual(["u1"]);
-    expect(calls.order).toEqual(["remove", "deleteProfile"]); // files before the row
+    // files, then the matches are passed on, then the row
+    expect(calls.order).toEqual([
+      "remove",
+      "transfer_or_delete_plays",
+      "deleteProfile",
+    ]);
   });
 
   it("still deletes the profile when the user has no files", async () => {
@@ -100,6 +115,21 @@ describe("deleteUserData", () => {
     const { client, calls } = fakeAdmin(TREE, { removeError: true });
     admin.current = client;
     await expect(deleteUserData("u1")).rejects.toThrow("storage down");
+    expect(calls.deletedProfile).toEqual([]);
+  });
+
+  it("passes the matches to the other players before deleting the profile", async () => {
+    const { client, calls } = fakeAdmin({});
+    admin.current = client;
+    await deleteUserData("u1");
+    expect(calls.transferred).toEqual(["u1"]);
+    expect(calls.order).toEqual(["transfer_or_delete_plays", "deleteProfile"]);
+  });
+
+  it("does NOT delete the profile if the matches could not be passed on", async () => {
+    const { client, calls } = fakeAdmin({}, { transferError: true });
+    admin.current = client;
+    await expect(deleteUserData("u1")).rejects.toThrow("transfer down");
     expect(calls.deletedProfile).toEqual([]);
   });
 

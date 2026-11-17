@@ -23,7 +23,7 @@ test("shows exactly one navigation, placed for the viewport", async ({
   }
 });
 
-test("navigation marks the current page and reaches settings", async ({
+test("navigation marks the current page and reaches settings from the account menu", async ({
   page,
 }) => {
   await page.goto("/en/home");
@@ -33,17 +33,43 @@ test("navigation marks the current page and reaches settings", async ({
     "page",
   );
 
-  await nav.getByRole("link", { name: "Friends" }).click();
+  await nav.getByRole("link", { name: "People" }).click();
   await expect(page).toHaveURL(/\/en\/friends$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Friends");
-  await expect(nav.getByRole("link", { name: "Friends" })).toHaveAttribute(
+  await expect(nav.getByRole("link", { name: "People" })).toHaveAttribute(
     "aria-current",
     "page",
   );
 
-  await nav.getByRole("link", { name: "Settings" }).click();
+  // Settings lives in the avatar menu (Clerk UserButton), visible variant only.
+  await page
+    .locator(
+      "button.cl-userButtonTrigger:visible, button[aria-label='Open user menu']:visible",
+    )
+    .first()
+    .click();
+  await page.getByRole("menuitem", { name: "Settings" }).click();
   await expect(page).toHaveURL(/\/en\/settings$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Settings");
+});
+
+test("the centre Log action opens the game picker for a new match", async ({
+  page,
+}) => {
+  await page.goto("/en/home");
+  const nav = page.locator("nav[aria-label='Main navigation']:visible");
+  await nav.getByRole("link", { name: "Log a match" }).click();
+  await expect(page).toHaveURL(/\/en\/log$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Log a match",
+  );
+  const first = page.locator("main ul a").first();
+  if (await first.count()) {
+    await first.click();
+    await expect(page).toHaveURL(/\/en\/games\/[^/]+\/plays\/new$/);
+  } else {
+    await expect(page.getByRole("link", { name: "Add games" })).toBeVisible();
+  }
 });
 
 test("the library navigation item stays active on the games catalog it adds from", async ({

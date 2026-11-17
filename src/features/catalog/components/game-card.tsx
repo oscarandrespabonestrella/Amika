@@ -10,9 +10,11 @@ type GameCardProps = {
   game: GameSummary;
   /** Extra chips (e.g. library status) rendered after the built-in ones. */
   extra?: ReactNode;
+  /** Where the card links to; defaults to the game's detail page. */
+  href?: string;
 };
 
-export function GameCard({ game, extra }: GameCardProps) {
+export function GameCard({ game, extra, href }: GameCardProps) {
   const t = useTranslations("Games");
   const meta = (
     key: "players" | "playersRange" | "minutes" | "minutesRange",
@@ -28,7 +30,7 @@ export function GameCard({ game, extra }: GameCardProps) {
   return (
     <li>
       <Link
-        href={`/games/${game.id}`}
+        href={href ?? `/games/${game.id}`}
         className="flex items-center gap-4 rounded-2xl border border-border bg-card p-3 transition-colors outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-accent text-accent-foreground">

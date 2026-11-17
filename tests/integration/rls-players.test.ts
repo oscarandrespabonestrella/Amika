@@ -303,7 +303,7 @@ describe.skipIf(!hasDb)("participants and the roster", () => {
       ).rows.map((r) => r.column_name),
     );
     expect(cols).toContain("player_id");
-    expect(cols).not.toContain("display_name");
+    // display_name returned in 0020 as a snapshot for guests who cannot read the roster
   });
 
   it("a participant cannot point at another user's player (42501)", async () => {

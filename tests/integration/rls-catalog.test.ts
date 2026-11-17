@@ -300,17 +300,18 @@ describe.skipIf(!hasDb)("search_games()", () => {
     expect(await asA((c) => search(c, "_"))).toEqual([]);
   });
 
+  // The real catalog now holds the BGG top 500 and search_games caps a page at 50, so the
+  // fixtures are looked up by name instead of by listing everything.
   it("filters by player count, duration and kind", async () => {
-    expect(await asA((c) => search(c, null, null, 4))).toEqual(["Catán"]);
-    expect(await asA((c) => search(c, null, null, 6))).toEqual([]);
-    expect(await asA((c) => search(c, null, null, null, 30))).toEqual([]); // Catán starts at 60 min
-    expect(await asA((c) => search(c, null, "expansion"))).toEqual([]);
+    expect(await asA((c) => search(c, "Catán", null, 4))).toEqual(["Catán"]);
+    expect(await asA((c) => search(c, "Catán", null, 6))).toEqual([]);
+    expect(await asA((c) => search(c, "Catán", null, null, 30))).toEqual([]); // starts at 60 min
+    expect(await asA((c) => search(c, "Catán", "expansion"))).toEqual([]);
   });
 
-  it("an empty query lists what the user can see", async () => {
-    expect(await asA((c) => search(c, ""))).toEqual([
+  it("a user sees their own private game but not another user's", async () => {
+    expect(await asA((c) => search(c, "Secret"))).toEqual([
       "Alice Secret Game",
-      "Catán",
     ]);
   });
 });

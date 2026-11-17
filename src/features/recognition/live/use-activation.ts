@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { openReferenceStore } from "../embedding/reference-store";
+import { ensurePack } from "../pack/install";
 import {
   installModel,
   isEnabled,
@@ -60,6 +62,10 @@ export function useRecognitionSetup(): Setup {
           setProgress(p.total > 0 ? Math.min(1, p.loaded / p.total) : null),
         controller.signal,
       );
+      // Part of the same opt-in. A failure is not fatal: opening the camera retries it.
+      await ensurePack(await openReferenceStore(), {
+        signal: controller.signal,
+      });
       setEnabled(true);
       setActive(true);
     } catch (e) {

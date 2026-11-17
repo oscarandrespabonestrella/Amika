@@ -13,20 +13,50 @@ export type ReferenceStore = {
   addLearned(gameId: string, vec: Vec): Promise<void>;
   remove(gameId: string): Promise<void>;
   clear(): Promise<void>;
+  /**
+   * Replaces ALL pack entries (kind "pack", ids `bgg:<bggId>`) with `entries` and records
+   * the pack `version`, in one transaction: covers and learned vectors are never touched.
+   */
+  putPack(
+    entries: { gameId: string; vec: Vec }[],
+    version: string,
+  ): Promise<void>;
+  /** The version of the stored pack, or null when there is none. */
+  packVersion(): Promise<string | null>;
 };
 
 type Row = {
   key: string;
   gameId: string;
-  kind: "cover" | "learned";
+  kind: "cover" | "learned" | "pack";
   vec: Float32Array;
   coverUrl?: string;
+  /** Only on the pack's version row. */
+  version?: string;
   at: number;
 };
 
 const DB_NAME = "amika-recognition";
 const STORE = "refs";
 const MAX_LEARNED = 3;
+/** The pack's version lives in a row of the same store, hidden from `all()`. */
+const PACK_META_KEY = "__pack_version";
+
+const packRow = (gameId: string, vec: Vec): Row => ({
+  key: `pack:${gameId}`,
+  gameId,
+  kind: "pack",
+  vec: new Float32Array(vec),
+  at: nextStamp(),
+});
+const metaRow = (version: string): Row => ({
+  key: PACK_META_KEY,
+  gameId: PACK_META_KEY,
+  kind: "pack",
+  vec: new Float32Array(0),
+  version,
+  at: nextStamp(),
+});
 
 let sequence = 0;
 /** Strictly increasing, so "oldest" is well defined even within the same millisecond. */
@@ -81,7 +111,7 @@ function idbStore(db: IDBDatabase): ReferenceStore {
       const rows = (await request(
         db.transaction(STORE).objectStore(STORE).getAll(),
       )) as Row[];
-      return rows.map(toReference);
+      return rows.filter((r) => r.key !== PACK_META_KEY).map(toReference);
     },
     async getCover(gameId) {
       const row = (await request(
@@ -135,6 +165,21 @@ function idbStore(db: IDBDatabase): ReferenceStore {
       tx.objectStore(STORE).clear();
       await finished(tx);
     },
+    async putPack(entries, version) {
+      const tx = db.transaction(STORE, "readwrite");
+      const store = tx.objectStore(STORE);
+      const rows = (await request(store.getAll())) as Row[];
+      for (const row of rows) if (row.kind === "pack") store.delete(row.key);
+      for (const e of entries) store.put(packRow(e.gameId, e.vec));
+      store.put(metaRow(version));
+      await finished(tx);
+    },
+    async packVersion() {
+      const row = (await request(
+        db.transaction(STORE).objectStore(STORE).get(PACK_META_KEY),
+      )) as Row | undefined;
+      return row?.version ?? null;
+    },
   };
 }
 
@@ -145,7 +190,9 @@ function memoryStore(): ReferenceStore {
   return {
     persistent: false,
     async all() {
-      return [...rows.values()].map(toReference);
+      return [...rows.values()]
+        .filter((r) => r.key !== PACK_META_KEY)
+        .map(toReference);
     },
     async getCover(gameId) {
       const row = rows.get(`${gameId}:cover`);
@@ -187,6 +234,17 @@ function memoryStore(): ReferenceStore {
     },
     async clear() {
       rows.clear();
+    },
+    async putPack(entries, version) {
+      for (const [key, row] of rows) if (row.kind === "pack") rows.delete(key);
+      for (const e of entries) {
+        const row = packRow(e.gameId, e.vec);
+        rows.set(row.key, row);
+      }
+      rows.set(PACK_META_KEY, metaRow(version));
+    },
+    async packVersion() {
+      return rows.get(PACK_META_KEY)?.version ?? null;
     },
   };
 }

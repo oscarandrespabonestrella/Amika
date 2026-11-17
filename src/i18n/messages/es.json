@@ -777,9 +777,9 @@
       },
       "activation": {
         "intro": "El reconocimiento en vivo funciona por completo en este dispositivo. Para ello necesita descargar un modelo de reconocimiento una sola vez.",
-        "warning": "Es una descarga de unos {mb} MB. Usa Wi-Fi si estás con datos móviles.",
+        "warning": "Es una descarga de unos {mb} MB, más unos {packMb} MB del paquete con los 500 juegos mejor clasificados. Usa Wi-Fi si estás con datos móviles.",
         "privacy": "La imagen de la cámara nunca sale de tu dispositivo: no se sube nada ni la ve ningún servicio externo.",
-        "enable": "Descargar (~{mb} MB) y activar",
+        "enable": "Descargar (~{totalMb} MB) y activar",
         "downloading": "Descargando…",
         "progress": "Descargando… {pct} %",
         "cancel": "Cancelar",

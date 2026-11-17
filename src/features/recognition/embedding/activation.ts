@@ -15,6 +15,8 @@ import { openReferenceStore } from "./reference-store";
 export const MODEL_ID = "clip-vit-base-patch32";
 /** Shown to the user before the download starts. */
 export const MODEL_DOWNLOAD_MB = 85;
+/** The reference pack of the BGG top 500 (vectors + nothing else), downloaded with it. */
+export const PACK_DOWNLOAD_MB = 1;
 
 const FLAG_KEY = "amika.recognition.enabled";
 const MARKER_KEY = "amika.recognition.model";

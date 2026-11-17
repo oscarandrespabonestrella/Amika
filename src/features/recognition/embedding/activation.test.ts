@@ -218,10 +218,13 @@ describe("removeAllData", () => {
     const store = await openReferenceStore(factory);
     await store.putCover("g1", "u1", vec);
     await store.addLearned("g1", vec); // derived from the user's own camera frames
+    await store.putPack([{ gameId: "bgg:1", vec }], "v1");
     setEnabled(true);
     await removeAllData(factory);
     expect(isEnabled()).toBe(false);
     expect(c.urls.size).toBe(0);
-    expect(await (await openReferenceStore(factory)).all()).toEqual([]);
+    const after = await openReferenceStore(factory);
+    expect(await after.all()).toEqual([]);
+    expect(await after.packVersion()).toBeNull();
   });
 });

@@ -116,3 +116,50 @@ describe("fallback to memory", () => {
     await memoryWorks(await openReferenceStore(failing));
   });
 });
+
+describe("pack rows", () => {
+  it("putPack replaces the whole previous pack and leaves covers and learned vectors alone", async () => {
+    const store = await openReferenceStore(new IDBFactory());
+    await store.putCover("g1", "u1", vec(1));
+    await store.addLearned("g1", vec(2));
+    await store.putPack(
+      [
+        { gameId: "bgg:1", vec: vec(3) },
+        { gameId: "bgg:2", vec: vec(4) },
+      ],
+      "v1",
+    );
+    await store.putPack([{ gameId: "bgg:3", vec: vec(5) }], "v2");
+    const refs = await store.all();
+    expect(refs.filter((r) => r.kind === "pack").map((r) => r.gameId)).toEqual([
+      "bgg:3",
+    ]);
+    expect(refs.filter((r) => r.kind !== "pack")).toHaveLength(2);
+  });
+
+  it("packVersion round-trips, is null before any pack, and never shows up in all()", async () => {
+    const factory = new IDBFactory();
+    const store = await openReferenceStore(factory);
+    expect(await store.packVersion()).toBeNull();
+    await store.putPack([{ gameId: "bgg:1", vec: vec(3) }], "v1");
+    expect(await (await openReferenceStore(factory)).packVersion()).toBe("v1");
+    expect((await store.all()).map((r) => r.gameId)).toEqual(["bgg:1"]);
+  });
+
+  it("clear() removes the pack and its version", async () => {
+    const store = await openReferenceStore(new IDBFactory());
+    await store.putPack([{ gameId: "bgg:1", vec: vec(3) }], "v1");
+    await store.clear();
+    expect(await store.all()).toEqual([]);
+    expect(await store.packVersion()).toBeNull();
+  });
+
+  it("works the same on the in-memory fallback", async () => {
+    const store = await openReferenceStore(undefined);
+    expect(store.persistent).toBe(false);
+    await store.putPack([{ gameId: "bgg:1", vec: vec(3) }], "v1");
+    await store.putPack([{ gameId: "bgg:2", vec: vec(4) }], "v2");
+    expect((await store.all()).map((r) => r.gameId)).toEqual(["bgg:2"]);
+    expect(await store.packVersion()).toBe("v2");
+  });
+});

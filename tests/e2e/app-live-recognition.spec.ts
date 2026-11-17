@@ -66,7 +66,7 @@ async function serveCovers(page: Page) {
 async function enable(page: Page) {
   await page.goto("/en/games");
   await page
-    .getByRole("button", { name: "Download (~85 MB) and enable" })
+    .getByRole("button", { name: "Download (~86 MB) and enable" })
     .click();
   await expect(
     page.getByRole("button", { name: /Scan with the camera/ }),
@@ -144,7 +144,7 @@ test("enabling downloads the model once, and it stays enabled after a reload", a
   await page.goto("/en/games");
   await expect(modelRequests).toHaveLength(0);
   await page
-    .getByRole("button", { name: /Download \(~85 MB\) and enable/ })
+    .getByRole("button", { name: /Download \(~86 MB\) and enable/ })
     .click();
   await expect(
     page.getByRole("button", { name: /Scan with the camera/ }),

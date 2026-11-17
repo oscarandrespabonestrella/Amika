@@ -1,6 +1,7 @@
 // Turns the covers of the catalog into reference vectors, once per device. Incremental
 // (unchanged covers are skipped), tolerant (one failing cover never stops the rest) and
 // cancellable. The embedding itself is injected, so this is pure orchestration.
+import { PACK_PREFIX } from "../pack/merge";
 import type { Vec } from "./rank";
 import type { ReferenceStore } from "./reference-store";
 
@@ -26,7 +27,8 @@ export async function buildReferences(opts: {
   if (purge) {
     const known = new Set(games.map((g) => g.id));
     const stored = new Set((await store.all()).map((r) => r.gameId));
-    for (const id of stored) if (!known.has(id)) await store.remove(id);
+    for (const id of stored)
+      if (!known.has(id) && !id.startsWith(PACK_PREFIX)) await store.remove(id);
   }
 
   let done = 0;

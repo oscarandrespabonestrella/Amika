@@ -3,7 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { MODEL_DOWNLOAD_MB } from "../embedding/activation";
+import { MODEL_DOWNLOAD_MB, PACK_DOWNLOAD_MB } from "../embedding/activation";
 import { useRecognitionSetup } from "../live/use-activation";
 
 /** Opt-in card, shared by the games page and Settings. Off by default, per device. */
@@ -18,7 +18,10 @@ export function ActivationCard({
     <div className="flex flex-col gap-3" data-testid="recognition-activation">
       <p className="text-sm text-muted-foreground">{t("activation.intro")}</p>
       <p className="text-sm font-medium">
-        {t("activation.warning", { mb: MODEL_DOWNLOAD_MB })}
+        {t("activation.warning", {
+          mb: MODEL_DOWNLOAD_MB,
+          packMb: PACK_DOWNLOAD_MB,
+        })}
       </p>
       <p className="text-sm text-muted-foreground">{t("activation.privacy")}</p>
       {setup.installing ? (
@@ -47,7 +50,9 @@ export function ActivationCard({
           className="h-11 self-start"
           onClick={() => void setup.install()}
         >
-          {t("activation.enable", { mb: MODEL_DOWNLOAD_MB })}
+          {t("activation.enable", {
+            totalMb: MODEL_DOWNLOAD_MB + PACK_DOWNLOAD_MB,
+          })}
         </Button>
       )}
       {setup.error && (

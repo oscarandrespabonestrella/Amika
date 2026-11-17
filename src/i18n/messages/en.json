@@ -777,9 +777,9 @@
       },
       "activation": {
         "intro": "Live recognition runs entirely on this device. To work, it needs to download a recognition model once.",
-        "warning": "It is a download of about {mb} MB. Use Wi-Fi if you are on mobile data.",
+        "warning": "It is a download of about {mb} MB, plus about {packMb} MB for the pack of the 500 best-ranked games. Use Wi-Fi if you are on mobile data.",
         "privacy": "The camera image never leaves your device: nothing is uploaded and no external service sees it.",
-        "enable": "Download (~{mb} MB) and enable",
+        "enable": "Download (~{totalMb} MB) and enable",
         "downloading": "Downloading…",
         "progress": "Downloading… {pct}%",
         "cancel": "Cancel",

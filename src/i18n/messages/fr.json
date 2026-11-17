@@ -777,9 +777,9 @@
       },
       "activation": {
         "intro": "La reconnaissance en direct fonctionne entièrement sur cet appareil. Pour cela, elle doit télécharger une seule fois un modèle de reconnaissance.",
-        "warning": "Il s'agit d'un téléchargement d'environ {mb} Mo. Utilisez le Wi-Fi si vous êtes en données mobiles.",
+        "warning": "Il s'agit d'un téléchargement d'environ {mb} Mo, plus environ {packMb} Mo pour le paquet des 500 jeux les mieux classés. Utilisez le Wi-Fi si vous êtes en données mobiles.",
         "privacy": "L'image de la caméra ne quitte jamais votre appareil : rien n'est envoyé et aucun service externe ne la voit.",
-        "enable": "Télécharger (~{mb} Mo) et activer",
+        "enable": "Télécharger (~{totalMb} Mo) et activer",
         "downloading": "Téléchargement…",
         "progress": "Téléchargement… {pct} %",
         "cancel": "Annuler",

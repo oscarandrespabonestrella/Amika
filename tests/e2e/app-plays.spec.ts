@@ -678,3 +678,30 @@ test.describe("accessibility and mobile", () => {
     await context.close();
   });
 });
+
+test.describe("expansions grouped with their game", () => {
+  test("search folds the expansion under its base game", async ({ page }) => {
+    await page.goto("/en/games?q=Wonders");
+    const base = page.getByRole("listitem").filter({ hasText: GAME_NAME });
+    await expect(
+      page.getByRole("link", { name: new RegExp(EXPANSION_NAME) }),
+    ).toBeHidden();
+    await base.getByText("1 expansion").click();
+    await expect(
+      base.getByRole("link", { name: new RegExp(EXPANSION_NAME) }),
+    ).toBeVisible();
+  });
+
+  test("the game page lists its expansions in their own tab", async ({
+    page,
+  }) => {
+    await page.goto(`/en/games/${gameId}?tab=expansions`);
+    const list = page.getByRole("list", { name: "Expansions" });
+    await expect(
+      list.getByRole("link", { name: EXPANSION_NAME }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("tab", { name: /^Expansions/ }),
+    ).toHaveAttribute("aria-selected", "true");
+  });
+});

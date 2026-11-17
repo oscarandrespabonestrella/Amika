@@ -527,6 +527,7 @@ test.describe("using community sheets in a match", () => {
       await page.getByRole("button", { name: "Save match" }).click();
       // Their own sheet: back to the game page, no vote prompt anywhere.
       await expect(page).toHaveURL(new RegExp(`/en/games/${gameId}$`));
+      await page.getByRole("tab", { name: /^Matches/ }).click();
       await page.getByRole("link", { name: /Cy/ }).first().click();
       await expect(
         page.getByRole("heading", { level: 1, name: "Match" }),

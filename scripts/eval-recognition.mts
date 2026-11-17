@@ -32,7 +32,6 @@ import {
 } from "../src/features/recognition/cover-fetch.ts";
 import { type Level } from "../src/features/recognition/embedding/confidence.ts";
 import {
-  normalize,
   rankByCosine,
   type Reference,
 } from "../src/features/recognition/embedding/rank.ts";
@@ -40,6 +39,7 @@ import {
   decide,
   singleFrameLock,
 } from "../src/features/recognition/embedding/resolve.ts";
+import { decode, loadEmbedder, MODELS } from "./lib/clip-node.mts";
 import {
   verifyOrb,
   type Cv,
@@ -60,9 +60,6 @@ const folder = args.find(
   (a) => !a.startsWith("--") && a !== labelsFlag && a !== distractorsDir,
 );
 
-const MODELS = join(process.cwd(), "public", "models");
-const FRAME_SIDE = 1280; // the browser sends camera frames of about this size
-
 // --- engines ------------------------------------------------------------------------
 
 const require = createRequire(import.meta.url);
@@ -72,66 +69,6 @@ async function loadCv(): Promise<Cv> {
   const cv = candidate instanceof Promise ? await candidate : candidate;
   if (!cv.Mat) await new Promise<void>((r) => (cv.onRuntimeInitialized = r));
   return cv as Cv;
-}
-
-async function loadEmbedder() {
-  if (
-    !existsSync(
-      join(
-        MODELS,
-        "clip-vit-base-patch32",
-        "onnx",
-        "vision_model_quantized.onnx",
-      ),
-    )
-  )
-    throw new Error("model missing: run node scripts/copy-model-assets.mjs");
-  const { env, AutoProcessor, CLIPVisionModelWithProjection, RawImage } =
-    await import("@huggingface/transformers");
-  env.allowLocalModels = true;
-  env.allowRemoteModels = false;
-  env.localModelPath = MODELS + "/";
-  const processor = await AutoProcessor.from_pretrained(
-    "clip-vit-base-patch32",
-  );
-  const model = await CLIPVisionModelWithProjection.from_pretrained(
-    "clip-vit-base-patch32",
-    { dtype: "q8" },
-  );
-  return async (image: RgbaImage) => {
-    const raw = new RawImage(
-      new Uint8ClampedArray(image.data),
-      image.width,
-      image.height,
-      4,
-    ).rgb();
-    const { image_embeds } = await model(await processor(raw));
-    return normalize(Array.from(image_embeds.data as ArrayLike<number>));
-  };
-}
-
-/** Decoded RGBA at the size the browser would send (EXIF applied, long side <= 1280). */
-async function decode(
-  input: Buffer | Uint8Array,
-  side = FRAME_SIDE,
-): Promise<RgbaImage> {
-  const { data, info } = await sharp(Buffer.from(input))
-    .rotate()
-    .flatten({ background: "#ffffff" })
-    .resize({
-      width: side,
-      height: side,
-      fit: "inside",
-      withoutEnlargement: true,
-    })
-    .ensureAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-  return {
-    data: new Uint8ClampedArray(data),
-    width: info.width,
-    height: info.height,
-  };
 }
 
 // --- self test ----------------------------------------------------------------------

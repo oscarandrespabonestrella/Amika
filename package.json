@@ -17,7 +17,8 @@
     "db:types": "supabase gen types typescript --linked > src/lib/supabase/database.types.ts",
     "predev": "node scripts/copy-model-assets.mjs",
     "prebuild": "node scripts/copy-model-assets.mjs",
-    "recognition:eval": "node --conditions=react-server --import tsx scripts/eval-recognition.mts"
+    "recognition:eval": "node --conditions=react-server --import tsx scripts/eval-recognition.mts",
+    "recognition:pack": "node --conditions=react-server --import tsx scripts/build-reference-pack.mts"
   },
   "dependencies": {
     "@clerk/localizations": "^4.24.8",

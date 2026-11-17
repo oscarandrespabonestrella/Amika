@@ -169,8 +169,11 @@ test.describe("game page", () => {
     ).toBeVisible();
     await expect(page.locator("article b")).toHaveCount(0);
 
+    // Expansions are grouped under the game, in their own tab.
+    await page.getByRole("tab", { name: /Expansions/ }).click();
     await expect(page.getByText("E2E Seafarers")).toBeVisible();
     await expect(page.getByText("(Not in the catalog yet)")).toBeVisible();
+    await page.getByRole("tab", { name: "Overview" }).click();
 
     const bgg = page.getByRole("link", { name: /View on BoardGameGeek/ });
     await expect(bgg).toHaveAttribute(

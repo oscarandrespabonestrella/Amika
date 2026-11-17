@@ -158,9 +158,13 @@ const openNew = async (page: Page) => {
     page.getByRole("heading", { level: 1, name: "Log a match" }),
   ).toBeVisible();
 };
+/** The matches live in their own tab of the game page. */
+const openMatchesTab = (page: Page) =>
+  page.getByRole("tab", { name: /^Matches/ }).click();
 const saveAndReturn = async (page: Page) => {
   await save(page).click();
   await expect(page).toHaveURL(new RegExp(`/en/games/${gameId}$`));
+  await openMatchesTab(page);
 };
 
 test.describe("logging matches", () => {
@@ -168,6 +172,7 @@ test.describe("logging matches", () => {
     page,
   }) => {
     await page.goto(`/en/games/${gameId}`);
+    await openMatchesTab(page);
     await expect(panel(page).getByText("No matches yet").first()).toBeVisible();
     await panel(page).getByRole("link", { name: "Log a match" }).click();
     await expect(page).toHaveURL(/\/plays\/new$/);
@@ -497,6 +502,7 @@ test.describe("editing and deleting", () => {
     page,
   }) => {
     await page.goto(`/en/games/${gameId}`);
+    await openMatchesTab(page);
     await panel(page).getByRole("link", { name: /Ana/ }).first().click();
     await expect(page).toHaveURL(/\/plays\/[0-9a-f-]{36}$/);
     await expect(
@@ -582,6 +588,7 @@ test.describe("privacy and translations", () => {
     const context = await browser.newContext({ storageState: STATE_FILE.b });
     const page = await context.newPage();
     await page.goto(`/en/games/${gameId}`);
+    await openMatchesTab(page);
     await expect(panel(page).getByText("No matches yet").first()).toBeVisible();
     const mine = (await plays())[0];
     const response = await page.goto(`/en/games/${gameId}/plays/${mine.id}`);
@@ -598,13 +605,13 @@ test.describe("privacy and translations", () => {
   });
 
   test("the panel and the form are translated (es, fr)", async ({ page }) => {
-    await page.goto(`/es/games/${gameId}`);
+    await page.goto(`/es/games/${gameId}?tab=matches`);
     await expect(page.getByRole("region", { name: "Partidas" })).toBeVisible();
     await page.goto(`/es/games/${gameId}/plays/new`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "Registrar una partida",
     );
-    await page.goto(`/fr/games/${gameId}`);
+    await page.goto(`/fr/games/${gameId}?tab=matches`);
     await expect(page.getByRole("region", { name: "Parties" })).toBeVisible();
     await page.goto(`/fr/games/${gameId}/plays/new`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(

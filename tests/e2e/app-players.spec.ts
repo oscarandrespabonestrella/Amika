@@ -220,6 +220,7 @@ test.describe("managing the roster", () => {
     await expect(playerItem(page, "Anita")).toBeVisible();
 
     await page.goto(`/en/games/${gameId}`);
+    await page.getByRole("tab", { name: /^Matches/ }).click();
     await expect(
       page.getByRole("region", { name: "Matches" }).getByText("Anita").first(),
     ).toBeVisible();

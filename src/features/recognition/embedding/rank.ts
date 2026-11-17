@@ -4,11 +4,11 @@ import { EMBED_DIM } from "./thresholds";
 
 export type Vec = Float32Array;
 
-/** A stored vector of a game: its catalog cover, or a frame the user confirmed. */
+/** A stored vector of a game: its catalog cover, a frame the user confirmed, or a pack entry. */
 export type Reference = {
   gameId: string;
   vec: Vec;
-  kind: "cover" | "learned";
+  kind: "cover" | "learned" | "pack";
 };
 
 export type Ranked = {

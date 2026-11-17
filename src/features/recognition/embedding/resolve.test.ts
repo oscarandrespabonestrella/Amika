@@ -182,13 +182,13 @@ describe("decide", () => {
     expect(d?.level).not.toBe("high");
   });
 
-  it("a lock without verification: the level comes from similarity and lead (never high)", () => {
+  it("a lock without geometric verification is low, even with a great similarity and lead", () => {
     const d = decide({
       ranked: [row("a", 0.8), row("b", 0.5)],
       orb: new Map(),
       lock: lock("a", 0.8, 0.3),
     });
-    expect(d).toMatchObject({ gameId: "a", via: "clip", level: "medium" });
+    expect(d).toMatchObject({ gameId: "a", via: "clip", level: "low" });
   });
 
   it("a weak lock is low", () => {

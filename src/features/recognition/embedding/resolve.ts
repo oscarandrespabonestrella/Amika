@@ -80,8 +80,6 @@ export function decide(input: {
     return {
       gameId: barcodeGameId,
       level: levelFor({
-        similarity: scoreOf(barcodeGameId),
-        margin: marginOf(barcodeGameId),
         learnedBarcode: true,
       }),
       similarity: scoreOf(barcodeGameId),
@@ -95,8 +93,6 @@ export function decide(input: {
     return {
       gameId: verified.gameId,
       level: levelFor({
-        similarity: scoreOf(verified.gameId),
-        margin: marginOf(verified.gameId),
         orbInliers: verified.inliers,
       }),
       similarity: scoreOf(verified.gameId),
@@ -115,8 +111,6 @@ export function decide(input: {
     return {
       gameId: lock.gameId,
       level: levelFor({
-        similarity: lock.similarity,
-        margin: lock.margin,
         orbInliers: outshone ? 0 : inliers,
       }),
       similarity: lock.similarity,

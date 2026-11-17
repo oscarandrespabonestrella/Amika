@@ -20,11 +20,10 @@ export const LOCK_MIN_SIMILARITY = 0.45;
 /** The leader's mean advantage over the runner-up must reach this to lock. */
 export const LOCK_MIN_MARGIN = 0.03;
 
-/** "medium" without ORB evidence needs both of these. */
-export const MEDIUM_MIN_SIMILARITY = 0.55;
-export const MEDIUM_MIN_MARGIN = 0.05;
-
-/** ORB + RANSAC inliers (frame vs cover) that make an answer "high" / "medium". */
+/**
+ * ORB + RANSAC inliers (frame vs cover) that make an answer "high" / "medium". Without
+ * them an answer is at most "low": similarity alone is not evidence (ADR-038).
+ */
 export const ORB_HIGH_INLIERS = 40;
 export const ORB_MEDIUM_INLIERS = 30;
 

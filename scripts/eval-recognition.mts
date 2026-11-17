@@ -159,7 +159,13 @@ type Row = {
   clipTop1Right: boolean;
   ms: number;
   /** --pack: the same photo with its own game removed from the references. */
-  unknown?: { said: string | null; level: Level | null };
+  unknown?: {
+    said: string | null;
+    level: Level | null;
+    similarity: number | null;
+    margin: number | null;
+    orbInliers: number | null;
+  };
 };
 
 async function main() {
@@ -364,6 +370,9 @@ async function main() {
           ? (names.get(decisionU.gameId) ?? decisionU.gameId)
           : null,
         level: decisionU?.level ?? null,
+        similarity: decisionU?.similarity ?? null,
+        margin: decisionU?.margin ?? null,
+        orbInliers: decisionU?.orbInliers ?? null,
       };
     }
     rows.push({
@@ -385,7 +394,7 @@ async function main() {
             : ""
         }` +
         (unknown
-          ? ` | unknown-box: ${unknown.said ? `said "${unknown.said}" (${unknown.level})` : "not sure"}`
+          ? ` | unknown-box: ${unknown.said ? `said "${unknown.said}" (${unknown.level}, sim ${unknown.similarity?.toFixed(3)}, lead ${unknown.margin?.toFixed(3)}, orb ${unknown.orbInliers})` : "not sure"}`
           : ""),
     );
   }

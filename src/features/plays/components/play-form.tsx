@@ -401,7 +401,7 @@ export function PlayForm({
             const errors = result?.errors ?? {};
             return (
               <li key={row.uid}>
-                <fieldset className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4">
+                <fieldset className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-3">
                   <legend className="px-1 text-sm font-medium">
                     {t("player", { n: index + 1 })}
                   </legend>
@@ -410,6 +410,7 @@ export function PlayForm({
                       <Label
                         id={`name-${index}-label`}
                         htmlFor={`name-${index}`}
+                        className="sr-only"
                       >
                         {t("playerName", { n: index + 1 })}
                       </Label>
@@ -456,7 +457,7 @@ export function PlayForm({
                     </button>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3 border-t border-border pt-3 text-sm">
+                  <div className="flex flex-wrap items-center gap-3 text-sm">
                     <span>
                       {t("total")}:{" "}
                       <strong
@@ -570,23 +571,24 @@ export function PlayForm({
         </label>
       )}
 
+      <Link
+        href={`/games/${gameId}`}
+        className="inline-flex h-11 w-fit items-center rounded-lg text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+      >
+        {t("back", { game: gameName })}
+      </Link>
+
       {/* Stays in reach while scoring; on a phone it rides above the bottom navigation. */}
       <div className="sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 -mx-4 flex flex-wrap items-center gap-3 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0 md:mx-0 md:rounded-2xl md:border">
         <Button
           type="submit"
           size="lg"
-          className="h-12 flex-1 rounded-xl px-6 text-base sm:flex-none"
+          className="h-12 w-full rounded-xl px-6 text-base sm:w-auto"
           disabled={!canSave}
           aria-describedby={showProblems ? "save-hint" : undefined}
         >
           {pending ? t("saving") : t("save")}
         </Button>
-        <Link
-          href={`/games/${gameId}`}
-          className="inline-flex h-11 items-center rounded-lg px-3 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-        >
-          {t("back", { game: gameName })}
-        </Link>
         <div aria-live="polite" className="text-sm">
           {notice && <span className="text-success">{t("saved")}</span>}
           {failure && (

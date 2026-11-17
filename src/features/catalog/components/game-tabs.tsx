@@ -11,19 +11,20 @@ export type GameTab = {
   content: ReactNode;
 };
 
-type Props = { tabs: readonly GameTab[]; label: string };
+type Props = {
+  tabs: readonly GameTab[];
+  label: string;
+  /** The tab to open (from `?tab=`, read on the server so both renders agree). */
+  initialTab?: string;
+};
 
 /**
  * Overview · Matches · Expansions · Sheets. Every panel is rendered on the server and stays in
  * the page; only the active one is shown. `?tab=` picks the tab on arrival and follows the
  * user's choice (without a navigation), so a tab can be linked to.
  */
-export function GameTabs({ tabs, label }: Props) {
-  const [active, setActive] = useState(() => {
-    if (typeof window === "undefined") return tabs[0].id;
-    const wanted = new URLSearchParams(window.location.search).get("tab");
-    return tabs.some((tab) => tab.id === wanted) ? wanted! : tabs[0].id;
-  });
+export function GameTabs({ tabs, label, initialTab }: Props) {
+  const [active, setActive] = useState(initialTab ?? tabs[0].id);
   const current = tabs.some((tab) => tab.id === active) ? active : tabs[0].id;
 
   function choose(id: string) {

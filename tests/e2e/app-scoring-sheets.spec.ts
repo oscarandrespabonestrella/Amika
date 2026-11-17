@@ -81,6 +81,7 @@ async function addCategory(page: Page, type: string) {
 test.describe("an empty game", () => {
   test("shows 'no sheets yet' and links to the editor", async ({ page }) => {
     await page.goto(`/en/games/${gameId}`);
+    await page.getByRole("tab", { name: /^Sheets/ }).click();
     await expect(page.getByText("No sheets yet")).toBeVisible();
     await page.getByRole("link", { name: "Open score sheets" }).click();
     await expect(page).toHaveURL(new RegExp(`/en/games/${gameId}/sheets$`));

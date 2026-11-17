@@ -24,8 +24,10 @@ import { listSheetsForGame, SheetsLink } from "@/features/scoring";
 
 export default async function GamePage({
   params,
+  searchParams,
 }: PageProps<"/[locale]/games/[id]">) {
   const { locale: rawLocale, id } = await params;
+  const tab = (await searchParams).tab;
   const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
@@ -52,6 +54,7 @@ export default async function GamePage({
     <GameDetailView
       game={game}
       bggAvailable={getGameSource().isConfigured()}
+      initialTab={typeof tab === "string" ? tab : undefined}
       matchCount={plays.length}
       sheetCount={sheets.length}
       ownedGameIds={library.map((entry) => entry.game.id)}

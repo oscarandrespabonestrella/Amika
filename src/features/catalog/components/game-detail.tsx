@@ -31,6 +31,8 @@ type Props = {
   sheetCount?: number;
   /** Ids of the games the user has in their library (to mark owned expansions). */
   ownedGameIds?: readonly string[];
+  /** Tab to open, from `?tab=`. */
+  initialTab?: string;
 };
 
 export function GameDetailView({
@@ -44,6 +46,7 @@ export function GameDetailView({
   matchCount = 0,
   sheetCount = 0,
   ownedGameIds = [],
+  initialTab,
 }: Props) {
   const t = useTranslations("Game");
   const tg = useTranslations("Games");
@@ -330,7 +333,7 @@ export function GameDetailView({
         )}
       </header>
 
-      <GameTabs tabs={tabs} label={game.name} />
+      <GameTabs tabs={tabs} label={game.name} initialTab={initialTab} />
 
       {/* Stays in reach while browsing the tabs; on a phone it rides above the bottom navigation. */}
       <div className="sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 -mx-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0 md:mx-0 md:rounded-2xl md:border">

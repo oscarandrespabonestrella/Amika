@@ -1432,7 +1432,15 @@ export type Database = {
           me_player_id: string
           plays: number
           scored_plays: number
+          shared_plays: number
           wins: number
+        }[]
+      }
+      my_participants: {
+        Args: never
+        Returns: {
+          participant_id: string
+          play_id: string
         }[]
       }
       my_top_games: {

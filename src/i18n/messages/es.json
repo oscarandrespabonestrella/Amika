@@ -24,7 +24,10 @@
     "settings": "Ajustes",
     "library": "Biblioteca",
     "stats": "Estadísticas",
-    "friends": "Amigos"
+    "friends": "Amigos",
+    "people": "Personas",
+    "logMatch": "Registrar partida",
+    "account": "Cuenta"
   },
   "Home": {
     "title": "Te damos la bienvenida",
@@ -916,5 +919,12 @@
     "send": "Enviar solicitud",
     "sent": "Solicitud enviada. Será oficial cuando tu amigo acepte.",
     "unlink": "Desvincular"
+  },
+  "Log": {
+    "title": "Registrar partida",
+    "subtitle": "Elige el juego que jugaste.",
+    "emptyTitle": "Tu biblioteca está vacía",
+    "emptyBody": "Añade un juego a tu biblioteca para registrar una partida.",
+    "browse": "Añadir juegos"
   }
 }

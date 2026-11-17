@@ -24,7 +24,10 @@
     "settings": "Settings",
     "library": "Library",
     "stats": "Statistics",
-    "friends": "Friends"
+    "friends": "Friends",
+    "people": "People",
+    "logMatch": "Log a match",
+    "account": "Account"
   },
   "Home": {
     "title": "Welcome back",
@@ -916,5 +919,12 @@
     "send": "Send request",
     "sent": "Request sent. It becomes official when your friend accepts.",
     "unlink": "Unlink"
+  },
+  "Log": {
+    "title": "Log a match",
+    "subtitle": "Pick the game you played.",
+    "emptyTitle": "Your library is empty",
+    "emptyBody": "Add a game to your library to log a match.",
+    "browse": "Add games"
   }
 }

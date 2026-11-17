@@ -24,7 +24,10 @@
     "settings": "Réglages",
     "library": "Bibliothèque",
     "stats": "Statistiques",
-    "friends": "Amis"
+    "friends": "Amis",
+    "people": "Personnes",
+    "logMatch": "Enregistrer une partie",
+    "account": "Compte"
   },
   "Home": {
     "title": "Bon retour",
@@ -916,5 +919,12 @@
     "send": "Envoyer la demande",
     "sent": "Demande envoyée. Elle sera officielle quand votre ami acceptera.",
     "unlink": "Délier"
+  },
+  "Log": {
+    "title": "Enregistrer une partie",
+    "subtitle": "Choisissez le jeu auquel vous avez joué.",
+    "emptyTitle": "Votre bibliothèque est vide",
+    "emptyBody": "Ajoutez un jeu à votre bibliothèque pour enregistrer une partie.",
+    "browse": "Ajouter des jeux"
   }
 }

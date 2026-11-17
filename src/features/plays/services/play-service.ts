@@ -27,6 +27,9 @@ export type PlaySummary = {
 
 export type PlayDetail = PlaySummary & {
   gameId: string;
+  ownerId: string;
+  /** 'open': the members write their own column; 'closed': final. */
+  status: "open" | "closed";
   notes: string | null;
   expansionIds: string[];
   /** The sheet version the match was scored with; null = manual totals. */
@@ -39,6 +42,8 @@ export type PlayDetail = PlaySummary & {
   /** What was entered, per player in seat order (to prefill the form). */
   entries: {
     playerId: string;
+    /** The account behind this player in a shared match; null for a loose name. */
+    userId: string | null;
     name: string;
     manualTotal: number | null;
     values: Record<string, ScoreValue>;
@@ -67,7 +72,7 @@ export async function listPlaysForGame(
   const { data, error } = await createSupabaseServerClient()
     .from("plays")
     .select(
-      "id, played_on, duration_minutes, scoring_sheet_versions(scoring_sheets(title)), play_participants(seat, total_score, rank, is_winner, players(name))",
+      "id, played_on, duration_minutes, scoring_sheet_versions(scoring_sheets(title)), play_participants(seat, display_name, total_score, rank, is_winner)",
     )
     .eq("game_id", gameId)
     .order("played_on", { ascending: false })
@@ -83,7 +88,7 @@ export async function listPlaysForGame(
     participants: [...row.play_participants]
       .sort((a, b) => a.seat - b.seat)
       .map((p) => ({
-        name: p.players?.name ?? "",
+        name: p.display_name,
         total: p.total_score,
         rank: p.rank,
         isWinner: p.is_winner,
@@ -100,7 +105,7 @@ export async function getPlay(playId: string): Promise<PlayDetail | null> {
   const { data, error } = await createSupabaseServerClient()
     .from("plays")
     .select(
-      "id, game_id, played_on, duration_minutes, notes, scoring_version_id, scoring_sheet_versions(id, version, sheet_id, definition, scoring_sheets(title)), play_participants(seat, player_id, total_score, rank, is_winner, players(name), play_scores(category_key, value)), play_expansions(game_id)",
+      "id, game_id, owner_id, status, played_on, duration_minutes, notes, scoring_version_id, scoring_sheet_versions(id, version, sheet_id, definition, scoring_sheets(title)), play_participants(seat, player_id, user_id, display_name, total_score, rank, is_winner, play_scores(category_key, value)), play_expansions(game_id)",
     )
     .eq("id", playId)
     .maybeSingle();
@@ -108,7 +113,21 @@ export async function getPlay(playId: string): Promise<PlayDetail | null> {
   if (!data) return null;
 
   let sheet: PlayDetail["sheet"] = null;
-  const version = data.scoring_sheet_versions;
+  let version = data.scoring_sheet_versions;
+  if (!version && data.scoring_version_id) {
+    const { data: shared, error: sheetError } =
+      await createSupabaseServerClient().rpc("play_sheet", { p_play: playId });
+    if (sheetError) throw sheetError;
+    const row = shared?.[0];
+    if (row)
+      version = {
+        id: row.version_id,
+        version: row.version,
+        sheet_id: row.sheet_id,
+        definition: row.definition,
+        scoring_sheets: { title: row.title },
+      };
+  }
   if (version) {
     const validated = validateDefinition(version.definition);
     if (!validated.ok) {
@@ -130,6 +149,8 @@ export async function getPlay(playId: string): Promise<PlayDetail | null> {
   return {
     id: data.id,
     gameId: data.game_id,
+    ownerId: data.owner_id ?? "",
+    status: data.status as "open" | "closed",
     playedOn: data.played_on,
     durationMinutes: data.duration_minutes,
     notes: data.notes,
@@ -137,14 +158,15 @@ export async function getPlay(playId: string): Promise<PlayDetail | null> {
     expansionIds: data.play_expansions.map((e) => e.game_id),
     sheet,
     participants: people.map((p) => ({
-      name: p.players?.name ?? "",
+      name: p.display_name,
       total: p.total_score,
       rank: p.rank,
       isWinner: p.is_winner,
     })),
     entries: people.map((p) => ({
       playerId: p.player_id,
-      name: p.players?.name ?? "",
+      userId: p.user_id,
+      name: p.display_name,
       manualTotal: sheet ? null : p.total_score,
       values: Object.fromEntries(
         p.play_scores.map((s) => [s.category_key, s.value as ScoreValue]),
@@ -197,6 +219,7 @@ function toPayload(
     scoringVersionId: string | null;
     notes: string | null;
     expansionIds: string[];
+    status?: "open" | "closed";
   },
 ): Json {
   return {
@@ -255,6 +278,7 @@ export async function createPlay(input: CreatePlayInput): Promise<PlayOutcome> {
         scoringVersionId: versionId,
         notes: input.notes,
         expansionIds: input.expansionIds,
+        status: input.status,
       },
     ),
   );
@@ -290,10 +314,10 @@ export async function updatePlay(
   );
 }
 
+/** The owner deletes: if other players remain the match passes to them (delete_play). */
 export async function deletePlay(playId: string): Promise<void> {
-  const { error } = await createSupabaseServerClient()
-    .from("plays")
-    .delete()
-    .eq("id", playId);
+  const { error } = await createSupabaseServerClient().rpc("delete_play", {
+    p_play: playId,
+  });
   if (error) throw error;
 }

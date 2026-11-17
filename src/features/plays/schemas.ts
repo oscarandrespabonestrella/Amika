@@ -85,6 +85,8 @@ const shared = {
 export const createPlaySchema = z.strictObject({
   gameId: z.uuid(),
   sheetId: z.uuid().nullable().default(null),
+  /** 'open' starts a live match that friends can join; the default keeps today's behavior. */
+  status: z.enum(["open", "closed"]).default("closed"),
   ...shared,
 });
 

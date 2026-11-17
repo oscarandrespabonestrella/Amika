@@ -275,7 +275,12 @@ test.describe("create your own game", () => {
     page,
   }) => {
     await page.goto("/en/games");
-    await search(page, "nandu e2e");
+    // With the BGG top 500 in the catalog a fuzzy two-word query is crowded out of the 30
+    // results page; the accent-insensitive lookup uses the unique name without accents.
+    await search(
+      page,
+      CUSTOM_NAME.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
+    );
     await expect(
       page.getByRole("link", { name: new RegExp(CUSTOM_NAME) }),
     ).toBeVisible();

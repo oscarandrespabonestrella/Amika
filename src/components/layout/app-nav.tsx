@@ -17,7 +17,7 @@ const ITEMS = [
   { href: "/games", key: "games", icon: Dice5 },
   { href: "/library", key: "library", icon: BookMarked },
   { href: "/stats", key: "stats", icon: BarChart3 },
-  { href: "/friends", key: "friends", icon: Users },
+  { href: "/friends", key: "friends", icon: Users, sidebarOnly: true },
   { href: "/settings", key: "settings", icon: Settings },
 ] as const;
 
@@ -33,10 +33,12 @@ export function AppNav({ variant }: AppNavProps) {
       className={cn(
         variant === "sidebar" && "flex flex-col gap-1",
         variant === "bottom" &&
-          "fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden",
+          "fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden",
       )}
     >
-      {ITEMS.map(({ href, key, icon: Icon }) => {
+      {ITEMS.filter(
+        (item) => variant === "sidebar" || !("sidebarOnly" in item),
+      ).map(({ href, key, icon: Icon }) => {
         const active = pathname === href || pathname.startsWith(`${href}/`);
         return (
           <Link

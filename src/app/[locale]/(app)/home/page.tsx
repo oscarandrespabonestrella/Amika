@@ -14,8 +14,9 @@ export default async function HomePage({
   const locale = assertLocale((await params).locale);
   setRequestLocale(locale);
 
-  const [t, profile, libraryCount] = await Promise.all([
+  const [t, tn, profile, libraryCount] = await Promise.all([
     getTranslations("Home"),
+    getTranslations("Nav"),
     getOrCreateProfile(),
     countLibrary(),
   ]);
@@ -68,6 +69,16 @@ export default async function HomePage({
         )}
       >
         {t("browse")}
+      </Link>
+
+      <Link
+        href="/friends"
+        className={cn(
+          buttonVariants({ size: "lg", variant: "outline" }),
+          "h-11 w-fit px-6",
+        )}
+      >
+        {tn("friends")}
       </Link>
     </div>
   );

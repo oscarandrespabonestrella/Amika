@@ -5,6 +5,8 @@ import { securityHeaders } from "./src/lib/security-headers";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  // Phone on the same Wi-Fi opening the dev server (npm run dev -- -H 0.0.0.0).
+  allowedDevOrigins: ["192.168.31.78"],
   // Security headers on every route. The CSP is Report-Only until CSP_ENFORCE=1 is set
   // (build time): see docs/SECURITY.md for how and when to switch it.
   async headers() {

@@ -8,7 +8,12 @@ import {
   getGameSource,
 } from "@/features/catalog";
 import { GameCenter, getGameCenter } from "@/features/game-center";
-import { getLibraryItem, LibraryPanel } from "@/features/library";
+import {
+  getLibraryItem,
+  LibraryPanel,
+  parseLibraryFilters,
+  searchLibrary,
+} from "@/features/library";
 import { listPlaysForGame, PlaysPanel } from "@/features/plays";
 import {
   GameStatsPanel,
@@ -25,14 +30,16 @@ export default async function GamePage({
   setRequestLocale(locale);
 
   const { userId } = await auth();
-  const [game, item, sheets, plays, stats, categories] = await Promise.all([
-    getGameDetail(id, locale),
-    getLibraryItem(id),
-    listSheetsForGame(id),
-    listPlaysForGame(id),
-    getGameStats(id),
-    getGameCategoryStats(id),
-  ]);
+  const [game, item, sheets, plays, stats, categories, library] =
+    await Promise.all([
+      getGameDetail(id, locale),
+      getLibraryItem(id),
+      listSheetsForGame(id),
+      listPlaysForGame(id),
+      getGameStats(id),
+      getGameCategoryStats(id),
+      searchLibrary(parseLibraryFilters({})),
+    ]);
   if (!game) notFound();
 
   // Game Center content exists only for catalog games, never for private custom ones.
@@ -45,6 +52,9 @@ export default async function GamePage({
     <GameDetailView
       game={game}
       bggAvailable={getGameSource().isConfigured()}
+      matchCount={plays.length}
+      sheetCount={sheets.length}
+      ownedGameIds={library.map((entry) => entry.game.id)}
       libraryPanel={<LibraryPanel gameId={game.id} item={item} />}
       gameCenter={center && <GameCenter gameId={game.id} data={center} />}
       scoringPanel={<SheetsLink gameId={game.id} count={sheets.length} />}

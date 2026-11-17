@@ -131,7 +131,8 @@
       "rate_limited": "Trop de requêtes. Attendez une minute et réessayez.",
       "not_found": "BoardGameGeek n'a aucun jeu avec cet identifiant.",
       "failed": "Une erreur s'est produite. Veuillez réessayer."
-    }
+    },
+    "withExpansions": "{count, plural, one {# extension} other {# extensions}}"
   },
   "Game": {
     "back": "Retour aux jeux",
@@ -213,6 +214,21 @@
       "deleteNo": "Annuler",
       "deleting": "Suppression…",
       "deleteError": "Impossible de supprimer le jeu. Veuillez réessayer."
+    },
+    "tabs": {
+      "overview": "Aperçu",
+      "matches": "Parties",
+      "expansions": "Extensions",
+      "sheets": "Feuilles"
+    },
+    "logMatch": "Enregistrer une partie",
+    "expansionsTab": {
+      "none": "Aucune extension connue pour ce jeu.",
+      "filter": "Filtrer les extensions",
+      "noMatch": "Aucune extension ne correspond à ce nom.",
+      "owned": "Dans ma bibliothèque",
+      "showAll": "Afficher les {count}",
+      "showFewer": "Afficher moins"
     }
   },
   "NewGame": {

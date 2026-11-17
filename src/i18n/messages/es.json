@@ -131,7 +131,8 @@
       "rate_limited": "Demasiadas solicitudes. Espera un minuto e inténtalo de nuevo.",
       "not_found": "BoardGameGeek no tiene ningún juego con ese identificador.",
       "failed": "Algo salió mal. Inténtalo de nuevo."
-    }
+    },
+    "withExpansions": "{count, plural, one {# expansión} other {# expansiones}}"
   },
   "Game": {
     "back": "Volver a juegos",
@@ -213,6 +214,21 @@
       "deleteNo": "Cancelar",
       "deleting": "Eliminando…",
       "deleteError": "No se pudo eliminar el juego. Inténtalo de nuevo."
+    },
+    "tabs": {
+      "overview": "Resumen",
+      "matches": "Partidas",
+      "expansions": "Expansiones",
+      "sheets": "Hojas"
+    },
+    "logMatch": "Registrar partida",
+    "expansionsTab": {
+      "none": "Aún no se conocen expansiones de este juego.",
+      "filter": "Filtrar expansiones",
+      "noMatch": "Ninguna expansión coincide con ese nombre.",
+      "owned": "En mi biblioteca",
+      "showAll": "Mostrar las {count}",
+      "showFewer": "Mostrar menos"
     }
   },
   "NewGame": {

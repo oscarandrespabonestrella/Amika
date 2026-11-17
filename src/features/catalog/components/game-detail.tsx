@@ -1,4 +1,4 @@
-import { ArrowLeft, Dices, ExternalLink } from "lucide-react";
+import { ArrowLeft, Dices, ExternalLink, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,8 @@ import { Link } from "@/i18n/navigation";
 import { formatMinutes, formatPlayers } from "../format";
 import type { GameDetail } from "../services/game-service";
 import { TERM_TYPES } from "../types";
+import { ExpansionsList, type ExpansionItem } from "./expansions-list";
+import { GameTabs } from "./game-tabs";
 import { ImportRelationButton } from "./import-relation-button";
 import { OwnerActions } from "./owner-actions";
 import { PhotoGallery } from "./photo-gallery";
@@ -24,6 +26,11 @@ type Props = {
   statsPanel?: ReactNode;
   /** Whether adding a game from the external source is possible right now. */
   bggAvailable?: boolean;
+  /** Counts shown on the tabs. */
+  matchCount?: number;
+  sheetCount?: number;
+  /** Ids of the games the user has in their library (to mark owned expansions). */
+  ownedGameIds?: readonly string[];
 };
 
 export function GameDetailView({
@@ -34,6 +41,9 @@ export function GameDetailView({
   playsPanel,
   statsPanel,
   bggAvailable = false,
+  matchCount = 0,
+  sheetCount = 0,
+  ownedGameIds = [],
 }: Props) {
   const t = useTranslations("Game");
   const tg = useTranslations("Games");
@@ -66,62 +76,34 @@ export function GameDetailView({
   // The user's own photo is the best cover; otherwise the linked BGG image.
   const cover = game.photos.find((p) => p.url)?.url ?? game.coverUrl;
 
-  return (
-    <article className="flex flex-col gap-8">
-      <Link
-        href="/games"
-        className="inline-flex w-fit items-center gap-1.5 rounded-md text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-      >
-        <ArrowLeft className="size-4" aria-hidden />
-        {t("back")}
-      </Link>
+  const designers = game.terms
+    .filter((term) => term.type === "designer")
+    .map((term) => term.name);
+  const subtitle = [
+    designers.slice(0, 2).join(", ") || null,
+    game.yearPublished ? String(game.yearPublished) : null,
+    tg(game.kind === "expansion" ? "kind.expansion" : "kind.base"),
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const strip = facts.filter((fact) => fact.label !== t("year"));
 
-      <header className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-start sm:text-left">
-        <div className="grid aspect-square w-full max-w-48 shrink-0 place-items-center overflow-hidden rounded-2xl bg-tint text-tint-foreground shadow-xl shadow-black/30">
-          {cover ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={cover}
-              alt={t("coverAlt", { name: game.name })}
-              referrerPolicy="no-referrer"
-              className="size-full object-cover"
-            />
-          ) : (
-            <Dices className="size-14" aria-hidden />
-          )}
-        </div>
-        <div className="flex w-full min-w-0 flex-col gap-3">
-          <h1 className="text-3xl font-semibold tracking-tight text-balance">
-            {game.name}
-          </h1>
-          <div className="flex flex-wrap justify-center gap-1.5 sm:justify-start">
-            {game.kind === "expansion" && (
-              <Badge variant="secondary">{tg("kind.expansion")}</Badge>
-            )}
-            {game.isCustom && (
-              <Badge variant="outline">{tg("badge.custom")}</Badge>
-            )}
-          </div>
-          {facts.length > 0 && (
-            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border text-center sm:grid-cols-4 sm:text-left">
-              {facts.map((fact) => (
-                <div key={fact.label} className="bg-card px-4 py-3">
-                  <dt className="text-xs text-muted-foreground">
-                    {fact.label}
-                  </dt>
-                  <dd className="font-medium">{fact.value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-        </div>
-      </header>
+  const owned = new Set(ownedGameIds);
+  const expansionItems: ExpansionItem[] = game.relations
+    .filter((relation) => relation.type === "has_expansion")
+    .map((relation) => ({
+      key: `${relation.gameId ?? relation.externalId ?? relation.name}`,
+      name: relation.name,
+      gameId: relation.gameId,
+      externalId: relation.externalId,
+      owned: relation.gameId !== null && owned.has(relation.gameId),
+    }));
 
+  const overview = (
+    <>
       {/* Only the owner can see a custom game, so "custom" implies "yours". */}
       {game.isCustom && <OwnerActions gameId={game.id} />}
       {libraryPanel}
-      {scoringPanel}
-      {playsPanel}
       {statsPanel}
 
       <section
@@ -169,7 +151,7 @@ export function GameDetailView({
         );
       })}
 
-      {(["has_expansion", "expansion_of"] as const).map((type) => {
+      {(["expansion_of"] as const).map((type) => {
         const items = game.relations.filter(
           (relation) => relation.type === type,
         );
@@ -238,6 +220,128 @@ export function GameDetailView({
         gameName={game.name}
         photos={game.photos}
       />
+    </>
+  );
+
+  const tabs = [
+    { id: "overview", label: t("tabs.overview"), content: overview },
+    {
+      id: "matches",
+      label: t("tabs.matches"),
+      count: matchCount,
+      content: playsPanel,
+    },
+    ...(game.kind === "base" || expansionItems.length > 0
+      ? [
+          {
+            id: "expansions",
+            label: t("tabs.expansions"),
+            count: expansionItems.length,
+            content: (
+              <section
+                aria-label={t("relations.has_expansion")}
+                className="flex flex-col gap-3"
+              >
+                <ExpansionsList
+                  items={expansionItems}
+                  bggAvailable={bggAvailable}
+                />
+              </section>
+            ),
+          },
+        ]
+      : []),
+    {
+      id: "sheets",
+      label: t("tabs.sheets"),
+      count: sheetCount,
+      content: scoringPanel,
+    },
+  ];
+
+  return (
+    <article className="flex flex-col gap-6">
+      <header className="-mx-4 -mt-6 flex flex-col items-center gap-4 md:mx-0 md:mt-0">
+        <div className="relative flex w-full justify-center overflow-hidden px-4 pt-14 pb-2 md:rounded-3xl">
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 bg-tint [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
+          >
+            {cover && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={cover}
+                alt=""
+                referrerPolicy="no-referrer"
+                className="size-full scale-125 object-cover opacity-50 blur-2xl"
+              />
+            )}
+          </div>
+          <Link
+            href="/games"
+            aria-label={t("back")}
+            className="absolute top-3 left-3 grid size-11 place-items-center rounded-full bg-background/70 text-foreground backdrop-blur outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            <ArrowLeft className="size-5" aria-hidden />
+          </Link>
+          <div className="grid aspect-square w-40 place-items-center overflow-hidden rounded-2xl bg-tint text-tint-foreground shadow-2xl shadow-black/40">
+            {cover ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={cover}
+                alt={t("coverAlt", { name: game.name })}
+                referrerPolicy="no-referrer"
+                className="size-full object-cover"
+              />
+            ) : (
+              <Dices className="size-14" aria-hidden />
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-1 px-4 text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-balance">
+            {game.name}
+          </h1>
+          <p className="text-sm text-muted-foreground">{subtitle}</p>
+          {game.isCustom && (
+            <Badge variant="outline" className="mt-1">
+              {tg("badge.custom")}
+            </Badge>
+          )}
+        </div>
+
+        {strip.length > 0 && (
+          <dl
+            className="mx-4 grid w-[calc(100%-2rem)] max-w-xl divide-x divide-border overflow-hidden rounded-2xl border border-border bg-card text-center"
+            style={{
+              gridTemplateColumns: `repeat(${strip.length}, minmax(0, 1fr))`,
+            }}
+          >
+            {strip.map((fact) => (
+              <div key={fact.label} className="flex flex-col-reverse px-2 py-3">
+                <dt className="text-xs text-muted-foreground">{fact.label}</dt>
+                <dd className="text-lg font-semibold tabular-nums">
+                  {fact.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </header>
+
+      <GameTabs tabs={tabs} label={game.name} />
+
+      {/* Stays in reach while browsing the tabs; on a phone it rides above the bottom navigation. */}
+      <div className="sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 -mx-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0 md:mx-0 md:rounded-2xl md:border">
+        <Link
+          href={`/games/${game.id}/plays/new`}
+          className="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary text-base font-semibold text-primary-foreground outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          <Plus className="size-5" aria-hidden />
+          {t("logMatch")}
+        </Link>
+      </div>
     </article>
   );
 }

@@ -5,7 +5,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EmptyState } from "@/components/empty-state";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GameCard } from "@/features/catalog";
+import {
+  findExpansionParents,
+  GameCard,
+  groupExpansions,
+} from "@/features/catalog";
 import {
   LibraryBadges,
   parseLibraryFilters,
@@ -38,6 +42,14 @@ export default async function LibraryPage({
     searchLibrary(filters),
     getTranslations("Library"),
   ]);
+  const groups = groupExpansions(
+    entries.map((entry) => ({
+      ...entry,
+      id: entry.game.id,
+      kind: entry.game.kind,
+    })),
+    await findExpansionParents(entries.map((entry) => entry.game)),
+  );
   const filtering = Boolean(filters.q || filters.status || filters.favorites);
 
   const chips = [
@@ -137,19 +149,25 @@ export default async function LibraryPage({
             {t("count", { count: entries.length })}
           </p>
           <ul className="flex flex-col gap-2">
-            {entries.map((entry) => (
-              <GameCard
-                key={entry.game.id}
-                game={entry.game}
-                extra={
-                  <LibraryBadges
-                    status={entry.status}
-                    isFavorite={entry.isFavorite}
-                    rating={entry.rating}
-                  />
-                }
-              />
-            ))}
+            {groups.map(({ item: entry, expansions }) => {
+              const badges = (e: typeof entry) => (
+                <LibraryBadges
+                  status={e.status}
+                  isFavorite={e.isFavorite}
+                  rating={e.rating}
+                />
+              );
+              return (
+                <GameCard
+                  key={entry.game.id}
+                  game={entry.game}
+                  extra={badges(entry)}
+                  expansions={expansions.map((e) => (
+                    <GameCard key={e.game.id} game={e.game} extra={badges(e)} />
+                  ))}
+                />
+              );
+            })}
           </ul>
         </section>
       ) : (

@@ -1,4 +1,4 @@
-import { Dices } from "lucide-react";
+import { ChevronRight, Dices } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
@@ -12,9 +12,16 @@ type GameCardProps = {
   extra?: ReactNode;
   /** Where the card links to; defaults to the game's detail page. */
   href?: string;
+  /** Expansions that hang from this game: folded under the card ("+3 expansions"). */
+  expansions?: ReactNode[];
 };
 
-export function GameCard({ game, extra, href }: GameCardProps) {
+export function GameCard({
+  game,
+  extra,
+  href,
+  expansions = [],
+}: GameCardProps) {
   const t = useTranslations("Games");
   const meta = (
     key: "players" | "playersRange" | "minutes" | "minutesRange",
@@ -66,6 +73,18 @@ export function GameCard({ game, extra, href }: GameCardProps) {
           </span>
         </span>
       </Link>
+      {expansions.length > 0 && (
+        <details className="group mt-1 ml-4 rounded-xl border border-border bg-muted/40 px-3 py-1">
+          <summary className="flex min-h-10 cursor-pointer items-center gap-2 text-sm font-medium text-muted-foreground select-none">
+            <ChevronRight
+              className="size-4 transition-transform group-open:rotate-90"
+              aria-hidden
+            />
+            {t("withExpansions", { count: expansions.length })}
+          </summary>
+          <ul className="flex flex-col gap-2 pt-1 pb-2">{expansions}</ul>
+        </details>
+      )}
     </li>
   );
 }

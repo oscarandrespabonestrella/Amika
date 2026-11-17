@@ -131,7 +131,8 @@
       "rate_limited": "Too many requests. Please wait a minute and try again.",
       "not_found": "BoardGameGeek has no game with that id.",
       "failed": "Something went wrong. Please try again."
-    }
+    },
+    "withExpansions": "{count, plural, one {# expansion} other {# expansions}}"
   },
   "Game": {
     "back": "Back to games",
@@ -213,6 +214,21 @@
       "deleteNo": "Cancel",
       "deleting": "Deleting…",
       "deleteError": "The game couldn't be deleted. Please try again."
+    },
+    "tabs": {
+      "overview": "Overview",
+      "matches": "Matches",
+      "expansions": "Expansions",
+      "sheets": "Sheets"
+    },
+    "logMatch": "Log a match",
+    "expansionsTab": {
+      "none": "No expansions known for this game yet.",
+      "filter": "Filter expansions",
+      "noMatch": "No expansion matches that name.",
+      "owned": "In my library",
+      "showAll": "Show all {count}",
+      "showFewer": "Show fewer"
     }
   },
   "NewGame": {

@@ -5,8 +5,10 @@ import { EmptyState } from "@/components/empty-state";
 import { buttonVariants } from "@/components/ui/button";
 import {
   ExternalSearch,
+  findExpansionParents,
   GameCard,
   getGameSource,
+  groupExpansions,
   parseSearchParams,
   searchLocalGames,
   SearchForm,
@@ -27,6 +29,7 @@ export default async function GamesPage({
     searchLocalGames(query),
     getTranslations("Games"),
   ]);
+  const groups = groupExpansions(games, await findExpansionParents(games));
   const searching = Boolean(
     query.q || query.kind || query.players || query.time,
   );
@@ -63,8 +66,14 @@ export default async function GamesPage({
               {t("results.count", { count: games.length })}
             </p>
             <ul className="flex flex-col gap-2">
-              {games.map((game) => (
-                <GameCard key={game.id} game={game} />
+              {groups.map(({ item, expansions }) => (
+                <GameCard
+                  key={item.id}
+                  game={item}
+                  expansions={expansions.map((e) => (
+                    <GameCard key={e.id} game={e} />
+                  ))}
+                />
               ))}
             </ul>
           </>

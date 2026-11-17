@@ -108,7 +108,7 @@ test.describe("no CSP violations", () => {
     await page.goto("/en/games");
     // Opt in: loads the embedding worker and the ONNX WebAssembly runtime.
     await page
-      .getByRole("button", { name: "Download (~85 MB) and enable" })
+      .getByRole("button", { name: "Download (~86 MB) and enable" })
       .click();
     await expect(
       page.getByRole("button", { name: /Scan with the camera/ }),

@@ -12,7 +12,7 @@
 | 4 | Game Center | Reglas (en + idiomas disponibles), FAQ, vídeos, galería, expansiones |
 | 5 | Partidas y puntuación | Registrar partida con config versionada y participantes por nombre |
 | 6 | Estadísticas | Personales y por juego, gráficos |
-| 7 | IA local | **7a** identificar juego por foto en el dispositivo (código de barras; OCR e hash retirados en 7a-2; `docs/superpowers/specs/2026-11-16-fase7a-identificar-juego-design.md`) · **7a-2** reconocimiento **en vivo con la cámara** (CLIP + ORB, opcional, apagado de serie; `docs/superpowers/specs/2026-11-16-fase7a2-reconocimiento-en-vivo-design.md`) · **7b** lectura de hojas (pendiente) · IA externa opcional, apagada por defecto |
+| 7 | IA local | **7a** identificar juego por foto en el dispositivo (código de barras; OCR e hash retirados en 7a-2; `docs/superpowers/specs/2026-11-16-fase7a-identificar-juego-design.md`) · **7a-2** reconocimiento **en vivo con la cámara** (CLIP + ORB, opcional, apagado de serie; `docs/superpowers/specs/2026-11-16-fase7a2-reconocimiento-en-vivo-design.md`) · **7a-3** reconocer contra los **500 mejores de BGG** (paquete de vectores precalculado, `docs/superpowers/specs/2026-11-17-fase7a3-paquete-top500-design.md`) · **7b** lectura de hojas (**aplazada por decisión del usuario**: requiere mejor reconocimiento de imagen) · IA externa opcional, apagada por defecto |
 | 8 | Comunidad | Partidas compartidas con usuarios, amigos, grupos, admin avanzado |
 | 9 | Producción | Auditoría, a11y, rendimiento, monitorización, legal, despliegue |
 
@@ -86,6 +86,20 @@ Diseño en `docs/superpowers/specs/2026-11-16-fase5-partidas-puntuacion-design.m
 | Medición con fotos reales (`npm run recognition:eval`) | **Hecha (2026-11-16, 15 fotos del usuario): resultado flojo**: título 2/15, imagen 1/15, combinado 3/15 en el top 5; código de barras sin medir (las fotos son del frente). Ver ADR-036 |
 | Verificar el adaptador de BGG con el token real | **Hecho**: búsqueda y ficha funcionan con la API real (la búsqueda tarda ~5 s) |
 | Pruebas | 507 unitarias, 217 RLS/SQL, 259 E2E (escritorio + móvil, es/en/fr, axe claro/oscuro) |
+
+## Estado de la Fase 7a-3 (actualizado 2026-11-17)
+| Entrega | Estado |
+|---|---|
+| Motivo: la prueba en el móvil mostró que la cámara solo conocía los 15 juegos de prueba del catálogo; debía comparar con una base de datos de juegos | Resuelto con un paquete precalculado (ADR-038) |
+| Paquete de los **500 mejores de BGG**: 500 vectores CLIP (1 024 000 bytes) + manifiesto, generados con `npm run recognition:pack` desde `boardgames_ranks.csv` y la API de BGG; versionado en git | Hecho |
+| En el dispositivo: se descarga con la activación (aviso «~86 MB»: 85 modelo + 1 paquete), IndexedDB, el catálogo gana, la purga no lo toca, «Desactivar y borrar» lo elimina | Hecho |
+| Resultado «Parece X · n.º N en BGG» con **Añadir al catálogo y abrir** (importa de BGG con su cuota y abre la ficha); ORB con `GET /api/covers/pack/[bggId]` | Hecho |
+| Calibración con las 15 fotos (510 referencias): 10/15 reconocidas (todas «alta»), 5/15 «no estoy seguro», **0 equivocadas**; «caja desconocida» (la foto sin su propio juego): 15/15 sin respuesta confiada | Hecha; ver ADR-038 |
+| Corrección de confianza: la similitud de CLIP sola nunca pasa de «baja» («media» exige ORB ≥ 30) | Hecha (ADR-038, nota en ADR-037) |
+| Pruebas | 656 unitarias, 206 de integración (RLS/SQL), 263 E2E (7 nuevas: 2 del endpoint de portadas del paquete y 5 del reconocimiento con el paquete, con la portada real de Brass: Birmingham ante la cámara falsa) |
+| **Rendimiento en el móvil** | **Sin medir** (pendiente de que el usuario lo pruebe) |
+| Para que «Añadir al catálogo» y el buscador de BGG funcionen en producción | El usuario debe poner `BGG_API_TOKEN` en Vercel y redesplegar |
+| Antes de `CSP_ENFORCE=1` | Resolver que OpenCV.js usa `eval` (SECURITY §17) |
 
 ## Estado de la Fase 7a-2 (actualizado 2026-11-16)
 | Entrega | Estado |

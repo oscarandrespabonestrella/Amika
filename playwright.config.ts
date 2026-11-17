@@ -5,7 +5,8 @@ import { defineConfig, devices } from "@playwright/test";
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const PORT = 3100;
-const HEAVY = /app-(live-recognition|security-headers)\.spec\.ts/;
+const HEAVY =
+  /app-(live-recognition|pack-recognition|pack-unknown|security-headers)\.spec\.ts/;
 const hasClerkKeys =
   !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
   !!process.env.CLERK_SECRET_KEY;

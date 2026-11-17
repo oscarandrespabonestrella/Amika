@@ -6,6 +6,7 @@ import {
   listMyInvites,
   listMyLinkRequests,
 } from "@/features/plays/services/sharing-service";
+import { PeopleTabs } from "@/components/layout/people-tabs";
 import { assertLocale } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 
@@ -26,6 +27,7 @@ export default async function FriendsPage({
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">
+      <PeopleTabs />
       <header className="flex flex-col gap-1">
         <h1 className="text-3xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground">{t("subtitle")}</p>

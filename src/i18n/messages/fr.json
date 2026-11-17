@@ -15,7 +15,12 @@
     "headline": "Vos jeux. Vos parties. Vos statistiques.",
     "subhead": "Constituez votre collection, enregistrez chaque partie et découvrez qui gagne vraiment.",
     "signUp": "Créer un compte",
-    "signIn": "Se connecter"
+    "signIn": "Se connecter",
+    "points": {
+      "scan": "Scannez une boîte pour l'ajouter à votre étagère",
+      "log": "Enregistrez une partie en moins de 30 secondes",
+      "stats": "Taux de victoire et face-à-face"
+    }
   },
   "Nav": {
     "label": "Navigation principale",
@@ -926,5 +931,10 @@
     "emptyTitle": "Votre bibliothèque est vide",
     "emptyBody": "Ajoutez un jeu à votre bibliothèque pour enregistrer une partie.",
     "browse": "Ajouter des jeux"
+  },
+  "People": {
+    "label": "Personnes",
+    "players": "Joueurs",
+    "friends": "Amis"
   }
 }

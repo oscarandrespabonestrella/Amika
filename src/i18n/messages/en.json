@@ -15,7 +15,12 @@
     "headline": "Your games. Your plays. Your stats.",
     "subhead": "Build your collection, log every match and see who really wins.",
     "signUp": "Create account",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "points": {
+      "scan": "Scan a box to add it to your shelf",
+      "log": "Log a match in under 30 seconds",
+      "stats": "Win rates and head-to-heads"
+    }
   },
   "Nav": {
     "label": "Main navigation",
@@ -926,5 +931,10 @@
     "emptyTitle": "Your library is empty",
     "emptyBody": "Add a game to your library to log a match.",
     "browse": "Add games"
+  },
+  "People": {
+    "label": "People",
+    "players": "Players",
+    "friends": "Friends"
   }
 }

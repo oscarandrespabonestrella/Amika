@@ -1,4 +1,5 @@
-﻿import { assertLocale } from "@/i18n/locale";
+import { BarChart3, ScanLine, Timer } from "lucide-react";
+import { assertLocale } from "@/i18n/locale";
 import { auth } from "@clerk/nextjs/server";
 import { setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
@@ -17,6 +18,12 @@ export default async function LandingPage({ params }: PageProps<"/[locale]">) {
   return <Landing />;
 }
 
+const POINTS = [
+  { key: "scan", icon: ScanLine },
+  { key: "log", icon: Timer },
+  { key: "stats", icon: BarChart3 },
+] as const;
+
 function Landing() {
   const t = useTranslations("Landing");
 
@@ -24,7 +31,7 @@ function Landing() {
     <div className="relative isolate flex min-h-dvh flex-col overflow-hidden">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[28rem] bg-gradient-to-b from-primary/15 via-accent/40 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[28rem] bg-gradient-to-b from-primary/15 via-tint/60 to-transparent"
       />
       <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4 md:px-8">
         <Brand />
@@ -46,6 +53,16 @@ function Landing() {
         <p className="max-w-xl text-lg text-pretty text-muted-foreground">
           {t("subhead")}
         </p>
+        <ul className="flex max-w-xl flex-col gap-3">
+          {POINTS.map(({ key, icon: Icon }) => (
+            <li key={key} className="flex items-center gap-3 text-pretty">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl border border-border bg-card text-primary">
+                <Icon className="size-5" aria-hidden />
+              </span>
+              {t(`points.${key}`)}
+            </li>
+          ))}
+        </ul>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link
             href="/sign-up"

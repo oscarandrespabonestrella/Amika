@@ -15,7 +15,12 @@
     "headline": "Tus juegos. Tus partidas. Tus estadísticas.",
     "subhead": "Crea tu colección, registra cada partida y descubre quién gana de verdad.",
     "signUp": "Crear cuenta",
-    "signIn": "Iniciar sesión"
+    "signIn": "Iniciar sesión",
+    "points": {
+      "scan": "Escanea una caja para añadirla a tu estantería",
+      "log": "Registra una partida en menos de 30 segundos",
+      "stats": "Porcentaje de victorias y duelos directos"
+    }
   },
   "Nav": {
     "label": "Navegación principal",
@@ -926,5 +931,10 @@
     "emptyTitle": "Tu biblioteca está vacía",
     "emptyBody": "Añade un juego a tu biblioteca para registrar una partida.",
     "browse": "Añadir juegos"
+  },
+  "People": {
+    "label": "Personas",
+    "players": "Jugadores",
+    "friends": "Amigos"
   }
 }

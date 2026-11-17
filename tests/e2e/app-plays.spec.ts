@@ -323,6 +323,41 @@ test.describe("logging matches", () => {
     await expect(panel(page).getByText("Manual totals").first()).toBeVisible();
   });
 
+  test("scores one category at a time with the + and − buttons", async ({
+    page,
+  }) => {
+    await openNew(page);
+    await page.getByLabel("Score sheet").selectOption({ label: SHEET_TITLE });
+    await fillPlayer(page, 1, "Zed");
+    await fillPlayer(page, 2, "Yan");
+
+    // One tab per scored category; derived ones have none.
+    await expect(page.getByRole("tab", { name: "Military" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    const plus = page.getByRole("button", {
+      name: "Increase Military – Zed",
+    });
+    for (let i = 0; i < 3; i++) await plus.click();
+    await page.getByRole("button", { name: "Decrease Military – Zed" }).click();
+    await expect(await scoreInput(page, "Zed", "Military")).toHaveValue("2");
+    await expect(page.getByTestId("total-0")).toHaveText("2");
+    await expect(page.getByTestId("total-1")).toHaveText("Nothing recorded");
+
+    // A set bonus gets one stepper per item of the set, under its own tab.
+    await page.getByRole("tab", { name: "Science" }).click();
+    await page
+      .getByRole("button", { name: "Increase Tablets" })
+      .first()
+      .click();
+    await expect(await scoreInput(page, "Zed", "Tablets")).toHaveValue("1");
+    await expect(page.getByTestId("total-0")).toHaveText("3");
+
+    // The save bar stays in reach while scoring.
+    await expect(save(page)).toBeInViewport();
+  });
+
   test("changing the sheet clears what was typed for the old one", async ({
     page,
   }) => {

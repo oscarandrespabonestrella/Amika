@@ -64,9 +64,7 @@ describe.skipIf(!hasDb)("RLS: player groups", () => {
   });
 
   it("owner sees only the memberships of own groups", async () => {
-    expect(await asA((c) => members(c, G_THU))).toEqual(
-      [PL_ANA, PL_BO].sort(),
-    );
+    expect(await asA((c) => members(c, G_THU))).toEqual([PL_ANA, PL_BO].sort());
     expect(await asB((c) => members(c, G_THU))).toEqual([]);
   });
 
@@ -138,9 +136,9 @@ describe.skipIf(!hasDb)("RLS: player groups", () => {
     await asA(async (c) => {
       await c.query(`delete from public.players where id = $1`, [PL_BO]);
       expect(await members(c, G_THU)).toEqual([PL_ANA]);
-      expect(
-        await ids(c, `select id::text from public.player_groups`),
-      ).toEqual([G_THU, G_FAM].sort());
+      expect(await ids(c, `select id::text from public.player_groups`)).toEqual(
+        [G_THU, G_FAM].sort(),
+      );
     });
   });
 

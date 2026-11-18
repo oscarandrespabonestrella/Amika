@@ -40,6 +40,7 @@ Todas las políticas usan `(select auth.jwt()->>'sub')` (≡ `current_user_id()`
 | `library_items` | solo dueño | solo dueño; solo sobre juegos que puede ver; `user_id` no se puede cambiar ni falsificar |
 | `plays`, `play_participants`, `play_scores`, `play_expansions` | solo `created_by` (los hijos, vía su partida) | solo `created_by`; el juego debe ser visible y la versión de hoja también (en la práctica, hojas propias); `play_expansions` solo con expansiones; topes: 5 000 partidas, 12 jugadores, 20 expansiones. Escritura por `save_play` (invoker: aplica la RLS) |
 | `players` | solo el dueño | solo el dueño: `name` y `linked_user_id` (solo él mismo o nulo, uno como máximo = «soy yo»); único por nombre normalizado; máx. 200; un participante solo puede apuntar a **tus** jugadores; `merge_players` es `security invoker` (aplica la RLS) |
+| `player_groups`, `player_group_members` | solo el dueño (los miembros, vía su grupo) | solo el dueño: nombre único normalizado, máx. 50 grupos; un miembro solo puede ser **tu** jugador en **tu** grupo (la política de inserción comprueba ambos bajo RLS) |
 
 Importación al catálogo global: función de servidor con service_role, con rate limit por usuario y validación de lo recibido de la fuente. Los usuarios no pueden insertar en el catálogo global.
 

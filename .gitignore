@@ -53,3 +53,6 @@ next-env.d.ts
 /public/models/
 /public/ort/
 /public/opencv/
+
+# capturas generadas
+/screenshots/

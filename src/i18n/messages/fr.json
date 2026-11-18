@@ -957,6 +957,39 @@
   "People": {
     "label": "Personnes",
     "players": "Joueurs",
-    "friends": "Amis"
+    "friends": "Amis",
+    "groups": "Groupes"
+  },
+  "Groups": {
+    "title": "Mes groupes",
+    "subtitle": "Enregistrez les personnes avec qui vous jouez toujours et ajoutez-les à une partie en un clic.",
+    "noPlayersTitle": "Aucun joueur pour l'instant",
+    "noPlayersDescription": "Les groupes sont faits de vos joueurs. Ajoutez d'abord des joueurs à une partie.",
+    "goToPlayers": "Aller à Mes joueurs",
+    "empty": "Aucun groupe pour l'instant. Créez-en un ci-dessus, par exemple « Jeudi ».",
+    "newLabel": "Nouveau groupe",
+    "newPlaceholder": "p. ex. Jeudi",
+    "create": "Créer le groupe",
+    "listLabel": "Vos groupes",
+    "members": "{count, plural, =0 {Aucun joueur} one {# joueur} other {# joueurs}}",
+    "noMembers": "Ce groupe n'a pas encore de joueurs.",
+    "editMembers": "Choisir les joueurs",
+    "membersLegend": "Joueurs de {name}",
+    "rename": "Renommer",
+    "renameLabel": "Nouveau nom pour {name}",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer le groupe {name} ? Ses joueurs sont conservés.",
+    "deleteYes": "Oui, supprimer",
+    "deleteNo": "Garder",
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Reconnectez-vous.",
+      "invalid": "Ce n'est pas valide.",
+      "not_found": "Ce groupe ou ce joueur n'est pas disponible.",
+      "exists": "Vous avez déjà un groupe portant ce nom.",
+      "too_many": "Vous avez atteint la limite de 50 groupes.",
+      "failed": "Une erreur s'est produite. Réessayez."
+    }
   }
 }

@@ -7,9 +7,10 @@ import { cn } from "@/lib/utils";
 const TABS = [
   { href: "/players", key: "players" },
   { href: "/friends", key: "friends" },
+  { href: "/groups", key: "groups" },
 ] as const;
 
-/** The two halves of the "People" section: who you play with, and who is linked to an account. */
+/** The parts of the "People" section: who you play with, who is linked to an account, and saved groups. */
 export function PeopleTabs() {
   const t = useTranslations("People");
   const pathname = usePathname();
@@ -18,7 +19,7 @@ export function PeopleTabs() {
     <div
       role="group"
       aria-label={t("label")}
-      className="grid w-full max-w-sm grid-cols-2 gap-1 rounded-xl border border-border bg-muted p-1"
+      className="grid w-full max-w-md grid-cols-3 gap-1 rounded-xl border border-border bg-muted p-1"
     >
       {TABS.map(({ href, key }) => {
         const active = pathname === href || pathname.startsWith(`${href}/`);

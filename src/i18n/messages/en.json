@@ -957,6 +957,39 @@
   "People": {
     "label": "People",
     "players": "Players",
-    "friends": "Friends"
+    "friends": "Friends",
+    "groups": "Groups"
+  },
+  "Groups": {
+    "title": "My groups",
+    "subtitle": "Save the people you always play with and add them to a match with one click.",
+    "noPlayersTitle": "No players yet",
+    "noPlayersDescription": "Groups are made of your players. Add players to a match first.",
+    "goToPlayers": "Go to My players",
+    "empty": "No groups yet. Create one above, for example “Thursday”.",
+    "newLabel": "New group",
+    "newPlaceholder": "e.g. Thursday",
+    "create": "Create group",
+    "listLabel": "Your groups",
+    "members": "{count, plural, =0 {No players} one {# player} other {# players}}",
+    "noMembers": "No players in this group yet.",
+    "editMembers": "Choose players",
+    "membersLegend": "Players in {name}",
+    "rename": "Rename",
+    "renameLabel": "New name for {name}",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleteConfirm": "Delete the group {name}? Its players are kept.",
+    "deleteYes": "Yes, delete",
+    "deleteNo": "Keep",
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "invalid": "That isn't valid.",
+      "not_found": "That group or player isn't available.",
+      "exists": "You already have a group with that name.",
+      "too_many": "You have reached the limit of 50 groups.",
+      "failed": "Something went wrong. Please try again."
+    }
   }
 }

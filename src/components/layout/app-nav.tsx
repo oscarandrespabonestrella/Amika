@@ -18,7 +18,12 @@ const ITEMS: readonly {
   { href: "/library", key: "library", icon: BookMarked, also: ["/games"] },
   { href: "/log", key: "logMatch", icon: Plus, primary: true },
   { href: "/stats", key: "stats", icon: BarChart3 },
-  { href: "/friends", key: "people", icon: Users, also: ["/players"] },
+  {
+    href: "/friends",
+    key: "people",
+    icon: Users,
+    also: ["/players", "/groups"],
+  },
 ];
 
 type AppNavProps = { variant: "sidebar" | "bottom" };

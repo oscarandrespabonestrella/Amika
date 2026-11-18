@@ -1,0 +1,1035 @@
+{
+  "Metadata": {
+    "title": "Amika",
+    "description": "Sua coleção de jogos de tabuleiro, partidas e estatísticas em um só lugar."
+  },
+  "Common": {
+    "loading": "Carregando…"
+  },
+  "Errors": {
+    "title": "Algo deu errado",
+    "body": "Não conseguimos carregar esta página. Tente novamente.",
+    "retry": "Tentar de novo"
+  },
+  "Landing": {
+    "headline": "Seus jogos. Suas partidas. Suas estatísticas.",
+    "subhead": "Monte sua coleção, registre cada partida e descubra quem realmente vence.",
+    "signUp": "Criar conta",
+    "signIn": "Entrar",
+    "points": {
+      "scan": "Escaneie uma caixa para adicioná-la à sua estante",
+      "log": "Registre uma partida em menos de 30 segundos",
+      "stats": "Porcentagem de vitórias e confrontos diretos"
+    }
+  },
+  "Nav": {
+    "label": "Navegação principal",
+    "home": "Início",
+    "games": "Jogos",
+    "settings": "Configurações",
+    "library": "Biblioteca",
+    "stats": "Estatísticas",
+    "friends": "Amigos",
+    "people": "Pessoas",
+    "logMatch": "Registrar partida",
+    "account": "Conta"
+  },
+  "Home": {
+    "title": "Boas-vindas",
+    "titleNamed": "Boas-vindas, {name}",
+    "emptyTitle": "Sua estante está vazia",
+    "emptyBody": "Busque jogos para explorar o catálogo. Sua biblioteca pessoal chega em breve.",
+    "browse": "Explorar jogos",
+    "libraryTitle": "Sua biblioteca",
+    "libraryCount": "{count, plural, one {# jogo} other {# jogos}} na sua biblioteca.",
+    "openLibrary": "Abrir biblioteca"
+  },
+  "Settings": {
+    "title": "Configurações",
+    "profile": {
+      "title": "Perfil",
+      "hint": "Seu nome de exibição aparece onde seu nome é mostrado. A foto e o e-mail são gerenciados no menu da conta.",
+      "displayName": "Nome de exibição",
+      "save": "Salvar",
+      "saving": "Salvando…",
+      "saved": "Salvo",
+      "tooLong": "Use 60 caracteres ou menos.",
+      "error": "Não foi possível salvar seu nome. Tente novamente."
+    },
+    "appearance": "Aparência",
+    "appearanceHint": "Escolha um tema ou siga o do seu dispositivo.",
+    "theme": {
+      "label": "Tema",
+      "light": "Claro",
+      "dark": "Escuro",
+      "system": "Auto"
+    },
+    "language": "Idioma",
+    "languageHint": "Aplica-se a todo o aplicativo.",
+    "saveError": "Não foi possível salvar sua preferência. Ela continua valendo neste dispositivo.",
+    "recognition": {
+      "title": "Reconhecimento de jogos ao vivo",
+      "hint": "Reconhece caixas de jogos com a câmera. Desativado por padrão; exige um download único em cada dispositivo."
+    },
+    "install": {
+      "title": "Instalar o app",
+      "hint": "Adicione o Amika à tela inicial ou à área de trabalho para abri-lo como qualquer outro app."
+    }
+  },
+  "Games": {
+    "title": "Jogos",
+    "subtitle": "Busque no catálogo ou adicione um jogo que você tem.",
+    "create": "Criar um jogo",
+    "search": {
+      "label": "Buscar jogos",
+      "placeholder": "Buscar por nome…",
+      "submit": "Buscar",
+      "filters": "Filtros",
+      "kind": "Tipo",
+      "kindAny": "Qualquer tipo",
+      "players": "Jogadores",
+      "playersHint": "Número de jogadores",
+      "time": "Máx. minutos",
+      "timeHint": "Duração de até",
+      "clear": "Limpar filtros"
+    },
+    "kind": {
+      "base": "Jogo base",
+      "expansion": "Expansão"
+    },
+    "badge": {
+      "custom": "Meu jogo"
+    },
+    "meta": {
+      "players": "{count, plural, one {# jogador} other {# jogadores}}",
+      "playersRange": "{min}–{max} jogadores",
+      "minutes": "{count} min",
+      "minutesRange": "{min}–{max} min"
+    },
+    "results": {
+      "count": "{count, plural, one {# jogo} other {# jogos}}",
+      "emptyTitle": "Nenhum jogo encontrado",
+      "emptyBody": "Tente outro nome ou filtro, ou busque no BoardGameGeek logo abaixo.",
+      "noneTitle": "Busque um jogo",
+      "noneBody": "Digite um nome acima para encontrá-lo no catálogo, ou busque no BoardGameGeek para adicioná-lo."
+    },
+    "bgg": {
+      "title": "Não está na lista?",
+      "body": "Busque no BoardGameGeek e adicione o jogo ao catálogo.",
+      "button": "Buscar «{query}» no BoardGameGeek",
+      "searching": "Buscando…",
+      "results": "Resultados do BoardGameGeek",
+      "none": "O BoardGameGeek não tem resultados para essa busca.",
+      "add": "Adicionar",
+      "adding": "Adicionando…",
+      "open": "Abrir",
+      "inCatalog": "No catálogo",
+      "needsQuery": "Digite pelo menos 2 caracteres acima para buscar no BoardGameGeek.",
+      "unavailable": "A busca no BoardGameGeek ainda não está disponível. Enquanto isso, você pode criar seu próprio jogo.",
+      "attribution": "Informações fornecidas pelo BoardGameGeek."
+    },
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "invalid": "Essa busca não é válida.",
+      "unavailable": "O BoardGameGeek não está disponível no momento.",
+      "rate_limited": "Muitas solicitações. Aguarde um minuto e tente novamente.",
+      "not_found": "O BoardGameGeek não tem nenhum jogo com esse identificador.",
+      "failed": "Algo deu errado. Tente novamente."
+    },
+    "withExpansions": "{count, plural, one {# expansão} other {# expansões}}",
+    "expansionsShort": "{count} exp"
+  },
+  "Game": {
+    "back": "Voltar para jogos",
+    "coverAlt": "Capa de {name}",
+    "year": "Ano",
+    "players": "Jogadores",
+    "playtime": "Duração",
+    "minAge": "Idade",
+    "ageValue": "{age}+",
+    "description": "Sobre",
+    "noDescription": "Ainda não há descrição.",
+    "readMore": "Ler mais",
+    "readLess": "Ver menos",
+    "terms": {
+      "category": "Categorias",
+      "mechanic": "Mecânicas",
+      "designer": "Designers",
+      "publisher": "Editoras"
+    },
+    "relations": {
+      "has_expansion": "Expansões",
+      "expansion_of": "Expansão de"
+    },
+    "notInCatalog": "Ainda não está no catálogo",
+    "viewOnBgg": "Ver no BoardGameGeek",
+    "attribution": "Informações fornecidas pelo BoardGameGeek.",
+    "photos": {
+      "title": "Minhas fotos",
+      "hint": "Fotos do seu próprio exemplar. Só você pode vê-las.",
+      "take": "Tirar foto",
+      "choose": "Escolher foto",
+      "uploading": "Enviando…",
+      "delete": "Excluir foto",
+      "empty": "Ainda não há fotos.",
+      "limit": "Você pode guardar até 10 fotos por jogo.",
+      "alt": "Foto {number} de {name}",
+      "errors": {
+        "upload": "Não foi possível enviar a foto. Tente novamente.",
+        "unreadable": "Esse arquivo não é uma imagem legível.",
+        "limit": "Você atingiu o limite de 10 fotos para este jogo.",
+        "delete": "Não foi possível excluir a foto. Tente novamente."
+      }
+    },
+    "library": {
+      "title": "Na minha biblioteca",
+      "addTitle": "Adicionar à minha biblioteca",
+      "add": {
+        "owned": "Eu tenho",
+        "previously_owned": "Eu tive"
+      },
+      "status": "Situação",
+      "statusOption": {
+        "owned": "Eu tenho",
+        "previously_owned": "Eu tive"
+      },
+      "favorite": "Favorito",
+      "rating": "Minha avaliação",
+      "noRating": "Sem avaliação",
+      "ratingValue": "{n}/10",
+      "notes": "Minhas notas",
+      "notesPlaceholder": "Notas privadas sobre este jogo",
+      "saveNotes": "Salvar notas",
+      "saving": "Salvando…",
+      "saved": "Salvo",
+      "remove": "Remover da biblioteca",
+      "removeConfirm": "Remover? Você perderá sua avaliação e suas notas.",
+      "removeYes": "Sim, remover",
+      "removeNo": "Manter",
+      "errors": {
+        "unauthenticated": "Sua sessão expirou. Entre novamente.",
+        "invalid": "Essa alteração não é válida.",
+        "not_found": "Esse jogo não está disponível.",
+        "failed": "Algo deu errado. Tente novamente."
+      }
+    },
+    "owner": {
+      "edit": "Editar jogo",
+      "delete": "Excluir jogo",
+      "deleteConfirm": "Excluir este jogo? Suas fotos e sua entrada na biblioteca também serão excluídas.",
+      "deleteYes": "Sim, excluir",
+      "deleteNo": "Cancelar",
+      "deleting": "Excluindo…",
+      "deleteError": "Não foi possível excluir o jogo. Tente novamente."
+    },
+    "tabs": {
+      "overview": "Resumo",
+      "matches": "Partidas",
+      "expansions": "Expansões",
+      "sheets": "Fichas"
+    },
+    "logMatch": "Registrar partida",
+    "expansionsTab": {
+      "none": "Ainda não se conhecem expansões deste jogo.",
+      "filter": "Filtrar expansões",
+      "noMatch": "Nenhuma expansão corresponde a esse nome.",
+      "owned": "Na minha biblioteca",
+      "showAll": "Mostrar as {count}",
+      "showFewer": "Mostrar menos"
+    }
+  },
+  "NewGame": {
+    "title": "Criar um jogo",
+    "intro": "Os jogos que você cria são privados: só você pode vê-los.",
+    "fields": {
+      "name": "Nome",
+      "kind": "Tipo",
+      "yearPublished": "Ano de publicação",
+      "minPlayers": "Mín. de jogadores",
+      "maxPlayers": "Máx. de jogadores",
+      "minPlaytime": "Mín. de minutos",
+      "maxPlaytime": "Máx. de minutos",
+      "minAge": "Idade mínima",
+      "description": "Descrição (opcional)"
+    },
+    "submit": "Criar jogo",
+    "submitting": "Criando…",
+    "cancel": "Cancelar",
+    "errors": {
+      "required": "Este campo é obrigatório.",
+      "tooLong": "Está muito longo.",
+      "range": "Informe um número válido.",
+      "order": "O máximo não pode ser menor que o mínimo.",
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "failed": "Não foi possível criar o jogo. Tente novamente.",
+      "not_found": "Esse jogo não está disponível."
+    },
+    "editTitle": "Editar jogo",
+    "save": "Salvar alterações",
+    "saving": "Salvando…"
+  },
+  "NotFound": {
+    "title": "Página não encontrada",
+    "body": "A página que você procura não existe.",
+    "back": "Voltar ao início"
+  },
+  "Library": {
+    "add": "Adicionar jogos",
+    "title": "Minha biblioteca",
+    "subtitle": "Os jogos que você tem ou que já teve.",
+    "search": {
+      "label": "Buscar na minha biblioteca",
+      "placeholder": "Buscar por nome…",
+      "submit": "Buscar"
+    },
+    "filters": {
+      "label": "Filtrar biblioteca",
+      "all": "Todos",
+      "owned": "Que tenho",
+      "previouslyOwned": "Que tive",
+      "favorites": "Favoritos"
+    },
+    "badge": {
+      "owned": "Eu tenho",
+      "previously_owned": "Eu tive",
+      "favorite": "Favorito",
+      "rating": "{rating}/10"
+    },
+    "count": "{count, plural, one {# jogo} other {# jogos}}",
+    "emptyTitle": "Sua biblioteca está vazia",
+    "emptyBody": "Abra um jogo e marque os que você tem ou que já teve.",
+    "noMatchTitle": "Nenhum jogo corresponde",
+    "noMatchBody": "Tente outro nome ou filtro.",
+    "browse": "Explorar jogos",
+    "advanced": {
+      "title": "Mais filtros",
+      "players": "Jogadores",
+      "playersHint": "Número de jogadores",
+      "time": "Máx. minutos",
+      "timeHint": "Duração de até",
+      "category": "Categoria",
+      "anyCategory": "Qualquer categoria",
+      "mechanic": "Mecânica",
+      "anyMechanic": "Qualquer mecânica",
+      "apply": "Aplicar filtros",
+      "clear": "Limpar estes filtros"
+    }
+  },
+  "GameCenter": {
+    "nav": {
+      "label": "Seções do Game Center",
+      "rules": "Regras",
+      "videos": "Vídeos",
+      "faq": "FAQ",
+      "gallery": "Galeria"
+    },
+    "rules": {
+      "title": "Regras",
+      "empty": "Ainda não foram adicionadas regras.",
+      "official": "Oficial",
+      "summary": "Resumo das regras"
+    },
+    "links": {
+      "title": "Mais links"
+    },
+    "videos": {
+      "title": "Vídeos",
+      "empty": "Ainda não há vídeos.",
+      "play": "Reproduzir vídeo: {title}"
+    },
+    "faq": {
+      "title": "Perguntas frequentes",
+      "empty": "Ainda não há perguntas frequentes.",
+      "mine": "Suas sugestões",
+      "status": {
+        "pending": "Aguardando revisão",
+        "rejected": "Não aceita"
+      },
+      "withdraw": "Retirar",
+      "suggestTitle": "Sugerir uma pergunta",
+      "addTitle": "Adicionar uma pergunta",
+      "suggestHint": "Um administrador a revisa antes de publicá-la. Até lá, só você e os administradores a veem.",
+      "question": "Pergunta",
+      "answer": "Resposta",
+      "send": "Enviar sugestão",
+      "publish": "Publicar",
+      "sending": "Enviando…",
+      "sent": "Enviada para revisão. Obrigado!",
+      "published": "Publicada.",
+      "review": "Aguardando revisão ({count})",
+      "approve": "Aprovar",
+      "reject": "Rejeitar"
+    },
+    "gallery": {
+      "title": "Galeria",
+      "empty": "Ainda não há imagens.",
+      "alt": "Imagem {number}",
+      "credit": "Crédito: {attribution}",
+      "license": "Licença: {license}"
+    },
+    "admin": {
+      "title": "Gerenciar Game Center",
+      "hint": "Só os administradores veem esta seção.",
+      "remove": "Remover",
+      "confirm": "Sim, remover",
+      "cancel": "Cancelar",
+      "saved": "Salvo",
+      "anyLanguage": "Qualquer idioma",
+      "resource": {
+        "title": "Adicionar um link ou vídeo",
+        "kind": "Tipo",
+        "kinds": {
+          "rules": "Link para regras",
+          "video": "Vídeo do YouTube",
+          "link": "Outro link"
+        },
+        "language": "Idioma",
+        "titleLabel": "Título",
+        "targetUrl": "Endereço (https://…)",
+        "targetVideo": "Link do YouTube ou id do vídeo",
+        "official": "Fonte oficial",
+        "add": "Adicionar"
+      },
+      "rules": {
+        "title": "Resumo das regras",
+        "hint": "Escreva com suas próprias palavras. Não cole texto de manuais protegidos por direitos autorais.",
+        "language": "Idioma",
+        "body": "Resumo",
+        "save": "Salvar resumo"
+      },
+      "image": {
+        "title": "Adicionar uma imagem",
+        "url": "Endereço da imagem (https://…)",
+        "attribution": "Crédito (obrigatório)",
+        "license": "Licença",
+        "caption": "Legenda",
+        "add": "Adicionar imagem"
+      }
+    },
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "forbidden": "Você não tem permissão para fazer isso.",
+      "invalid": "Revise os campos.",
+      "limit": "Você já tem 5 sugestões aguardando revisão para este jogo.",
+      "failed": "Algo deu errado. Tente novamente.",
+      "required": "Este campo é obrigatório.",
+      "tooLong": "Está muito longo.",
+      "invalidUrl": "Informe um endereço https:// válido.",
+      "invalidVideo": "Informe um link do YouTube ou um id de vídeo."
+    }
+  },
+  "Scoring": {
+    "copySuffix": "(cópia)",
+    "title": "Fichas de pontuação",
+    "subtitle": "Fichas de pontuação para {game}. Só você vê as suas fichas.",
+    "back": "Voltar para {game}",
+    "new": "Nova ficha",
+    "empty": {
+      "title": "Ainda não há fichas de pontuação",
+      "description": "Crie uma ficha com as categorias que pontuam neste jogo e os totais são calculados sozinhos."
+    },
+    "version": "Versão {n}",
+    "copy": "Copiar",
+    "copying": "Copiando…",
+    "delete": "Excluir",
+    "deleteConfirm": "Excluir esta ficha e todas as suas versões?",
+    "deleteYes": "Sim, excluir",
+    "deleteNo": "Manter",
+    "listLabel": "Suas fichas de pontuação",
+    "panel": {
+      "title": "Fichas de pontuação",
+      "count": "{count, plural, =0 {Ainda não há fichas} one {# ficha} other {# fichas}}",
+      "open": "Abrir fichas de pontuação"
+    },
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "invalid": "Isso não é válido. Revise a ficha.",
+      "not_found": "Essa ficha não está disponível.",
+      "conflict": "A ficha foi alterada em outro lugar. Recarregue para continuar.",
+      "limit": "Você atingiu o limite de fichas ou versões para este jogo.",
+      "failed": "Algo deu errado. Tente novamente.",
+      "in_use": "Esta ficha tem partidas, então não pode ser excluída."
+    },
+    "editor": {
+      "titleNew": "Nova ficha de pontuação",
+      "titleEdit": "Editar ficha de pontuação",
+      "intro": "Descreva como {game} é pontuado. Teste os totais na pré-visualização enquanto cria a ficha.",
+      "name": "Nome da ficha",
+      "language": "Idioma dos rótulos",
+      "categories": "Categorias",
+      "noCategories": "Adicione pelo menos uma categoria para começar.",
+      "addCategory": "Adicionar categoria",
+      "categoryType": "Tipo da nova categoria",
+      "newCategoryLabel": "Nova categoria",
+      "label": "Rótulo",
+      "counts": "Soma ao total",
+      "moveUp": "Subir {label}",
+      "moveDown": "Descer {label}",
+      "remove": "Remover {label}",
+      "min": "Mínimo (opcional)",
+      "max": "Máximo (opcional)",
+      "pointsEach": "Pontos por unidade",
+      "n": "A cada N",
+      "pointsPer": "Pontos por cada grupo de N",
+      "points": "Pontos",
+      "perSet": "Pontos por conjunto completo",
+      "options": "Opções",
+      "optionLabel": "Nome da opção",
+      "optionPoints": "Pontos",
+      "addOption": "Adicionar opção",
+      "rows": "Tabela",
+      "rowValue": "Quando o valor é",
+      "rowPoints": "Pontos",
+      "addRow": "Adicionar linha",
+      "inputs": "Contadores",
+      "inputLabel": "Nome do contador",
+      "addInput": "Adicionar contador",
+      "op": "Operação",
+      "refs": "Categorias usadas",
+      "ref": "Categoria",
+      "addRef": "Adicionar categoria",
+      "removeItem": "Remover",
+      "save": "Salvar",
+      "saving": "Salvando…",
+      "saved": "Salva como versão {n}.",
+      "reload": "Recarregar a última versão",
+      "back": "Voltar às fichas",
+      "problems": "Corrija isto antes de salvar",
+      "preview": {
+        "title": "Teste-a",
+        "hint": "Informe valores de exemplo para conferir os totais.",
+        "invalid": "Corrija os problemas para testar a ficha.",
+        "total": "Total",
+        "pts": "{n} pts"
+      }
+    },
+    "types": {
+      "number": "Número",
+      "count_times": "Quantidade × pontos",
+      "per_n": "1 ponto a cada N",
+      "boolean": "Sim / não",
+      "choice": "Uma opção",
+      "table": "Tabela de valores",
+      "set_bonus": "Conjuntos completos",
+      "derived": "Calculada"
+    },
+    "ops": {
+      "sum": "Soma",
+      "product": "Produto",
+      "floor_div": "Divisão (arredondada para baixo)",
+      "min": "O menor",
+      "max": "O maior"
+    },
+    "issues": {
+      "shape": "Algo nesta categoria não é válido.",
+      "duplicateKey": "Duas categorias compartilham o mesmo nome interno.",
+      "unknownRef": "Usa uma categoria que não existe.",
+      "cycle": "As categorias calculadas não podem depender umas das outras em ciclo.",
+      "duplicateOption": "Duas opções têm o mesmo nome.",
+      "duplicateTableValue": "Um valor aparece duas vezes na tabela.",
+      "duplicateInput": "Dois contadores têm o mesmo nome.",
+      "noScoringCategory": "Pelo menos uma categoria deve somar ao total.",
+      "tooLarge": "Esta ficha é grande demais."
+    },
+    "fieldMessages": {
+      "required": "Este campo é obrigatório.",
+      "tooLong": "Está muito longo.",
+      "invalidKey": "Esse nome não é válido.",
+      "invalidNumber": "Informe um número inteiro.",
+      "outOfRange": "Esse número está fora do intervalo.",
+      "floorDivNeedsTwoRefs": "A divisão precisa de exatamente duas categorias."
+    },
+    "fieldErrors": {
+      "invalid": "Informe um número inteiro.",
+      "outOfRange": "Esse número está fora do intervalo.",
+      "notInTable": "Esse valor não está na tabela.",
+      "unknownOption": "Escolha uma das opções.",
+      "divisionByZero": "Não é possível dividir por zero.",
+      "dependency": "Depende de uma categoria com erro."
+    },
+    "fields": {
+      "none": "Nenhuma"
+    }
+  },
+  "Plays": {
+    "panel": {
+      "title": "Partidas",
+      "count": "{count, plural, =0 {Ainda não há partidas} one {# partida} other {# partidas}}",
+      "log": "Registrar partida",
+      "emptyTitle": "Ainda não há partidas",
+      "emptyDescription": "Registre uma partida para guardar quem jogou e quantos pontos fez.",
+      "manual": "Totais manuais",
+      "winner": "Vencedor",
+      "noScores": "Sem pontuação",
+      "listLabel": "Suas partidas",
+      "duration": "{n} min"
+    },
+    "form": {
+      "titleNew": "Registrar uma partida",
+      "titleEdit": "Partida",
+      "intro": "Anote quem jogou {game} e quantos pontos fez.",
+      "back": "Voltar para {game}",
+      "date": "Data",
+      "duration": "Duração em minutos (opcional)",
+      "notes": "Notas (opcional)",
+      "sheet": "Ficha de pontuação",
+      "manualSheet": "Sem ficha: informar totais",
+      "sheetLocked": "A ficha não pode mudar depois que a partida é salva. Registre outra partida para usar outra ficha.",
+      "expansions": "Expansões usadas",
+      "players": "Jogadores",
+      "player": "Jogador {n}",
+      "playerName": "Nome do jogador {n}",
+      "nameRequired": "Escreva um nome.",
+      "removePlayer": "Remover o jogador {n}",
+      "addPlayer": "Adicionar jogador",
+      "addGroup": "Adicionar grupo",
+      "addGroupChoice": "Adicionar o grupo {name}",
+      "maxPlayers": "Uma partida admite até {max} jogadores.",
+      "manualTotal": "Pontos totais",
+      "total": "Total",
+      "noTotal": "Nada registrado",
+      "rank": "Posição {n}",
+      "winner": "Vencedor",
+      "save": "Salvar partida",
+      "saving": "Salvando…",
+      "saved": "Salva.",
+      "delete": "Excluir partida",
+      "deleteConfirm": "Excluir esta partida?",
+      "deleteYes": "Sim, excluir",
+      "deleteNo": "Manter",
+      "problems": "Corrija os campos marcados antes de salvar.",
+      "mySheetsGroup": "Minhas fichas",
+      "communityGroup": "Fichas da comunidade",
+      "verifiedSuffix": "(verificada)",
+      "managePlayers": "Gerenciar jogadores",
+      "live": "Começar como partida ao vivo",
+      "liveHint": "Os amigos que você convidar poderão vê-la ao vivo e preencher seus próprios pontos.",
+      "scores": "Pontuação",
+      "categoriesLabel": "Categorias de pontuação",
+      "decrease": "Diminuir {label}",
+      "increase": "Aumentar {label}",
+      "manualFor": "Pontos totais – {player}",
+      "summary": "Classificação"
+    },
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "invalid": "Revise a partida.",
+      "not_found": "Essa partida ou ficha não está disponível.",
+      "limit": "Você atingiu o limite de partidas.",
+      "failed": "Algo deu errado. Tente novamente.",
+      "players_limit": "Você atingiu o limite de 200 jogadores.",
+      "duplicate_player": "O mesmo jogador aparece duas vezes nesta partida, mesmo que os nomes pareçam diferentes. Escolha cada jogador uma única vez."
+    }
+  },
+  "Community": {
+    "mine": "Minhas fichas",
+    "title": "Fichas da comunidade",
+    "subtitle": "Fichas que outros jogadores compartilharam para {game}, as melhores primeiro.",
+    "emptyTitle": "Ainda não há fichas da comunidade",
+    "emptyDescription": "Publique uma das suas fichas para que outros jogadores a usem e a melhorem.",
+    "listLabel": "Fichas da comunidade",
+    "view": "Ver",
+    "copy": "Copiar",
+    "copying": "Copiando…",
+    "badges": {
+      "verified": "Verificada",
+      "public": "Pública",
+      "private": "Privada",
+      "disabled": "Desativada",
+      "up": "{n} precisa(s)",
+      "flags": "{n} com aviso",
+      "uses": "Usada por {n}",
+      "unrated": "Sem votos"
+    },
+    "publish": {
+      "button": "Publicar",
+      "unpublish": "Despublicar",
+      "confirmPublish": "Publicar esta ficha para todos? Outros jogadores poderão usá-la e copiá-la. Seu nome nunca é mostrado.",
+      "confirmUnpublish": "Despublicar esta ficha? Quem já a usou em uma partida continua com ela.",
+      "yesPublish": "Sim, publicar",
+      "yesUnpublish": "Sim, despublicar",
+      "no": "Cancelar",
+      "customGame": "As fichas dos seus próprios jogos são privadas. Só é possível compartilhar jogos do catálogo."
+    },
+    "vote": {
+      "title": "Quão precisa foi esta ficha?",
+      "hint": "Seu voto ajuda outros jogadores a escolher a ficha certa.",
+      "up": "Precisa",
+      "flag": "Avisar de um total incorreto",
+      "reasonLabel": "O que estava errado?",
+      "send": "Enviar aviso",
+      "cancel": "Cancelar",
+      "current": "Seu voto: precisa.",
+      "currentFlag": "Seu aviso: {reason}",
+      "change": "Alterar meu voto",
+      "clear": "Remover meu voto",
+      "saved": "Obrigado, seu voto foi salvo.",
+      "cleared": "Seu voto foi removido."
+    },
+    "admin": {
+      "title": "Moderação",
+      "verify": "Marcar como verificada",
+      "unverify": "Remover verificada",
+      "disable": "Desativar ficha",
+      "enable": "Ativar ficha",
+      "flags": "Avisos",
+      "noFlags": "Sem avisos.",
+      "flagItem": "Versão {version}: {reason}"
+    },
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "invalid": "Isso não é válido.",
+      "not_found": "Essa ficha não está disponível.",
+      "custom_game": "Só é possível publicar fichas de jogos do catálogo.",
+      "daily_limit": "Você pode publicar até 5 fichas por dia. Tente amanhã.",
+      "own_sheet": "Esta ficha é sua, então você não pode votar nela.",
+      "no_match": "Você só pode votar em uma ficha que usou em uma partida.",
+      "forbidden": "Você não tem permissão para fazer isso.",
+      "failed": "Algo deu errado. Tente novamente."
+    },
+    "sheetView": {
+      "title": "Ficha de pontuação",
+      "readOnly": "Esta ficha foi compartilhada pela comunidade. Copie-a para fazer sua própria versão.",
+      "disabledNote": "Esta ficha está desativada: outros jogadores não a veem e ela não pode ser escolhida para novas partidas. As partidas que já a usam continuam com ela.",
+      "categories": "Categorias",
+      "back": "Voltar às fichas",
+      "version": "Versão {n}"
+    }
+  },
+  "Players": {
+    "title": "Meus jogadores",
+    "subtitle": "Todas as pessoas com quem você joga. Os jogadores são criados ao adicioná-los a uma partida.",
+    "emptyTitle": "Ainda não há jogadores",
+    "emptyDescription": "Os jogadores aparecem aqui assim que você os adiciona a uma partida.",
+    "listLabel": "Seus jogadores",
+    "matches": "{count, plural, =0 {Sem partidas} one {# partida} other {# partidas}}",
+    "me": "Eu",
+    "markMe": "Sou eu",
+    "unmarkMe": "Não sou eu",
+    "rename": "Renomear",
+    "renameLabel": "Novo nome para {name}",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "merge": "Mesclar com…",
+    "mergeLabel": "Mesclar {name} com",
+    "mergePick": "Escolha um jogador",
+    "mergeConfirm": "{name} deixará de existir e todas as suas partidas passarão ao jogador que você escolher.",
+    "mergeYes": "Mesclar",
+    "delete": "Excluir",
+    "deleteConfirm": "Excluir {name}?",
+    "deleteYes": "Sim, excluir",
+    "deleteNo": "Manter",
+    "deleteBlocked": "Tem partidas: mescle-o com outro jogador.",
+    "settings": {
+      "title": "Meus jogadores",
+      "hint": "As pessoas com quem você joga: renomeie-as, mescle duplicados e marque qual é você.",
+      "open": "Abrir Meus jogadores"
+    },
+    "picker": {
+      "choose": "Escolha um jogador",
+      "search": "Busque ou adicione um jogador…",
+      "create": "Adicionar «{name}»",
+      "empty": "Nenhum jogador encontrado.",
+      "roster": "Seus jogadores",
+      "meSuffix": "(eu)"
+    },
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "invalid": "Isso não é válido.",
+      "not_found": "Esse jogador não está disponível.",
+      "exists": "Você já tem um jogador com esse nome. Mescle-os em vez disso.",
+      "together": "Estes dois jogadores participaram da mesma partida, então não podem ser mesclados. Edite essa partida antes.",
+      "in_use": "Este jogador tem partidas, então não pode ser excluído.",
+      "me_taken": "Outro jogador já está marcado como você.",
+      "failed": "Algo deu errado. Tente novamente."
+    }
+  },
+  "Stats": {
+    "charts": {
+      "winsTitle": "Vitórias por jogador",
+      "evolutionTitle": "Pontuação em cada partida",
+      "wins": "Vitórias",
+      "match": "Partida",
+      "matchN": "Partida {n}",
+      "showTable": "Mostrar como tabela",
+      "tablePlayer": "Jogador",
+      "tableScored": "Partidas pontuadas",
+      "tableDate": "Data"
+    },
+    "game": {
+      "title": "Estatísticas",
+      "matches": "Partidas",
+      "avgDuration": "Duração média",
+      "lastPlayed": "Última partida",
+      "minutes": "{n} min",
+      "tableCaption": "Estatísticas por jogador",
+      "player": "Jogador",
+      "matchesCol": "Partidas",
+      "wins": "Vitórias",
+      "winRate": "% de vitórias",
+      "average": "Média",
+      "best": "Melhor",
+      "chartsNote": "O gráfico de pontuações mostra os {n} jogadores mais frequentes; as tabelas incluem todos."
+    },
+    "page": {
+      "title": "Estatísticas",
+      "subtitle": "Seu histórico, os jogos que você mais joga e como você se sai contra cada pessoa.",
+      "noMeTitle": "Escolha qual jogador é você",
+      "noMeDescription": "Seu histórico e os confrontos diretos precisam saber qual dos seus jogadores é você. Abra Meus jogadores e escolha «Sou eu».",
+      "openPlayers": "Abrir Meus jogadores",
+      "emptyTitle": "Ainda não há partidas com você",
+      "emptyDescription": "Registre uma partida na página de um jogo, com você como um dos jogadores, e seu histórico aparecerá aqui.",
+      "browse": "Ver jogos",
+      "matches": "Partidas",
+      "wins": "Vitórias",
+      "winRate": "% de vitórias",
+      "gamesPlayed": "Jogos jogados",
+      "topTitle": "Jogos mais jogados",
+      "topMatches": "{count, plural, one {# partida} other {# partidas}}",
+      "topWins": "{count, plural, one {# vitória} other {# vitórias}}",
+      "h2hTitle": "Confronto direto",
+      "h2hHint": "Só contam as partidas em que ambos têm pontuação.",
+      "h2hEmpty": "Nenhum rival compartilhou ainda uma partida pontuada com você.",
+      "rival": "Rival",
+      "together": "Partidas juntos",
+      "mine": "Minhas vitórias",
+      "theirs": "Vitórias dele(a)",
+      "ties": "Empates"
+    },
+    "categories": {
+      "title": "Pontos médios por categoria",
+      "player": "Jogador",
+      "basis": "Ficha «{sheet}», versão {version}, sobre {count, plural, one {# partida} other {# partidas}}.",
+      "skipped": "{count, plural, one {# partida usou} other {# partidas usaram}} outra versão da ficha e {count, plural, one {não entra} other {não entram}}."
+    }
+  },
+  "Recognition": {
+    "live": {
+      "title": "Identificar um jogo",
+      "intro": "Aponte a câmera para a caixa de um jogo e o app o reconhece ao vivo, ou escolha uma foto.",
+      "scan": "Escanear com a câmera",
+      "stop": "Parar",
+      "choose": "Escolher uma foto",
+      "searching": "Procurando um jogo…",
+      "hint": "Ainda não se reconhece nada. Aproxime-se, mantenha a caixa parada e mostre a capa.",
+      "idleTimeout": "O escaneamento parou porque nada foi reconhecido. Comece de novo quando quiser.",
+      "noGames": "Seu catálogo ainda não tem jogos com capa, então não há com o que comparar. Adicione jogos primeiro.",
+      "confirm": "É este",
+      "confirmFor": "É este: {name}",
+      "notThis": "Não é este",
+      "packRank": "Nº {rank} no BoardGameGeek. Ainda não está no seu catálogo.",
+      "addAndOpen": "Adicionar ao catálogo e abrir",
+      "addAndOpenFor": "Adicionar {name} ao catálogo e abri-lo",
+      "adding": "Adicionando…",
+      "addErrors": {
+        "unavailable": "O BoardGameGeek não está disponível agora, então não é possível adicionar o jogo.",
+        "rate_limited": "Você adicionou jogos demais hoje. Tente mais tarde.",
+        "not_found": "O BoardGameGeek não encontrou este jogo.",
+        "unauthenticated": "Entre para adicionar jogos.",
+        "failed": "Não foi possível adicionar o jogo. Tente novamente."
+      },
+      "lowWarning": "Não tenho muita certeza. Confira se é a caixa certa.",
+      "alsoLike": "Também se parece com: {names}",
+      "confidence": {
+        "high": "Confiança alta",
+        "medium": "Confiança média",
+        "low": "Confiança baixa"
+      },
+      "stage": {
+        "camera": "Iniciando a câmera…",
+        "model": "Carregando o mecanismo de reconhecimento…",
+        "references": "Preparando seus jogos ({done} de {total})…",
+        "scanning": "Escaneando…",
+        "photo": "Analisando a foto…"
+      },
+      "activation": {
+        "intro": "O reconhecimento ao vivo funciona inteiramente neste dispositivo. Para isso, precisa baixar um modelo de reconhecimento uma única vez.",
+        "warning": "É um download de cerca de {mb} MB, mais cerca de {packMb} MB do pacote com os 500 jogos mais bem classificados. Use Wi-Fi se estiver com dados móveis.",
+        "privacy": "A imagem da câmera nunca sai do seu dispositivo: nada é enviado nem visto por nenhum serviço externo.",
+        "enable": "Baixar (~{totalMb} MB) e ativar",
+        "downloading": "Baixando…",
+        "progress": "Baixando… {pct} %",
+        "cancel": "Cancelar",
+        "failed": "O download falhou. Verifique sua conexão e tente novamente."
+      },
+      "settings": {
+        "on": "O reconhecimento ao vivo está ativado neste dispositivo (cerca de {mb} MB armazenados).",
+        "remove": "Desativar e apagar o download"
+      },
+      "errors": {
+        "insecure": "A câmera só funciona com uma conexão segura (https).",
+        "no_camera": "Nenhuma câmera foi encontrada neste dispositivo.",
+        "denied": "O acesso à câmera foi negado. Permita nas configurações do navegador ou escolha uma foto.",
+        "no_wasm": "Este navegador não consegue executar o mecanismo de reconhecimento.",
+        "not_installed": "O modelo de reconhecimento não está instalado. Ative-o novamente.",
+        "model_failed": "Não foi possível iniciar o mecanismo de reconhecimento. Tente novamente.",
+        "failed": "Algo deu errado. Tente novamente."
+      }
+    }
+  },
+  "Friends": {
+    "elsewhereLink": "Partidas jogadas em outros lugares",
+    "unnamed": "Alguém",
+    "title": "Amigos",
+    "subtitle": "As pessoas com quem você joga. Compartilhe um link para adicionar um amigo; não há busca pública.",
+    "myLink": {
+      "title": "Convidar um amigo",
+      "hint": "O link vale uma vez e expira em 7 dias.",
+      "create": "Criar um link",
+      "copy": "Copiar link",
+      "copied": "Copiado",
+      "revoke": "Cancelar link"
+    },
+    "listTitle": "Seus amigos",
+    "empty": "Você ainda não tem amigos. Crie um link e envie para alguém.",
+    "remove": "Remover",
+    "removeConfirm": "Remover {name}? As partidas que vocês compartilham são mantidas.",
+    "removeYes": "Sim, remover",
+    "keep": "Manter",
+    "invitesTitle": "Convites para partidas",
+    "invite": "{who} adicionou você a uma partida de {game}.",
+    "accept": "Aceitar",
+    "decline": "Recusar",
+    "linkTitle": "Solicitações de nome",
+    "linkRequest": "{owner} diz que «{player}» é você em {plays, plural, one {# partida} other {# partidas}}.",
+    "join": {
+      "title": "Convite de amizade",
+      "description": "Aceite para ser amigo de quem enviou este link.",
+      "accept": "Aceitar convite",
+      "done": "Agora vocês são amigos."
+    },
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "invalid": "Este link não é válido, já foi usado ou expirou.",
+      "own": "Este é o seu próprio link.",
+      "limit": "Você atingiu um limite. Tente mais tarde.",
+      "failed": "Algo deu errado. Tente novamente.",
+      "not_found": "Isso não está disponível.",
+      "not_friend": "Você não é amigo dessa pessoa.",
+      "custom_game": "As partidas dos seus próprios jogos não podem ser compartilhadas.",
+      "already_invited": "Essa pessoa já está nesta partida.",
+      "closed": "Esta partida está encerrada."
+    }
+  },
+  "Live": {
+    "title": "Partida ao vivo",
+    "open": "Aberta",
+    "closed": "Encerrada",
+    "connected": "Ao vivo",
+    "offline": "Reconectando…",
+    "back": "Voltar para a partida",
+    "yourColumn": "Sua coluna",
+    "provisional": "provisório",
+    "total": "Total",
+    "save": "Salvar meus pontos",
+    "saved": "Salvo",
+    "noSheet": "Esta partida não tem ficha de pontuação, então os pontos são escritos por quem a criou.",
+    "close": "Encerrar partida",
+    "closeConfirm": "Encerrar a partida? Os totais e o vencedor ficam definidos e ninguém poderá editar pontos depois.",
+    "closeYes": "Sim, encerrar",
+    "closedNote": "A partida está encerrada.",
+    "inviteTitle": "Convidar um amigo para um lugar",
+    "inviteSeat": "Lugar",
+    "inviteFriend": "Amigo",
+    "invitePick": "Escolha um amigo",
+    "inviteSend": "Enviar convite",
+    "invited": "Convite enviado",
+    "waiting": "aguardando resposta",
+    "joined": "entrou",
+    "declined": "recusou",
+    "openLive": "Abrir visão ao vivo",
+    "leave": "Sair desta partida",
+    "leaveConfirm": "Sair? Os demais continuam com a partida.",
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "invalid": "Isso não é válido.",
+      "failed": "Algo deu errado. Tente novamente.",
+      "not_found": "Isso não está disponível.",
+      "not_friend": "Você não é amigo dessa pessoa.",
+      "custom_game": "As partidas dos seus próprios jogos não podem ser compartilhadas.",
+      "already_invited": "Essa pessoa já está nesta partida.",
+      "closed": "Esta partida está encerrada.",
+      "limit": "Você atingiu um limite. Tente mais tarde."
+    },
+    "editPoints": "Editar pontos",
+    "cancel": "Cancelar"
+  },
+  "Elsewhere": {
+    "title": "Jogadas em outros lugares",
+    "subtitle": "Partidas que você jogou de jogos que não tem, por exemplo na casa de um amigo.",
+    "empty": "Ainda não há partidas. Elas aparecem quando um amigo adiciona você a uma partida de um jogo que não está na sua biblioteca.",
+    "with": "Com {owner}",
+    "openMatch": "Abrir",
+    "live": "Ao vivo"
+  },
+  "LinkFriend": {
+    "label": "Vincular {name} a um amigo",
+    "pick": "Escolha um amigo",
+    "send": "Enviar solicitação",
+    "sent": "Solicitação enviada. Será oficial quando seu amigo aceitar.",
+    "unlink": "Desvincular"
+  },
+  "Log": {
+    "title": "Registrar partida",
+    "subtitle": "Escolha o jogo que você jogou.",
+    "emptyTitle": "Sua biblioteca está vazia",
+    "emptyBody": "Adicione um jogo à sua biblioteca para registrar uma partida.",
+    "browse": "Adicionar jogos"
+  },
+  "People": {
+    "label": "Pessoas",
+    "players": "Jogadores",
+    "friends": "Amigos",
+    "groups": "Grupos"
+  },
+  "Groups": {
+    "title": "Meus grupos",
+    "subtitle": "Guarde as pessoas com quem você sempre joga e adicione-as a uma partida com um clique.",
+    "noPlayersTitle": "Ainda não há jogadores",
+    "noPlayersDescription": "Os grupos são formados com seus jogadores. Primeiro, adicione jogadores a uma partida.",
+    "goToPlayers": "Ir para Meus jogadores",
+    "empty": "Ainda não há grupos. Crie um acima, por exemplo «Quinta».",
+    "newLabel": "Novo grupo",
+    "newPlaceholder": "ex.: Quinta",
+    "create": "Criar grupo",
+    "listLabel": "Seus grupos",
+    "members": "{count, plural, =0 {Sem jogadores} one {# jogador} other {# jogadores}}",
+    "noMembers": "Este grupo ainda não tem jogadores.",
+    "editMembers": "Escolher jogadores",
+    "membersLegend": "Jogadores de {name}",
+    "rename": "Renomear",
+    "renameLabel": "Novo nome para {name}",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "deleteConfirm": "Excluir o grupo {name}? Seus jogadores são mantidos.",
+    "deleteYes": "Sim, excluir",
+    "deleteNo": "Manter",
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "invalid": "Isso não é válido.",
+      "not_found": "Esse grupo ou jogador não está disponível.",
+      "exists": "Você já tem um grupo com esse nome.",
+      "too_many": "Você atingiu o limite de 50 grupos.",
+      "failed": "Algo deu errado. Tente novamente."
+    }
+  },
+  "Pwa": {
+    "banner": {
+      "label": "Instalar o Amika",
+      "title": "Instale o Amika",
+      "hint": "Abra com um toque, em tela cheia, a partir da sua tela inicial.",
+      "iosHint": "Adicione o Amika à tela inicial para abri-lo como um app.",
+      "install": "Instalar",
+      "iosStep": "Compartilhar → Adicionar à Tela de Início",
+      "later": "Agora não",
+      "never": "Não perguntar de novo"
+    },
+    "settings": {
+      "install": "Instalar o Amika",
+      "installed": "O Amika já está instalado neste dispositivo.",
+      "ios": "No iPhone/iPad: toque em Compartilhar e depois em «Adicionar à Tela de Início».",
+      "manual": "Seu navegador não ofereceu um botão de instalação. Procure «Instalar app» no menu do navegador."
+    }
+  }
+}

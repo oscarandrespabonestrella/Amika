@@ -9,7 +9,7 @@ vi.mock("next/navigation", () => ({
 import { assertLocale } from "./locale";
 
 describe("assertLocale", () => {
-  it.each(["en", "es", "fr"])("accepts %s", (locale) => {
+  it.each(["en", "es", "fr", "pt"])("accepts %s", (locale) => {
     expect(assertLocale(locale)).toBe(locale);
   });
 

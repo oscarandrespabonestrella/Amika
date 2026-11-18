@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getGameDetail } from "@/features/catalog";
+import { listGroups } from "@/features/groups";
 import { listPlayers } from "@/features/players";
 import { getPlay, PlayForm } from "@/features/plays";
 import { getMyVote, getSheet, SheetVote } from "@/features/scoring";
@@ -13,10 +14,11 @@ export default async function EditPlayPage({
   const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [game, play, roster] = await Promise.all([
+  const [game, play, roster, groups] = await Promise.all([
     getGameDetail(id, locale),
     getPlay(playId),
     listPlayers(),
+    listGroups(),
   ]);
   // Missing, someone else's, or opened under the wrong game: all a 404.
   if (!game || !play || play.gameId !== game.id) notFound();
@@ -45,6 +47,7 @@ export default async function EditPlayPage({
         defaultSheetId={null}
         expansions={expansions}
         roster={roster}
+        groups={groups}
         initial={play}
       />
       {canVote && play.sheet && (

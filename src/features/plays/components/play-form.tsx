@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
+import { groupFill, type Group } from "@/features/groups/client";
 import { Link, useRouter } from "@/i18n/navigation";
 import {
   normalizePlayerName,
@@ -38,6 +39,8 @@ type Props = {
   expansions: { id: string; name: string }[];
   /** The user's own players (the picker offers them; new names create players). */
   roster: Player[];
+  /** The user's saved groups: one click adds their members to the match. */
+  groups: Group[];
   /** Present when editing a saved match. */
   initial?: PlayDetail;
 };
@@ -108,6 +111,7 @@ export function PlayForm({
   defaultSheetId,
   expansions,
   roster,
+  groups,
   initial,
 }: Props) {
   const t = useTranslations("Plays.form");
@@ -219,6 +223,27 @@ export function PlayForm({
 
   const setRow = (uid: number, patch: Partial<Row>) =>
     setRows((cur) => cur.map((r) => (r.uid === uid ? { ...r, ...patch } : r)));
+
+  // A group only fills in rows of THIS match; the group itself is never touched.
+  function addGroup(group: Group) {
+    setRows((cur) => {
+      const { fillIndexes, append } = groupFill(
+        cur,
+        group.members,
+        PLAY_LIMITS.maxParticipants,
+      );
+      const next = cur.map((row, index) => {
+        const fill = fillIndexes.find((f) => f.rowIndex === index);
+        return fill
+          ? { ...row, playerId: fill.member.id, name: fill.member.name }
+          : row;
+      });
+      return [
+        ...next,
+        ...append.map((m) => newRow(m.name, {}, undefined, m.id)),
+      ];
+    });
+  }
 
   function changeSheet(next: string) {
     setSheetId(next);
@@ -496,6 +521,30 @@ export function PlayForm({
             <Plus className="size-4" aria-hidden />
             {t("addPlayer")}
           </Button>
+          {groups.length > 0 && (
+            <div
+              role="group"
+              aria-label={t("addGroup")}
+              className="flex flex-wrap items-center gap-2"
+            >
+              <span className="text-sm text-muted-foreground">
+                {t("addGroup")}:
+              </span>
+              {groups.map((group) => (
+                <Button
+                  key={group.id}
+                  type="button"
+                  variant="outline"
+                  className="h-11 px-4"
+                  disabled={group.members.length === 0}
+                  aria-label={t("addGroupChoice", { name: group.name })}
+                  onClick={() => addGroup(group)}
+                >
+                  {group.name} ({group.members.length})
+                </Button>
+              ))}
+            </div>
+          )}
           <Link
             href="/players"
             className="inline-flex h-11 items-center rounded-lg px-3 text-sm text-muted-foreground underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"

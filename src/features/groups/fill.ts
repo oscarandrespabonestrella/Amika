@@ -13,11 +13,13 @@ export type GroupFill = {
 /**
  * What adding a group does to a match's rows: members already present (same player, or
  * a typed name that normalizes the same) are skipped; the rest go into the empty rows
- * first (no player and no name), then into new rows. Pure: it never changes the group.
+ * first (no player and no name), then into new rows, never growing the form past
+ * `maxRows` rows. Pure: it never changes the group.
  */
 export function groupFill(
   rows: readonly FillRow[],
   members: readonly GroupMember[],
+  maxRows = Number.POSITIVE_INFINITY,
 ): GroupFill {
   const presentIds = new Set(
     rows.map((r) => r.playerId).filter((id): id is string => id !== null),
@@ -39,6 +41,9 @@ export function groupFill(
     fillIndexes: emptyRows
       .slice(0, missing.length)
       .map((rowIndex, i) => ({ rowIndex, member: missing[i] })),
-    append: missing.slice(emptyRows.length),
+    append: missing.slice(
+      emptyRows.length,
+      emptyRows.length + Math.max(0, maxRows - rows.length),
+    ),
   };
 }

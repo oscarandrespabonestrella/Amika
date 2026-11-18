@@ -562,6 +562,8 @@
       "nameRequired": "Enter a name.",
       "removePlayer": "Remove player {n}",
       "addPlayer": "Add player",
+      "addGroup": "Add group",
+      "addGroupChoice": "Add the group {name}",
       "maxPlayers": "A match can have up to {max} players.",
       "manualTotal": "Total points",
       "total": "Total",

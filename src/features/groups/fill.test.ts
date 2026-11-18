@@ -55,3 +55,24 @@ describe("groupFill with typed names", () => {
     });
   });
 });
+
+describe("groupFill with a row limit", () => {
+  it("does not append beyond the limit", () => {
+    expect(
+      groupFill([empty, { playerId: "z", name: "Zoe" }], [ana, bo, cy], 3),
+    ).toEqual({
+      fillIndexes: [{ rowIndex: 0, member: ana }],
+      append: [bo],
+    });
+  });
+
+  it("still fills empty rows when the form is already full", () => {
+    expect(groupFill([empty, empty], [ana, bo, cy], 2)).toEqual({
+      fillIndexes: [
+        { rowIndex: 0, member: ana },
+        { rowIndex: 1, member: bo },
+      ],
+      append: [],
+    });
+  });
+});

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getGameDetail } from "@/features/catalog";
+import { listGroups } from "@/features/groups";
 import { listPlayers } from "@/features/players";
 import { getPlayDefaults, PlayForm } from "@/features/plays";
 import { listSheetOptions } from "@/features/scoring";
@@ -13,10 +14,11 @@ export default async function NewPlayPage({
   const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [game, sheets, roster] = await Promise.all([
+  const [game, sheets, roster, groups] = await Promise.all([
     getGameDetail(id, locale),
     listSheetOptions(id),
     listPlayers(),
+    listGroups(),
   ]);
   if (!game) notFound(); // missing, or a private game that is not yours
   const defaults = await getPlayDefaults(id, sheets);
@@ -36,6 +38,7 @@ export default async function NewPlayPage({
         defaultSheetId={defaults.defaultSheetId}
         expansions={expansions}
         roster={roster}
+        groups={groups}
       />
     </div>
   );

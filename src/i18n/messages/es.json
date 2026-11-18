@@ -562,6 +562,8 @@
       "nameRequired": "Escribe un nombre.",
       "removePlayer": "Quitar al jugador {n}",
       "addPlayer": "Añadir jugador",
+      "addGroup": "Añadir grupo",
+      "addGroupChoice": "Añadir el grupo {name}",
       "maxPlayers": "Una partida admite hasta {max} jugadores.",
       "manualTotal": "Puntos totales",
       "total": "Total",

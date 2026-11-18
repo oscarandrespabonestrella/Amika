@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EmptyState } from "@/components/empty-state";
 import { PeopleTabs } from "@/components/layout/people-tabs";
 import { listGroups } from "@/features/groups";
-import { GroupsManager } from "@/features/groups/components/groups-manager";
+import { GroupsManager } from "@/features/groups/views/groups-manager";
 import { listPlayers } from "@/features/players";
 import { assertLocale } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";

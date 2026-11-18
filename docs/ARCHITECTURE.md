@@ -27,7 +27,8 @@ src/
   app/[locale]/           rutas y layouts (solo composición, sin lógica de negocio)
     (public)/ (auth)/ (app)/ admin/
   features/<módulo>/      auth, profiles, catalog, library, game-center, manuals, plays, scoring, stats, admin, ai*
-    components/           UI del módulo
+    views/                cuerpo de pantalla que renderiza una página (ADR-047)
+    components/           piezas reutilizables del módulo
     actions/              Server Actions (validan con Zod y delegan en services)
     services/             lógica de negocio + acceso a datos (Supabase)
     schemas/              Zod
@@ -41,6 +42,8 @@ supabase/                 migrations/, seed, config.toml
 tests/                    unit (junto al código), integration (RLS), e2e (Playwright)
 docs/
 ```
+**Páginas, vistas y componentes (ADR-047)**: una *página* es `src/app/[locale]/**/page.tsx` (la URL es la ruta de carpetas sin `[locale]` ni `(grupo)`; mapa generado en `docs/ROUTES.md` con `npm run routes:map`); `layout/loading/error/not-found` son envoltorios de Next, no páginas. Una *vista* (`features/<f>/views/`) es el cuerpo de pantalla que una página renderiza; una página solo lee parámetros, idioma y sesión, carga datos y pinta una vista. Un *componente* (`features/<f>/components/`, `components/`, `components/ui/`) es una pieza reutilizable y **no importa vistas** (lo impone ESLint).
+
 **Desviación respecto a la orientación de las directrices**: `services/`, `schemas/` y `hooks/` viven *dentro de cada feature* en vez de en la raíz. Motivo: cohesión por módulo y límites claros; en la raíz solo queda lo transversal (`lib/`, `components/`). Los `hooks/` globales se añaden solo si aparecen hooks realmente compartidos.
 
 ## 4. Reglas de dependencia

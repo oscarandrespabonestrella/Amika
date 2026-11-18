@@ -20,7 +20,7 @@ export {
 } from "./services/sheet-service";
 export { SheetsLink } from "./components/sheets-link";
 export { SheetsList } from "./components/sheets-list";
-export { SheetEditor } from "./components/sheet-editor";
+export { SheetEditor } from "./views/sheet-editor";
 export { ScoreFields } from "./components/score-fields";
 export {
   getMyVote,
@@ -35,4 +35,4 @@ export { AdminSheetControls } from "./components/admin-sheet-controls";
 export { CommunitySheets } from "./components/community-sheets";
 export { PublishToggle } from "./components/publish-toggle";
 export { SheetVote } from "./components/sheet-vote";
-export { SheetView } from "./components/sheet-view";
+export { SheetView } from "./views/sheet-view";

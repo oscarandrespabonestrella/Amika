@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { JoinFriend } from "@/features/friends/components/join-friend";
+import { JoinFriend } from "@/features/friends/views/join-friend";
 import { friendCodeSchema } from "@/features/friends/schemas";
 import { assertLocale } from "@/i18n/locale";
 

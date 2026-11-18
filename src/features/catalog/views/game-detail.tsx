@@ -6,12 +6,15 @@ import { Link } from "@/i18n/navigation";
 import { formatMinutes, formatPlayers } from "../format";
 import type { GameDetail } from "../services/game-service";
 import { TERM_TYPES } from "../types";
-import { AboutSection } from "./about-section";
-import { ExpansionsList, type ExpansionItem } from "./expansions-list";
-import { GameTabs } from "./game-tabs";
-import { ImportRelationButton } from "./import-relation-button";
-import { OwnerActions } from "./owner-actions";
-import { PhotoGallery } from "./photo-gallery";
+import { AboutSection } from "../components/about-section";
+import {
+  ExpansionsList,
+  type ExpansionItem,
+} from "../components/expansions-list";
+import { GameTabs } from "../components/game-tabs";
+import { ImportRelationButton } from "../components/import-relation-button";
+import { OwnerActions } from "../components/owner-actions";
+import { PhotoGallery } from "../components/photo-gallery";
 
 type Props = {
   game: GameDetail;

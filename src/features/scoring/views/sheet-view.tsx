@@ -9,8 +9,8 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { copySheetAction, type ScoringResult } from "../actions/sheet-actions";
 import type { CommunitySheet } from "../services/community-service";
 import type { SheetDetail } from "../services/sheet-service";
-import { SheetBadges } from "./community-sheets";
-import { ScorePreview } from "./score-preview";
+import { SheetBadges } from "../components/community-sheets";
+import { ScorePreview } from "../components/score-preview";
 
 /**
  * A sheet that is not the viewer's: read-only, with a "try it" preview and a Copy

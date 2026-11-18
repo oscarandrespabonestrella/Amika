@@ -22,6 +22,32 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    // Pages vs views vs components (ADR-047): a view is a whole-screen body that a
+    // page renders. Reusable components never import a view (it would invert
+    // app → features → components, see docs/ARCHITECTURE.md §4).
+    files: ["src/components/**", "src/features/*/components/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "cn",
+              message: 'Import { cn } from "@/lib/utils" instead (ADR-016).',
+            },
+          ],
+          patterns: [
+            {
+              regex: "(^|/)views(/|$)",
+              message:
+                "Components must not import views (ADR-047): a view is rendered by a page.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

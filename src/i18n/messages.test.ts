@@ -36,10 +36,13 @@ describe("i18n catalogs", () => {
     },
   );
 
-  it.each(["en", "es", "fr", "pt"] as const)("%s has no empty strings", (locale) => {
-    const empty = Object.entries(flatten(CATALOGS[locale])).filter(
-      ([, value]) => value.trim() === "",
-    );
-    expect(empty).toEqual([]);
-  });
+  it.each(["en", "es", "fr", "pt"] as const)(
+    "%s has no empty strings",
+    (locale) => {
+      const empty = Object.entries(flatten(CATALOGS[locale])).filter(
+        ([, value]) => value.trim() === "",
+      );
+      expect(empty).toEqual([]);
+    },
+  );
 });

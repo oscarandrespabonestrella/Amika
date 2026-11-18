@@ -418,6 +418,75 @@
       "invalidVideo": "Informe um link do YouTube ou um id de vídeo."
     }
   },
+  "Manuals": {
+    "search": {
+      "button": "Buscar manual",
+      "title": "Regras de {game}",
+      "intro": "Procuramos regras em PDF na web, com as fontes oficiais em espanhol primeiro, depois inglês, francês e alemão. Cada link é verificado antes de ser mostrado.",
+      "searching": "Buscando e verificando links…",
+      "close": "Fechar",
+      "retry": "Buscar de novo",
+      "copyright": "Só o link para o site original é guardado. As regras pertencem às suas editoras.",
+      "unavailableTitle": "Busca indisponível",
+      "emptyTitle": "Nenhum manual encontrado",
+      "emptyHint": "Tente o site da editora, ou peça a um administrador que adicione um link.",
+      "results": "Resultados"
+    },
+    "result": {
+      "official": "Oficial",
+      "source": "Fonte: {host}",
+      "size": "{size} MB",
+      "sizeKb": "{size} KB",
+      "open": "Abrir PDF",
+      "add": "Adicionar à biblioteca",
+      "propose": "Propor para a biblioteca",
+      "adding": "Adicionando…",
+      "added": "Na biblioteca",
+      "proposed": "Proposto",
+      "addedOk": "Adicionado à biblioteca.",
+      "proposedOk": "Proposto. Um administrador vai revisar.",
+      "download": "Baixar",
+      "saveOffline": "Salvar para usar offline",
+      "saving": "Salvando…",
+      "savedOffline": "Salvo neste dispositivo",
+      "removeOffline": "Remover do dispositivo"
+    },
+    "errors": {
+      "unauthenticated": "Sua sessão expirou. Entre novamente.",
+      "unavailable": "A busca de manuais ainda não está configurada neste servidor.",
+      "rate_limited": "Muitas buscas. Aguarde um momento e tente de novo.",
+      "quota_exhausted": "O limite mensal de buscas deste app foi atingido. Tente no mês que vem ou peça a um administrador que adicione o link.",
+      "failed": "Algo deu errado. Tente novamente.",
+      "invalid": "Esse link não pode ser usado.",
+      "forbidden": "Você não tem permissão para fazer isso.",
+      "limit": "Muitas solicitações ou propostas por enquanto. Tente mais tarde.",
+      "already_added": "Este manual já está na biblioteca.",
+      "already_proposed": "Este manual já foi proposto.",
+      "not_pdf": "Esse link não é um PDF (ou é grande demais).",
+      "unreachable": "Esse link não respondeu.",
+      "quota": "Não há espaço livre suficiente neste dispositivo.",
+      "too_large": "Este PDF é grande demais para salvar. Abra o original.",
+      "network": "Não foi possível baixar o arquivo. Verifique sua conexão.",
+      "offlineUnsupported": "Este navegador não consegue guardar arquivos para uso offline."
+    },
+    "proposals": {
+      "title": "Manuais propostos",
+      "reviewTitle": "Manuais para revisar",
+      "hint": "Aguardando a revisão de um administrador.",
+      "pending": "Pendente",
+      "rejected": "Recusado",
+      "withdraw": "Retirar",
+      "publish": "Publicar",
+      "reject": "Recusar"
+    },
+    "saved": {
+      "title": "Salvos neste dispositivo",
+      "hint": "Disponíveis sem internet.",
+      "open": "Abrir",
+      "remove": "Remover",
+      "offlineList": "Todos os manuais salvos"
+    }
+  },
   "Scoring": {
     "copySuffix": "(cópia)",
     "title": "Fichas de pontuação",

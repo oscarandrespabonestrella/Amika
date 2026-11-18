@@ -5,4 +5,5 @@ export const LOCALE_NAMES: Record<AppLocale, string> = {
   en: "English",
   es: "Español",
   fr: "Français",
+  pt: "Português",
 };

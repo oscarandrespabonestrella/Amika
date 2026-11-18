@@ -5,7 +5,7 @@ import { defineRouting } from "next-intl/routing";
  * its endonym in `locales.ts` and its Clerk localization in the locale layout.
  */
 export const routing = defineRouting({
-  locales: ["en", "es", "fr"],
+  locales: ["en", "es", "fr", "pt"],
   defaultLocale: "en",
   localePrefix: "always",
 });

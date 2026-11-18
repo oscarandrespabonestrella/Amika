@@ -1,5 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import { esES, frFR } from "@clerk/localizations";
+import { esES, frFR, ptBR } from "@clerk/localizations";
 import { shadcn } from "@clerk/ui/themes";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
@@ -31,6 +31,7 @@ const CLERK_LOCALIZATIONS: Record<AppLocale, typeof esES | undefined> = {
   en: undefined,
   es: esES,
   fr: frFR,
+  pt: ptBR,
 };
 
 export function generateStaticParams() {

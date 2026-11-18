@@ -313,6 +313,37 @@
       "anyMechanic": "Any mechanic",
       "apply": "Apply filters",
       "clear": "Clear these filters"
+    },
+    "bggImport": {
+      "title": "Import my BoardGameGeek collection",
+      "body": "Upload the CSV file you export from your collection and we'll add those games to your library with their status and your rating.",
+      "unavailable": "Importing from BoardGameGeek isn't available yet.",
+      "choose": "Your collection CSV file",
+      "howTo": "On BoardGameGeek: Collection → Export → CSV. The file is read on your device.",
+      "preview": "{count, plural, one {# game} other {# games}} ({owned} owned, {previous} previously owned).",
+      "skipped": "{count, plural, one {# row skipped (wishlist only or repeated).} other {# rows skipped (wishlist only or repeated).}}",
+      "keepsExisting": "Anything already in your library is left unchanged.",
+      "import": "{count, plural, one {Import # game} other {Import # games}}",
+      "progress": "Importing {done} of {total}…",
+      "continue": "{count, plural, one {Continue with # pending game} other {Continue with # pending games}}",
+      "doneTitle": "Import finished",
+      "doneSummary": "{added, plural, one {# game added} other {# games added}}; {existing} already in your library.",
+      "notFound": "{count, plural, one {# game could not be imported:} other {# games could not be imported:}}",
+      "openLibrary": "Go to my library",
+      "fileErrors": {
+        "not_bgg": "That file doesn't look like a BoardGameGeek collection export.",
+        "empty": "There are no games to import in that file (wishlist items are ignored).",
+        "too_many": "The file has too many games (maximum 2000).",
+        "tooBig": "The file is too large (maximum 2 MB).",
+        "unreadable": "The file could not be read."
+      },
+      "errors": {
+        "unauthenticated": "Your session expired. Sign in again.",
+        "invalid": "That batch could not be processed.",
+        "unavailable": "BoardGameGeek isn't available right now.",
+        "rate_limited": "Too many requests. Wait a minute and press “Continue”.",
+        "failed": "Something went wrong. You can press “Continue” to retry."
+      }
     }
   },
   "GameCenter": {

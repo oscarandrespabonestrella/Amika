@@ -5,8 +5,11 @@ import { revalidatePath } from "next/cache";
 import { unstable_rethrow } from "next/navigation";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
-import { libraryInputSchema } from "../schemas";
+import { getGameSource, importExternalGames } from "@/features/catalog";
+import { importCollectionBatch } from "../import-collection";
+import { collectionBatchSchema, libraryInputSchema } from "../schemas";
 import {
+  addLibraryItems,
   removeLibraryItem,
   saveLibraryItem,
 } from "../services/library-service";
@@ -36,6 +39,42 @@ export async function saveLibraryItemAction(
   } catch (error) {
     unstable_rethrow(error);
     logger.error("library.save failed", error);
+    return { ok: false, error: "failed" };
+  }
+}
+
+export type ImportBatchActionResult =
+  | { ok: true; added: number; existing: number; failed: string[] }
+  | {
+      ok: false;
+      error:
+        | "unauthenticated"
+        | "invalid"
+        | "unavailable"
+        | "rate_limited"
+        | "failed";
+    };
+
+/** One batch (≤ 20 games) of a BoardGameGeek collection import. */
+export async function importBggCollectionBatchAction(
+  rows: unknown,
+): Promise<ImportBatchActionResult> {
+  try {
+    const { userId } = await auth();
+    if (!userId) return { ok: false, error: "unauthenticated" };
+
+    const parsed = collectionBatchSchema.safeParse(rows);
+    if (!parsed.success) return { ok: false, error: "invalid" };
+
+    const result = await importCollectionBatch(parsed.data, {
+      importGames: (ids) => importExternalGames(getGameSource(), ids, userId),
+      addItems: addLibraryItems,
+    });
+    if (result.ok) revalidatePath("/", "layout");
+    return result;
+  } catch (error) {
+    unstable_rethrow(error);
+    logger.error("library.importCollection failed", error);
     return { ok: false, error: "failed" };
   }
 }

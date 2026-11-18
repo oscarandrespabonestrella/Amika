@@ -206,7 +206,31 @@ export function parseThingResponse(xml: string): ExternalGame {
     throw new BggError("upstream", "BGG returned an error document");
   const item = asNodes(isNode(root.items) ? root.items.item : undefined)[0];
   if (!item) throw new BggError("not_found");
+  return parseThingItem(item);
+}
 
+/**
+ * Every valid item of a multi-id `thing` response. A malformed item is dropped (the caller
+ * sees it missing) instead of failing the whole batch.
+ */
+export function parseThingItems(xml: string): ExternalGame[] {
+  const root = parseXml(xml);
+  if (root.errors)
+    throw new BggError("upstream", "BGG returned an error document");
+  const games: ExternalGame[] = [];
+  for (const item of asNodes(
+    isNode(root.items) ? root.items.item : undefined,
+  )) {
+    try {
+      games.push(parseThingItem(item));
+    } catch (error) {
+      if (!(error instanceof BggError)) throw error;
+    }
+  }
+  return games;
+}
+
+function parseThingItem(item: Node): ExternalGame {
   const externalId = attr(item, "id");
   const name = primaryName(item);
   if (!externalId || !/^\d{1,9}$/.test(externalId) || !name) {

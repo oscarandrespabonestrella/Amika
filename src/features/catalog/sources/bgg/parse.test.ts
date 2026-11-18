@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BggError } from "./errors";
 import {
+  BATCH_XML,
   EMPTY_XML,
   ERROR_XML,
   EXPANSION_XML,
@@ -11,6 +12,7 @@ import {
 import {
   decodeHtmlEntities,
   parseSearchResponse,
+  parseThingItems,
   parseThingResponse,
 } from "./parse";
 
@@ -199,5 +201,19 @@ describe("decodeHtmlEntities", () => {
     ["&#0;", "&#0;"],
   ])("%s -> %j", (input, expected) => {
     expect(decodeHtmlEntities(input)).toBe(expected);
+  });
+});
+
+describe("parseThingItems", () => {
+  it("returns every valid item and drops the malformed ones", () => {
+    expect(parseThingItems(BATCH_XML).map((g) => g.externalId)).toEqual([
+      "13",
+      "926",
+    ]);
+  });
+
+  it("returns an empty list for an empty response and throws on an error document", () => {
+    expect(parseThingItems(EMPTY_XML)).toEqual([]);
+    expect(() => parseThingItems(ERROR_XML)).toThrow();
   });
 });

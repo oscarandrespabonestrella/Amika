@@ -1,4 +1,5 @@
 // Public API of the library module.
+export { BggCollectionImport } from "./components/bgg-collection-import";
 export { LibraryBadges } from "./components/library-badges";
 export { LibraryPanel } from "./components/library-panel";
 export { LibraryView } from "./views/library-view";

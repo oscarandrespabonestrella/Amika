@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { createBggSource } from "./client";
 import { BggError } from "./errors";
-import { EMPTY_XML, SEARCH_XML, THING_XML } from "./fixtures";
+import { BATCH_XML, EMPTY_XML, SEARCH_XML, THING_XML } from "./fixtures";
 
 const xml = (body: string, status = 200) => new Response(body, { status });
 const noSleep = vi.fn(async () => undefined);
@@ -79,6 +79,24 @@ describe("createBggSource", () => {
     const [url] = fetchImpl.mock.calls[0] as [URL];
     expect(url.pathname).toBe("/xmlapi2/thing");
     expect(url.searchParams.get("id")).toBe("13");
+  });
+
+  it("fetches several games in one call and drops malformed items", async () => {
+    const { src, fetchImpl } = source(() => xml(BATCH_XML));
+    const games = await src.fetchGames(["13", "77", "926"]);
+    expect(games.map((g) => g.externalId)).toEqual(["13", "926"]);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    const [url] = fetchImpl.mock.calls[0] as [URL];
+    expect(url.searchParams.get("id")).toBe("13,77,926");
+  });
+
+  it("refuses batches that are too large or carry a bad id, without calling BGG", async () => {
+    const { src, fetchImpl } = source(() => xml(BATCH_XML));
+    const tooMany = Array.from({ length: 21 }, (_, i) => String(i + 1));
+    expect(await codeOf(src.fetchGames(tooMany))).toBe("not_found");
+    expect(await codeOf(src.fetchGames(["13", "1,2"]))).toBe("not_found");
+    expect(await src.fetchGames([])).toEqual([]);
+    expect(fetchImpl).not.toHaveBeenCalled();
   });
 
   it("refuses a non-numeric id without calling BGG (no path/param injection)", async () => {

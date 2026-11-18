@@ -313,6 +313,37 @@
       "anyMechanic": "Cualquier mecánica",
       "apply": "Aplicar filtros",
       "clear": "Quitar estos filtros"
+    },
+    "bggImport": {
+      "title": "Importar mi colección de BoardGameGeek",
+      "body": "Sube el archivo CSV que exportas de tu colección y añadiremos esos juegos a tu biblioteca con su estado y tu valoración.",
+      "unavailable": "La importación desde BoardGameGeek aún no está disponible.",
+      "choose": "Archivo CSV de tu colección",
+      "howTo": "En BoardGameGeek: Colección → Exportar → CSV. El archivo se lee en tu dispositivo.",
+      "preview": "{count, plural, one {# juego} other {# juegos}} ({owned} los tengo, {previous} los tuve).",
+      "skipped": "{count, plural, one {Se omite # fila (solo lista de deseos o repetida).} other {Se omiten # filas (solo lista de deseos o repetidas).}}",
+      "keepsExisting": "Lo que ya está en tu biblioteca no se modifica.",
+      "import": "{count, plural, one {Importar # juego} other {Importar # juegos}}",
+      "progress": "Importando {done} de {total}…",
+      "continue": "{count, plural, one {Continuar con # juego pendiente} other {Continuar con # juegos pendientes}}",
+      "doneTitle": "Importación terminada",
+      "doneSummary": "{added, plural, one {# juego añadido} other {# juegos añadidos}}; {existing, plural, one {# ya estaba en tu biblioteca} other {# ya estaban en tu biblioteca}}.",
+      "notFound": "{count, plural, one {# juego no se pudo importar:} other {# juegos no se pudieron importar:}}",
+      "openLibrary": "Ir a mi biblioteca",
+      "fileErrors": {
+        "not_bgg": "Ese archivo no parece una exportación de colección de BoardGameGeek.",
+        "empty": "No hay juegos que importar en ese archivo (se ignoran los de la lista de deseos).",
+        "too_many": "El archivo tiene demasiados juegos (máximo 2000).",
+        "tooBig": "El archivo es demasiado grande (máximo 2 MB).",
+        "unreadable": "No se pudo leer el archivo."
+      },
+      "errors": {
+        "unauthenticated": "Tu sesión caducó. Inicia sesión de nuevo.",
+        "invalid": "No se pudo procesar ese lote.",
+        "unavailable": "BoardGameGeek no está disponible ahora mismo.",
+        "rate_limited": "Demasiadas solicitudes. Espera un minuto y pulsa «Continuar».",
+        "failed": "Algo salió mal. Puedes pulsar «Continuar» para reintentar."
+      }
     }
   },
   "GameCenter": {

@@ -76,5 +76,20 @@ export const MESSY_XML = `<?xml version="1.0" encoding="utf-8"?>
   </item>
 </items>`;
 
+/** A multi-id response: two good items and one without a name (must be dropped). */
+export const BATCH_XML = `<?xml version="1.0" encoding="utf-8"?>
+<items>
+  <item type="boardgame" id="13">
+    <name type="primary" value="CATAN" />
+    <yearpublished value="1995" />
+  </item>
+  <item type="boardgame" id="77">
+    <yearpublished value="2000" />
+  </item>
+  <item type="boardgameexpansion" id="926">
+    <name type="primary" value="CATAN: Seafarers" />
+  </item>
+</items>`;
+
 export const ERROR_XML = `<?xml version="1.0" encoding="utf-8"?>
 <errors><error><message>Invalid request</message></error></errors>`;

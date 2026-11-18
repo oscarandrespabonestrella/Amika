@@ -16,6 +16,20 @@ export const libraryInputSchema = z
 
 export type LibraryInput = z.infer<typeof libraryInputSchema>;
 
+/** One batch of a BGG collection import (20 = BGG's per-request id limit). */
+export const collectionBatchSchema = z
+  .array(
+    z
+      .object({
+        bggId: z.string().regex(/^\d{1,9}$/),
+        status: z.enum(LIBRARY_STATUSES),
+        rating: z.number().int().min(1).max(10).nullable(),
+      })
+      .strict(),
+  )
+  .min(1)
+  .max(20);
+
 // --- library page filters ------------------------------------------------------
 
 export type LibraryFilters = {

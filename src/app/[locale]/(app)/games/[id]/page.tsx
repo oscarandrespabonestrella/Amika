@@ -14,6 +14,7 @@ import {
   parseLibraryFilters,
   searchLibrary,
 } from "@/features/library";
+import { saveLibraryItemAction } from "@/features/library/actions/library-actions";
 import { listPlaysForGame, PlaysPanel } from "@/features/plays";
 import {
   GameStatsPanel,
@@ -21,6 +22,12 @@ import {
   getGameStats,
 } from "@/features/stats";
 import { listSheetsForGame, SheetsLink } from "@/features/scoring";
+
+/** "Add" on an expansion puts it straight into the library as owned. */
+async function ownImportedExpansion(gameId: string) {
+  "use server";
+  return saveLibraryItemAction({ gameId, status: "owned" });
+}
 
 export default async function GamePage({
   params,
@@ -58,6 +65,7 @@ export default async function GamePage({
       matchCount={plays.length}
       sheetCount={sheets.length}
       ownedGameIds={library.map((entry) => entry.game.id)}
+      onExpansionImported={ownImportedExpansion}
       libraryPanel={<LibraryPanel gameId={game.id} item={item} />}
       gameCenter={center && <GameCenter gameId={game.id} data={center} />}
       scoringPanel={<SheetsLink gameId={game.id} count={sheets.length} />}

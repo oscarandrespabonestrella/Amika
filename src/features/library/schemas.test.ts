@@ -91,6 +91,32 @@ describe("parseLibraryFilters", () => {
     });
   });
 
+  it("reads players, time, category and mechanic", () => {
+    const id = "00000000-0000-4000-8000-0000000000a1";
+    expect(
+      parseLibraryFilters({
+        players: "4",
+        time: "60",
+        category: id,
+        mechanic: id,
+      }),
+    ).toMatchObject({ players: 4, time: 60, category: id, mechanic: id });
+  });
+
+  it("drops invalid players, time and term ids", () => {
+    const filters = parseLibraryFilters({
+      players: "0",
+      time: "abc",
+      category: "not-a-uuid",
+      mechanic: "",
+    });
+    expect(filters.players).toBeUndefined();
+    expect(filters.time).toBeUndefined();
+    expect(filters.category).toBeUndefined();
+    expect(filters.mechanic).toBeUndefined();
+    expect(parseLibraryFilters({ players: "100" }).players).toBeUndefined();
+  });
+
   it("takes the first value of repeated params", () => {
     expect(
       parseLibraryFilters({ status: ["previously_owned", "owned"] }).status,

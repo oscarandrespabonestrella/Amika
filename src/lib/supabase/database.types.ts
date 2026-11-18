@@ -1577,8 +1577,12 @@ export type Database = {
       };
       search_library: {
         Args: {
+          p_category?: string;
           p_favorites?: boolean;
           p_limit?: number;
+          p_max_minutes?: number;
+          p_mechanic?: string;
+          p_players?: number;
           p_status?: string;
           q?: string;
         };

@@ -1,5 +1,6 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { pickExpansionParent } from "../group-expansions";
 import type { GameKind } from "../types";
 
 /**
@@ -55,15 +56,27 @@ export async function findExpansionParents(
     r.related_game_id ??
     (r.related_external_id ? resolved.get(r.related_external_id) : undefined);
 
+  // An expansion may point at several games (sibling expansions, other editions): collect
+  // them all and let the base game in the list win, whatever the row order.
+  const candidates = new Map<string, Set<string>>();
+  const add = (expansion: string, parent: string) => {
+    const set = candidates.get(expansion) ?? new Set<string>();
+    set.add(parent);
+    candidates.set(expansion, set);
+  };
   for (const r of own.data ?? []) {
     const parent = target(r);
-    if (parent) parents.set(r.game_id, parent);
+    if (parent) add(r.game_id, parent);
   }
   // has_expansion on the base game: related game is the expansion.
+  const expansionSet = new Set(expansionIds);
   for (const r of inverse.data ?? []) {
     const child = target(r);
-    if (child && expansionIds.includes(child) && !parents.has(child))
-      parents.set(child, r.game_id);
+    if (child && expansionSet.has(child)) add(child, r.game_id);
+  }
+  for (const [expansion, set] of candidates) {
+    const parent = pickExpansionParent(set, games);
+    if (parent) parents.set(expansion, parent);
   }
   return parents;
 }

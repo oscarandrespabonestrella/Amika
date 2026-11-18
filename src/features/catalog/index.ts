@@ -7,7 +7,7 @@ export {
 } from "./actions/catalog-actions";
 export { CustomGameForm } from "./components/custom-game-form";
 export { ExternalSearch } from "./components/external-search";
-export { groupExpansions } from "./group-expansions";
+export { groupExpansions, pickExpansionParent } from "./group-expansions";
 export { findExpansionParents } from "./services/expansion-parents";
 export { GameCard } from "./components/game-card";
 export { GameDetailView } from "./components/game-detail";

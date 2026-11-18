@@ -31,6 +31,8 @@ type Props = {
   sheetCount?: number;
   /** Ids of the games the user has in their library (to mark owned expansions). */
   ownedGameIds?: readonly string[];
+  /** Runs after an expansion is added from its tab (the page puts it in the library as owned). */
+  onExpansionImported?: (gameId: string) => Promise<{ ok: boolean }>;
   /** Tab to open, from `?tab=`. */
   initialTab?: string;
 };
@@ -46,6 +48,7 @@ export function GameDetailView({
   matchCount = 0,
   sheetCount = 0,
   ownedGameIds = [],
+  onExpansionImported,
   initialTab,
 }: Props) {
   const t = useTranslations("Game");
@@ -248,6 +251,7 @@ export function GameDetailView({
                 <ExpansionsList
                   items={expansionItems}
                   bggAvailable={bggAvailable}
+                  onImported={onExpansionImported}
                 />
               </section>
             ),
@@ -335,8 +339,8 @@ export function GameDetailView({
 
       <GameTabs tabs={tabs} label={game.name} initialTab={initialTab} />
 
-      {/* Stays in reach while browsing the tabs; on a phone it rides above the bottom navigation. */}
-      <div className="sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 -mx-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0 md:mx-0 md:rounded-2xl md:border">
+      {/* Desktop only: on a phone the centre "+" button in the bottom nav replaces it. */}
+      <div className="sticky bottom-0 z-30 hidden rounded-2xl border border-border bg-background/95 px-4 py-3 backdrop-blur md:block">
         <Link
           href={`/games/${game.id}/plays/new`}
           className="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary text-base font-semibold text-primary-foreground outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50"

@@ -28,9 +28,11 @@ const FILTER_FROM = 12;
 export function ExpansionsList({
   items,
   bggAvailable,
+  onImported,
 }: {
   items: readonly ExpansionItem[];
   bggAvailable: boolean;
+  onImported?: (gameId: string) => Promise<{ ok: boolean }>;
 }) {
   const t = useTranslations("Game");
   const [query, setQuery] = useState("");
@@ -90,10 +92,18 @@ export function ExpansionsList({
                 </span>
               )}
               {item.owned && <Badge>{t("expansionsTab.owned")}</Badge>}
+              {item.gameId && !item.owned && onImported && (
+                <ImportRelationButton
+                  gameId={item.gameId}
+                  available
+                  onImported={onImported}
+                />
+              )}
               {!item.gameId && item.externalId && (
                 <ImportRelationButton
                   externalId={item.externalId}
                   available={bggAvailable}
+                  onImported={onImported}
                 />
               )}
             </li>

@@ -58,6 +58,28 @@ export async function countLibrary(): Promise<number> {
   return count ?? 0;
 }
 
+export type LibraryCounts = {
+  all: number;
+  owned: number;
+  previouslyOwned: number;
+  favorites: number;
+};
+
+/** Totals behind the quick filters (independent of the search text). */
+export async function getLibraryCounts(): Promise<LibraryCounts> {
+  const { data, error } = await createSupabaseServerClient()
+    .from("library_items")
+    .select("status, is_favorite");
+  if (error) throw error;
+  const rows = data ?? [];
+  return {
+    all: rows.length,
+    owned: rows.filter((r) => r.status === "owned").length,
+    previouslyOwned: rows.filter((r) => r.status === "previously_owned").length,
+    favorites: rows.filter((r) => r.is_favorite).length,
+  };
+}
+
 export async function searchLibrary(
   filters: LibraryFilters,
 ): Promise<LibraryEntry[]> {
@@ -67,6 +89,10 @@ export async function searchLibrary(
       q: filters.q || undefined,
       p_status: filters.status,
       p_favorites: filters.favorites || undefined,
+      p_players: filters.players,
+      p_max_minutes: filters.time,
+      p_category: filters.category,
+      p_mechanic: filters.mechanic,
       p_limit: 100,
     },
   );
@@ -89,6 +115,46 @@ export async function searchLibrary(
       isCustom: row.source === "manual",
     },
   }));
+}
+
+export type LibraryTermOption = { id: string; name: string };
+export type LibraryTerms = {
+  category: LibraryTermOption[];
+  mechanic: LibraryTermOption[];
+};
+
+/**
+ * Categories and mechanics that appear in the user's library (so the filter only offers
+ * values that can match), named in the user's language with English as fallback.
+ */
+export async function listLibraryTerms(locale: string): Promise<LibraryTerms> {
+  const { data, error } = await createSupabaseServerClient()
+    .from("library_items")
+    .select(
+      "games!inner(game_terms(terms(id, type, name, term_translations(locale, name))))",
+    );
+  if (error) throw error;
+
+  const found = new Map<string, LibraryTermOption & { type: string }>();
+  for (const item of data ?? []) {
+    for (const gt of item.games?.game_terms ?? []) {
+      const term = gt.terms;
+      if (!term || (term.type !== "category" && term.type !== "mechanic"))
+        continue;
+      const translations = term.term_translations ?? [];
+      const name =
+        translations.find((t) => t.locale === locale)?.name ??
+        translations.find((t) => t.locale === "en")?.name ??
+        term.name;
+      found.set(term.id, { id: term.id, type: term.type, name });
+    }
+  }
+  const byType = (type: "category" | "mechanic") =>
+    [...found.values()]
+      .filter((term) => term.type === type)
+      .map(({ id, name }) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name, locale));
+  return { category: byType("category"), mechanic: byType("mechanic") };
 }
 
 /**

@@ -9,24 +9,40 @@ import { importGameAction } from "../actions/catalog-actions";
 /** Adds a related game (an expansion) that is not in the catalog yet. */
 export function ImportRelationButton({
   externalId,
+  gameId,
   available,
+  onImported,
 }: {
-  externalId: string;
+  externalId?: string;
+  /** Already in the catalog: skip the import and only run `onImported`. */
+  gameId?: string;
   available: boolean;
+  /**
+   * When given, the imported game is handed to it (e.g. to put it in the library as owned) and
+   * the user stays on the page instead of being taken to the new game.
+   */
+  onImported?: (gameId: string) => Promise<{ ok: boolean }>;
 }) {
   const t = useTranslations("Games");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  if (!available) return null; // BGG token pending: nothing to offer yet
+  if (!gameId && !available) return null; // BGG token pending: nothing to offer yet
 
   function add() {
     setError(null);
     startTransition(async () => {
-      const result = await importGameAction(externalId);
-      if (result.ok) router.push(`/games/${result.gameId}`);
-      else setError(result.error);
+      let id = gameId;
+      if (!id) {
+        const result = await importGameAction(externalId);
+        if (!result.ok) return setError(result.error);
+        id = result.gameId;
+      }
+      if (!onImported) return router.push(`/games/${id}`);
+      const saved = await onImported(id);
+      if (saved.ok) router.refresh();
+      else setError("failed");
     });
   }
 

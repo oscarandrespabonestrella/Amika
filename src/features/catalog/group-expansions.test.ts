@@ -1,7 +1,53 @@
 import { describe, expect, it } from "vitest";
-import { groupExpansions } from "./group-expansions";
+import { groupExpansions, pickExpansionParent } from "./group-expansions";
 
 const game = (id: string, kind: "base" | "expansion") => ({ id, kind });
+
+describe("pickExpansionParent", () => {
+  const items = [
+    game("wonders", "base"),
+    game("leaders", "expansion"),
+    game("cities", "expansion"),
+  ];
+
+  it("prefers the base game over a sibling expansion, whatever the order", () => {
+    expect(pickExpansionParent(["leaders", "wonders"], items)).toBe("wonders");
+    expect(pickExpansionParent(["wonders", "leaders"], items)).toBe("wonders");
+  });
+
+  it("ignores bases that are not in the list", () => {
+    expect(pickExpansionParent(["wonders-2e", "wonders"], items)).toBe(
+      "wonders",
+    );
+  });
+
+  it("gives no parent when only expansions (or unknown games) are candidates", () => {
+    expect(pickExpansionParent(["leaders"], items)).toBeNull();
+    expect(pickExpansionParent(["wonders-2e"], items)).toBeNull();
+    expect(pickExpansionParent([], items)).toBeNull();
+  });
+
+  it("puts all the owned expansions of 7 Wonders under it", () => {
+    const owned = [...items, game("edifice", "expansion")];
+    const parents = new Map<string, string>();
+    const candidates: Record<string, string[]> = {
+      cities: ["wonders", "leaders"],
+      edifice: ["wonders", "wonders-2e"],
+      leaders: ["wonders"],
+    };
+    for (const [id, c] of Object.entries(candidates)) {
+      const parent = pickExpansionParent(c, owned);
+      if (parent) parents.set(id, parent);
+    }
+    const groups = groupExpansions(owned, parents);
+    expect(groups.map((g) => g.item.id)).toEqual(["wonders"]);
+    expect(groups[0].expansions.map((e) => e.id).sort()).toEqual([
+      "cities",
+      "edifice",
+      "leaders",
+    ]);
+  });
+});
 
 describe("groupExpansions", () => {
   it("hangs an expansion from its base game when both are in the list", () => {

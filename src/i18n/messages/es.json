@@ -132,7 +132,8 @@
       "not_found": "BoardGameGeek no tiene ningún juego con ese identificador.",
       "failed": "Algo salió mal. Inténtalo de nuevo."
     },
-    "withExpansions": "{count, plural, one {# expansión} other {# expansiones}}"
+    "withExpansions": "{count, plural, one {# expansión} other {# expansiones}}",
+    "expansionsShort": "{count} exp"
   },
   "Game": {
     "back": "Volver a juegos",
@@ -293,7 +294,20 @@
     "emptyBody": "Abre un juego y marca los que tienes o que tuviste.",
     "noMatchTitle": "Ningún juego coincide",
     "noMatchBody": "Prueba con otro nombre o filtro.",
-    "browse": "Explorar juegos"
+    "browse": "Explorar juegos",
+    "advanced": {
+      "title": "Más filtros",
+      "players": "Jugadores",
+      "playersHint": "Número de jugadores",
+      "time": "Máx. minutos",
+      "timeHint": "Duración de hasta",
+      "category": "Categoría",
+      "anyCategory": "Cualquier categoría",
+      "mechanic": "Mecánica",
+      "anyMechanic": "Cualquier mecánica",
+      "apply": "Aplicar filtros",
+      "clear": "Quitar estos filtros"
+    }
   },
   "GameCenter": {
     "nav": {

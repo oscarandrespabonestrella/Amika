@@ -11,6 +11,7 @@ import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
 import { groupFill, type Group } from "@/features/groups/client";
 import { Link, useRouter } from "@/i18n/navigation";
+import { markPlayLogged } from "@/features/pwa";
 import {
   normalizePlayerName,
   PlayerPicker,
@@ -286,7 +287,10 @@ export function PlayForm({
       if (editing) {
         setBaseline(snapshot(current));
         setNotice(true);
-      } else if (live) {
+        return;
+      }
+      markPlayLogged(); // unlocks the deferred "install the app" invitation
+      if (live) {
         router.replace(`/games/${gameId}/plays/${result.playId}/live`);
       } else {
         const usedOthersSheet =

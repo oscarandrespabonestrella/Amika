@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0f14" />
+    <title>Amika</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 1rem;
+        background: #0b0f14;
+        color: #e8eef2;
+        font-family: system-ui, sans-serif;
+        text-align: center;
+      }
+      main { max-width: 22rem; }
+      img { width: 4rem; height: 4rem; border-radius: 1rem; }
+      h1 { font-size: 1.4rem; margin: 1rem 0 0.5rem; }
+      p { color: #9aa7b2; margin: 0 0 1.5rem; }
+      button {
+        min-height: 2.75rem;
+        padding: 0 1.25rem;
+        border: 0;
+        border-radius: 0.5rem;
+        background: #5ed3b5;
+        color: #04241c;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="/icons/icon-192.png" alt="" />
+      <h1 id="title"></h1>
+      <p id="body"></p>
+      <button id="retry" type="button"></button>
+    </main>
+    <script>
+      var texts = {
+        en: ["You're offline", "Amika needs a connection. Check your network and try again.", "Retry"],
+        es: ["Sin conexión", "Amika necesita conexión. Revisa tu red e inténtalo de nuevo.", "Reintentar"],
+        fr: ["Hors ligne", "Amika a besoin d'une connexion. Vérifiez votre réseau et réessayez.", "Réessayer"],
+      };
+      var lang = (navigator.language || "en").slice(0, 2);
+      var t = texts[lang] || texts.en;
+      document.documentElement.lang = texts[lang] ? lang : "en";
+      document.getElementById("title").textContent = t[0];
+      document.getElementById("body").textContent = t[1];
+      var btn = document.getElementById("retry");
+      btn.textContent = t[2];
+      btn.addEventListener("click", function () { location.reload(); });
+    </script>
+  </body>
+</html>

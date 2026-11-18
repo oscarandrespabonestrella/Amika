@@ -1,6 +1,7 @@
 ﻿import { assertLocale } from "@/i18n/locale";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSelect, ThemeSelect } from "@/features/preferences";
+import { InstallSettings } from "@/features/pwa";
 import { DisplayNameForm, getOrCreateProfile } from "@/features/profiles";
 import { RecognitionSettings } from "@/features/recognition/components/recognition-settings";
 import { Link } from "@/i18n/navigation";
@@ -48,6 +49,14 @@ export default async function SettingsPage({
           <p className="text-sm text-muted-foreground">{t("appearanceHint")}</p>
         </div>
         <ThemeSelect />
+      </section>
+
+      <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5">
+        <div>
+          <h2 className="font-semibold">{t("install.title")}</h2>
+          <p className="text-sm text-muted-foreground">{t("install.hint")}</p>
+        </div>
+        <InstallSettings />
       </section>
 
       <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5">

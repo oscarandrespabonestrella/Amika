@@ -70,6 +70,10 @@
     "recognition": {
       "title": "Live game recognition",
       "hint": "Recognize game boxes with your camera. Off by default; it needs a one-time download on each device."
+    },
+    "install": {
+      "title": "Install the app",
+      "hint": "Add Amika to your home screen or desktop to open it like any other app."
     }
   },
   "Games": {
@@ -1008,6 +1012,24 @@
       "exists": "You already have a group with that name.",
       "too_many": "You have reached the limit of 50 groups.",
       "failed": "Something went wrong. Please try again."
+    }
+  },
+  "Pwa": {
+    "banner": {
+      "label": "Install Amika",
+      "title": "Install Amika",
+      "hint": "Open it in one tap, full screen, straight from your home screen.",
+      "iosHint": "Add Amika to your home screen to open it like an app.",
+      "install": "Install",
+      "iosStep": "Share → Add to Home Screen",
+      "later": "Not now",
+      "never": "Don't ask again"
+    },
+    "settings": {
+      "install": "Install Amika",
+      "installed": "Amika is already installed on this device.",
+      "ios": "On iPhone/iPad: tap Share, then “Add to Home Screen”.",
+      "manual": "Your browser didn't offer an install button. Look for “Install app” in the browser menu."
     }
   }
 }

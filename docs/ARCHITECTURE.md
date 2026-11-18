@@ -60,7 +60,7 @@ docs/
 - Cambios de esquema solo mediante migraciones versionadas.
 
 ## 6. Online-first
-Guardado en backend; UI con estados claros (pending/saved/error), revalidación con `revalidatePath/Tag` y botón de refrescar. Datos externos (p. ej. BGG) se importan bajo demanda por admins con caché en BD, no en cada petición. Sin offline en MVP; PWA solo manifest/iconos si aporta valor.
+Guardado en backend; UI con estados claros (pending/saved/error), revalidación con `revalidatePath/Tag` y botón de refrescar. Datos externos (p. ej. BGG) se importan bajo demanda por admins con caché en BD, no en cada petición. Sin offline de datos; la app es una PWA instalable (manifest, íconos y un service worker que solo muestra una página «sin conexión»; ADR-045, `features/pwa`).
 
 ## 7. Internacionalización
 - Locales iniciales: `en` (defecto y fallback), `es`, `fr`; alemán/neerlandés u otros se añaden después sin tocar la lógica; añadir un idioma = añadir `messages/<xx>.json` + entrada en `routing`.

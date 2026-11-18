@@ -70,6 +70,10 @@
     "recognition": {
       "title": "Reconnaissance de jeux en direct",
       "hint": "Reconnaissez des boîtes de jeux avec votre caméra. Désactivé par défaut ; un téléchargement unique est nécessaire sur chaque appareil."
+    },
+    "install": {
+      "title": "Installer l'app",
+      "hint": "Ajoutez Amika à votre écran d'accueil ou à votre bureau pour l'ouvrir comme n'importe quelle app."
     }
   },
   "Games": {
@@ -1008,6 +1012,24 @@
       "exists": "Vous avez déjà un groupe portant ce nom.",
       "too_many": "Vous avez atteint la limite de 50 groupes.",
       "failed": "Une erreur s'est produite. Réessayez."
+    }
+  },
+  "Pwa": {
+    "banner": {
+      "label": "Installer Amika",
+      "title": "Installez Amika",
+      "hint": "Ouvrez-la d'un geste, en plein écran, depuis votre écran d'accueil.",
+      "iosHint": "Ajoutez Amika à votre écran d'accueil pour l'ouvrir comme une app.",
+      "install": "Installer",
+      "iosStep": "Partager → Sur l'écran d'accueil",
+      "later": "Pas maintenant",
+      "never": "Ne plus demander"
+    },
+    "settings": {
+      "install": "Installer Amika",
+      "installed": "Amika est déjà installée sur cet appareil.",
+      "ios": "Sur iPhone/iPad : touchez Partager, puis « Sur l'écran d'accueil ».",
+      "manual": "Votre navigateur n'a pas proposé de bouton d'installation. Cherchez « Installer l'app » dans le menu du navigateur."
     }
   }
 }

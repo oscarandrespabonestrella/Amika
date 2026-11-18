@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Brand } from "@/components/brand";
+import { InstallBanner } from "@/features/pwa";
 import { AccountMenu } from "./account-menu";
 import { AppNav } from "./app-nav";
 import { HeaderAddButton } from "./header-add-button";
@@ -32,6 +33,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
 
       <AppNav variant="bottom" />
+      <InstallBanner />
     </div>
   );
 }

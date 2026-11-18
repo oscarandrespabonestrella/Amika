@@ -1,12 +1,14 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { esES, frFR } from "@clerk/localizations";
 import { shadcn } from "@clerk/ui/themes";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ServiceWorkerRegister } from "@/features/pwa";
+import { APP_NAME } from "@/lib/constants";
 import { ZodConfig } from "@/components/zod-config";
 import { type AppLocale, routing } from "@/i18n/routing";
 import "../globals.css";
@@ -41,8 +43,24 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "Metadata" });
-  return { title: t("title"), description: t("description") };
+  return {
+    title: t("title"),
+    description: t("description"),
+    appleWebApp: {
+      capable: true,
+      title: APP_NAME,
+      statusBarStyle: "black-translucent",
+    },
+    icons: { apple: "/icons/apple-touch-icon.png" },
+  };
 }
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafaf5" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0f14" },
+  ],
+};
 
 export default async function LocaleLayout({
   children,
@@ -60,6 +78,7 @@ export default async function LocaleLayout({
     >
       <body className="min-h-full">
         <ZodConfig />
+        <ServiceWorkerRegister />
         <ClerkProvider
           localization={CLERK_LOCALIZATIONS[locale]}
           appearance={{ theme: shadcn }}

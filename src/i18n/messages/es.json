@@ -106,8 +106,8 @@
       "count": "{count, plural, one {# juego} other {# juegos}}",
       "emptyTitle": "No se encontraron juegos",
       "emptyBody": "Prueba con otro nombre o filtro, o búscalo en BoardGameGeek aquí abajo.",
-      "noneTitle": "Aún no hay juegos",
-      "noneBody": "Busca en BoardGameGeek para añadir juegos al catálogo, o crea uno propio."
+      "noneTitle": "Busca un juego",
+      "noneBody": "Escribe un nombre arriba para encontrarlo en el catálogo, o búscalo en BoardGameGeek para añadirlo."
     },
     "bgg": {
       "title": "¿No está en la lista?",

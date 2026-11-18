@@ -25,14 +25,15 @@ export default async function GamesPage({
   setRequestLocale(locale);
 
   const query = parseSearchParams(await searchParams);
-  const [games, t] = await Promise.all([
-    searchLocalGames(query),
-    getTranslations("Games"),
-  ]);
-  const groups = groupExpansions(games, await findExpansionParents(games));
   const searching = Boolean(
     query.q || query.kind || query.players || query.time,
   );
+  // El catálogo solo muestra juegos cuando alguien busca: sin criterio no hay lista.
+  const [games, t] = await Promise.all([
+    searching ? searchLocalGames(query) : Promise.resolve([]),
+    getTranslations("Games"),
+  ]);
+  const groups = groupExpansions(games, await findExpansionParents(games));
 
   return (
     <div className="flex flex-col gap-8">

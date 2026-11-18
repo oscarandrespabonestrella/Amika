@@ -5,7 +5,10 @@ import base from "./playwright.config";
 //   npx playwright test -c playwright.screenshots.config.ts
 // Images land in screenshots/mobile/<theme>/. SHOT_USER picks the test user (default "b"),
 // SHOT_GAME the catalog search used for the game screens (default "catan").
-const phone = { ...devices["iPhone 15 Pro"], defaultBrowserType: "chromium" as const };
+const phone = {
+  ...devices["iPhone 15 Pro"],
+  defaultBrowserType: "chromium" as const,
+};
 
 export default defineConfig({
   ...base,

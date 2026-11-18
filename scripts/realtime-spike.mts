@@ -32,19 +32,30 @@ async function userClient(email: string) {
 const a = await userClient("bglib-e2e-a+clerk_test@example.com");
 const b = await userClient("bglib-e2e-b+clerk_test@example.com");
 const { data: game } = await admin
-  .from("games").select("id").is("owner_id", null).limit(1).single();
+  .from("games")
+  .select("id")
+  .is("owner_id", null)
+  .limit(1)
+  .single();
 
 const seen: string[] = [];
 a.db.realtime.setAuth(a.token);
 const channel = a.db
   .channel("spike")
-  .on("postgres_changes", { event: "*", schema: "public", table: "plays" },
-    (p) => seen.push(`${p.eventType}:${(p.new as { created_by?: string })?.created_by ?? (p.old as { id?: string })?.id}`))
+  .on(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "plays" },
+    (p) =>
+      seen.push(
+        `${p.eventType}:${(p.new as { created_by?: string })?.created_by ?? (p.old as { id?: string })?.id}`,
+      ),
+  )
   .subscribe();
 await sleep(3000);
 
 const insert = async (u: typeof a) =>
-  (await u.db.from("plays").insert({ game_id: game!.id }).select("id").single()).data!.id;
+  (await u.db.from("plays").insert({ game_id: game!.id }).select("id").single())
+    .data!.id;
 const pa = await insert(a);
 const pb = await insert(b);
 await sleep(3000);
@@ -53,7 +64,9 @@ await sleep(3000);
 await b.db.from("plays").delete().eq("id", pb);
 await channel.unsubscribe();
 
-const own = seen.filter((s) => s.startsWith("INSERT") && s.endsWith(a.id)).length;
+const own = seen.filter(
+  (s) => s.startsWith("INSERT") && s.endsWith(a.id),
+).length;
 const foreign = seen.filter((s) => s.includes(b.id)).length;
 const del = seen.some((s) => s.startsWith("DELETE"));
 console.log("events:", seen);

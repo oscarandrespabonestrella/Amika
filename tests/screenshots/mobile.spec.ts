@@ -58,7 +58,9 @@ test.describe("signed in", () => {
 
   test("game screens", async ({ page }, info) => {
     const theme = info.project.name.replace("mobile-", "");
-    await page.goto(`/en/games?q=${encodeURIComponent(process.env.SHOT_GAME ?? "catan")}`);
+    await page.goto(
+      `/en/games?q=${encodeURIComponent(process.env.SHOT_GAME ?? "catan")}`,
+    );
     await page.waitForLoadState("networkidle").catch(() => {});
     await shot(page, "19-games-search", theme);
     const hrefs = await page

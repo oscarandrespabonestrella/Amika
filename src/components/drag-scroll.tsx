@@ -18,7 +18,7 @@ export function DragScroll({ children, className, ...rest }: Props) {
       ref={ref}
       {...rest}
       className={cn(
-        "flex cursor-grab touch-pan-x overflow-x-auto [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden",
+        "flex cursor-grab touch-pan-x [scrollbar-width:none] overflow-x-auto active:cursor-grabbing [&::-webkit-scrollbar]:hidden",
         className,
       )}
       onPointerDown={(e) => {

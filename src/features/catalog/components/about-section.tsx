@@ -30,7 +30,10 @@ export function AboutSection({
   const hidden = tags.length - shown.length;
 
   return (
-    <section aria-labelledby="description-title" className="flex flex-col gap-2">
+    <section
+      aria-labelledby="description-title"
+      className="flex flex-col gap-2"
+    >
       <h2 id="description-title" className="text-base font-semibold">
         {title}
       </h2>

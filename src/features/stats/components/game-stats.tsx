@@ -37,10 +37,7 @@ export function GameStatsPanel({
   const scoredMatches = new Set(series.map((p) => p.seq)).size;
 
   return (
-    <section
-      aria-labelledby="stats-title"
-      className="flex flex-col gap-3"
-    >
+    <section aria-labelledby="stats-title" className="flex flex-col gap-3">
       <h2 id="stats-title" className="text-base font-semibold">
         {t("title")}
       </h2>

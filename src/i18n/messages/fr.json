@@ -143,8 +143,10 @@
     "playtime": "Durée",
     "minAge": "Âge",
     "ageValue": "{age}+",
-    "description": "Description",
+    "description": "À propos",
     "noDescription": "Pas encore de description.",
+    "readMore": "Lire la suite",
+    "readLess": "Voir moins",
     "terms": {
       "category": "Catégories",
       "mechanic": "Mécaniques",

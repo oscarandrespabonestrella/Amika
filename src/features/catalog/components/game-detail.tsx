@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { formatMinutes, formatPlayers } from "../format";
 import type { GameDetail } from "../services/game-service";
 import { TERM_TYPES } from "../types";
+import { AboutSection } from "./about-section";
 import { ExpansionsList, type ExpansionItem } from "./expansions-list";
 import { GameTabs } from "./game-tabs";
 import { ImportRelationButton } from "./import-relation-button";
@@ -94,6 +95,11 @@ export function GameDetailView({
     .join(" · ");
   const strip = facts.filter((fact) => fact.label !== t("year"));
 
+  // Categories and mechanics read as pills under the description; designers and publishers stay as lists.
+  const tags = game.terms
+    .filter((term) => term.type === "category" || term.type === "mechanic")
+    .map((term) => term.name);
+
   const owned = new Set(ownedGameIds);
   const expansionItems: ExpansionItem[] = game.relations
     .filter((relation) => relation.type === "has_expansion")
@@ -109,30 +115,20 @@ export function GameDetailView({
     <>
       {/* Only the owner can see a custom game, so "custom" implies "yours". */}
       {game.isCustom && <OwnerActions gameId={game.id} />}
-      {libraryPanel}
       {statsPanel}
 
-      <section
-        aria-labelledby="description-title"
-        className="flex flex-col gap-2"
-      >
-        <h2
-          id="description-title"
-          className="text-lg font-semibold tracking-tight"
-        >
-          {t("description")}
-        </h2>
-        {game.description ? (
-          // Plain text only (never HTML): React escapes it, newlines are preserved.
-          <p className="max-w-prose text-pretty whitespace-pre-line">
-            {game.description}
-          </p>
-        ) : (
-          <p className="text-muted-foreground">{t("noDescription")}</p>
-        )}
-      </section>
+      <AboutSection
+        title={t("description")}
+        description={game.description}
+        emptyText={t("noDescription")}
+        tags={tags}
+        readMore={t("readMore")}
+        readLess={t("readLess")}
+      />
 
-      {TERM_TYPES.map((type) => {
+      {TERM_TYPES.filter(
+        (type) => type !== "category" && type !== "mechanic",
+      ).map((type) => {
         const items = game.terms.filter((term) => term.type === type);
         if (items.length === 0) return null;
         return (
@@ -336,6 +332,8 @@ export function GameDetailView({
           </dl>
         )}
       </header>
+
+      {libraryPanel}
 
       <GameTabs tabs={tabs} label={game.name} initialTab={initialTab} />
 

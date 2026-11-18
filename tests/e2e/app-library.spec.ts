@@ -185,6 +185,7 @@ test.describe("favorite, rating and notes", () => {
       page.getByRole("button", { name: "Favorite", pressed: true }),
     ).toBeVisible();
 
+    await page.locator("details > summary").click();
     await page.getByLabel("My rating").selectOption("9");
     await expect(page.getByLabel("My rating")).toHaveValue("9");
 
@@ -201,6 +202,7 @@ test.describe("favorite, rating and notes", () => {
 
     // Everything persists across a reload.
     await page.reload();
+    await page.locator("details > summary").click();
     await expect(page.getByLabel("My rating")).toHaveValue("9");
     await expect(page.getByLabel("My notes")).toHaveValue(
       "Lent to Sam in June",
@@ -212,6 +214,7 @@ test.describe("favorite, rating and notes", () => {
 
   test("can clear the rating and the notes", async ({ page }) => {
     await openGame(page, ids.catan);
+    await page.locator("details > summary").click();
     await page.getByLabel("My rating").selectOption("");
     await page.getByLabel("My notes").fill("");
     await page.getByRole("button", { name: "Save notes" }).click();
@@ -224,6 +227,7 @@ test.describe("favorite, rating and notes", () => {
     page,
   }) => {
     await openGame(page, ids.catan);
+    await page.locator("details > summary").click();
     await expect(
       page.getByRole("button", { name: "Save notes" }),
     ).toBeDisabled();
@@ -236,6 +240,7 @@ test.describe("favorite, rating and notes", () => {
     await expect(
       page.getByRole("button", { name: "Favorite", pressed: true }),
     ).toBeVisible();
+    await page.locator("details > summary").click();
     await page.getByLabel("My rating").selectOption("8");
     await expect
       .poll(

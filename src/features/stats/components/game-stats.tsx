@@ -1,4 +1,3 @@
-import { BarChart3 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { pivotSeries, topSeriesPlayers, winRate } from "../format";
 import type {
@@ -40,17 +39,13 @@ export function GameStatsPanel({
   return (
     <section
       aria-labelledby="stats-title"
-      className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5"
+      className="flex flex-col gap-3"
     >
-      <h2
-        id="stats-title"
-        className="flex items-center gap-2 text-lg font-semibold tracking-tight"
-      >
-        <BarChart3 className="size-5 text-primary" aria-hidden />
+      <h2 id="stats-title" className="text-base font-semibold">
         {t("title")}
       </h2>
 
-      <dl className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <dl className="grid grid-cols-3 gap-2">
         <Tile label={t("matches")} value={format.number(summary.plays)} />
         {summary.avgDurationMinutes !== null && (
           <Tile
@@ -164,9 +159,9 @@ export function GameStatsPanel({
 
 function Tile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col gap-1 rounded-xl border border-border p-3">
-      <dt className="text-sm text-muted-foreground">{label}</dt>
-      <dd className="text-xl font-semibold tabular-nums">{value}</dd>
+    <div className="flex flex-col-reverse gap-0.5 rounded-xl bg-card p-3">
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="text-lg font-bold tabular-nums">{value}</dd>
     </div>
   );
 }

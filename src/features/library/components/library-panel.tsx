@@ -1,6 +1,6 @@
 "use client";
 
-import { BookmarkPlus, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -55,37 +55,29 @@ export function LibraryPanel({ gameId, item }: Props) {
     });
   }
 
-  const heading = (
-    <h2
-      id="library-title"
-      className="flex items-center gap-2 text-lg font-semibold tracking-tight"
-    >
-      <BookmarkPlus className="size-5 text-primary" aria-hidden />
-      {item ? t("title") : t("addTitle")}
-    </h2>
-  );
-
-  // Not in the library yet: the two ways of adding it.
+  // Not in the library yet: the two ways of adding it, as one compact segmented row.
   if (!item) {
     return (
-      <section
-        aria-labelledby="library-title"
-        className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5"
-      >
-        {heading}
-        <div className="flex flex-wrap gap-3">
+      <section aria-labelledby="library-title" className="flex flex-col gap-2">
+        <h2 id="library-title" className="sr-only">
+          {t("addTitle")}
+        </h2>
+        <div className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-card p-1">
           {LIBRARY_STATUSES.map((status) => (
-            <Button
+            <button
               key={status}
               type="button"
-              size="lg"
-              variant={status === "owned" ? "default" : "outline"}
-              className="h-11"
               disabled={pending}
               onClick={() => save({ status })}
+              className={cn(
+                "min-h-10 rounded-lg px-3 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60",
+                status === "owned"
+                  ? "bg-primary font-semibold text-primary-foreground"
+                  : "text-foreground/80 hover:bg-muted hover:text-foreground",
+              )}
             >
               {t(`add.${status}`)}
-            </Button>
+            </button>
           ))}
         </div>
         <Feedback error={error} />
@@ -94,20 +86,16 @@ export function LibraryPanel({ gameId, item }: Props) {
   }
 
   return (
-    <section
-      aria-labelledby="library-title"
-      className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5"
-    >
-      {heading}
+    <section aria-labelledby="library-title" className="flex flex-col gap-3">
+      <h2 id="library-title" className="sr-only">
+        {t("title")}
+      </h2>
 
-      <div className="flex flex-col gap-2">
-        <span id="status-label" className="text-sm font-medium">
-          {t("status")}
-        </span>
+      <div className="flex gap-2">
         <div
           role="group"
-          aria-labelledby="status-label"
-          className="grid grid-cols-2 gap-2"
+          aria-label={t("status")}
+          className="grid flex-1 grid-cols-2 gap-1 rounded-xl border border-border bg-card p-1"
         >
           {LIBRARY_STATUSES.map((status: LibraryStatus) => (
             <button
@@ -117,132 +105,138 @@ export function LibraryPanel({ gameId, item }: Props) {
               disabled={pending}
               onClick={() => item.status !== status && save({ status })}
               className={cn(
-                "flex min-h-11 items-center justify-center rounded-lg border px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60",
+                "min-h-10 rounded-lg px-3 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60",
                 item.status === status
-                  ? "border-primary bg-primary/10 text-foreground"
-                  : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground",
+                  ? "bg-primary font-semibold text-primary-foreground"
+                  : "text-foreground/80 hover:bg-muted hover:text-foreground",
               )}
             >
               {t(`statusOption.${status}`)}
             </button>
           ))}
         </div>
-      </div>
-
-      <div className="flex flex-wrap items-end gap-4">
         <button
           type="button"
+          aria-label={t("favorite")}
           aria-pressed={item.isFavorite}
           disabled={pending}
           onClick={() => save({ isFavorite: !item.isFavorite })}
-          className={cn(
-            "inline-flex min-h-11 items-center gap-2 rounded-lg border px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60",
-            item.isFavorite
-              ? "border-primary bg-primary/10 text-foreground"
-              : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground",
-          )}
+          className="grid size-12 shrink-0 place-items-center rounded-xl border border-border bg-card text-muted-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60 aria-pressed:text-warning"
         >
           <Star
-            className={cn("size-4", item.isFavorite && "fill-current")}
+            className={cn("size-5", item.isFavorite && "fill-current")}
             aria-hidden
           />
-          {t("favorite")}
         </button>
-
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="rating">{t("rating")}</Label>
-          <NativeSelect
-            id="rating"
-            className="h-11 w-40"
-            value={item.rating ?? ""}
-            disabled={pending}
-            onChange={(event) =>
-              save({
-                rating:
-                  event.target.value === "" ? null : Number(event.target.value),
-              })
-            }
-          >
-            <option value="">{t("noRating")}</option>
-            {RATINGS.map((n) => (
-              <option key={n} value={n}>
-                {t("ratingValue", { n })}
-              </option>
-            ))}
-          </NativeSelect>
-        </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="library-notes">{t("notes")}</Label>
-        <Textarea
-          id="library-notes"
-          rows={4}
-          maxLength={2000}
-          value={notes}
-          placeholder={t("notesPlaceholder")}
-          onChange={(event) => {
-            setNotes(event.target.value);
-            setNotesSaved(false);
-          }}
-        />
-        <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="h-10"
-            disabled={pending || notes.trim() === (item.notes ?? "")}
-            onClick={() =>
-              save({ notes: notes.trim() === "" ? null : notes }, () =>
-                setNotesSaved(true),
-              )
-            }
-          >
-            {pending ? t("saving") : t("saveNotes")}
-          </Button>
-          <span aria-live="polite" className="text-sm text-success">
-            {notesSaved && t("saved")}
+      <details className="group rounded-xl border border-border bg-card">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 text-sm font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
+          <span>
+            {t("rating")} · {t("notes")}
           </span>
-        </div>
-      </div>
+          <span className="text-muted-foreground tabular-nums">
+            {item.rating ? t("ratingValue", { n: item.rating }) : ""}
+          </span>
+        </summary>
+        <div className="flex flex-col gap-4 border-t border-border p-3">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="rating">{t("rating")}</Label>
+            <NativeSelect
+              id="rating"
+              className="h-11 w-40"
+              value={item.rating ?? ""}
+              disabled={pending}
+              onChange={(event) =>
+                save({
+                  rating:
+                    event.target.value === ""
+                      ? null
+                      : Number(event.target.value),
+                })
+              }
+            >
+              <option value="">{t("noRating")}</option>
+              {RATINGS.map((n) => (
+                <option key={n} value={n}>
+                  {t("ratingValue", { n })}
+                </option>
+              ))}
+            </NativeSelect>
+          </div>
 
-      <div className="flex flex-wrap items-center gap-3 border-t border-border pt-4">
-        {!confirmRemove ? (
-          <Button
-            type="button"
-            variant="ghost"
-            className="h-10"
-            disabled={pending}
-            onClick={() => setConfirmRemove(true)}
-          >
-            {t("remove")}
-          </Button>
-        ) : (
-          <>
-            <p className="text-sm text-muted-foreground">
-              {t("removeConfirm")}
-            </p>
-            <Button
-              type="button"
-              variant="destructive"
-              className="h-10"
-              disabled={pending}
-              onClick={remove}
-            >
-              {t("removeYes")}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="h-10"
-              disabled={pending}
-              onClick={() => setConfirmRemove(false)}
-            >
-              {t("removeNo")}
-            </Button>
-          </>
-        )}
-      </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="library-notes">{t("notes")}</Label>
+            <Textarea
+              id="library-notes"
+              rows={4}
+              maxLength={2000}
+              value={notes}
+              placeholder={t("notesPlaceholder")}
+              onChange={(event) => {
+                setNotes(event.target.value);
+                setNotesSaved(false);
+              }}
+            />
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10"
+                disabled={pending || notes.trim() === (item.notes ?? "")}
+                onClick={() =>
+                  save({ notes: notes.trim() === "" ? null : notes }, () =>
+                    setNotesSaved(true),
+                  )
+                }
+              >
+                {pending ? t("saving") : t("saveNotes")}
+              </Button>
+              <span aria-live="polite" className="text-sm text-success">
+                {notesSaved && t("saved")}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 border-t border-border pt-3">
+            {!confirmRemove ? (
+              <Button
+                type="button"
+                variant="ghost"
+                className="h-10"
+                disabled={pending}
+                onClick={() => setConfirmRemove(true)}
+              >
+                {t("remove")}
+              </Button>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  {t("removeConfirm")}
+                </p>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="h-10"
+                  disabled={pending}
+                  onClick={remove}
+                >
+                  {t("removeYes")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-10"
+                  disabled={pending}
+                  onClick={() => setConfirmRemove(false)}
+                >
+                  {t("removeNo")}
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      </details>
 
       <Feedback error={error} />
     </section>

@@ -31,6 +31,8 @@ Todas las políticas usan `(select auth.jwt()->>'sub')` (≡ `current_user_id()`
 | `catalog_imports` | nadie | solo `service_role` |
 | `terms`, `game_terms`, `game_external_ids`, `game_relations` | según la visibilidad del juego | solo `service_role` |
 | `game_resources`, `rules_content`, `game_images` | quien ve el juego | solo administradores, y solo sobre juegos globales |
+| `manual_suggestions` | su autor y administradores | proponer: cualquiera (siempre `pending`, como sí mismo y solo en juegos globales; máx. 5 pendientes por juego); retirar: el autor si está pendiente; rechazar/borrar cualquiera: administradores |
+| `manual_requests` | nadie | solo `service_role` |
 | `faq_entries` | publicadas: todos; pendientes/rechazadas: su autor y administradores | sugerir: cualquiera (siempre `pending` y como sí mismo); editar/retirar: el autor mientras esté pendiente; publicar/rechazar/borrar cualquiera: administradores |
 | `faq_translations` | igual que su entrada | igual que su entrada |
 | `scoring_sheets` | el autor; cualquiera si es `public` y no está desactivada; el administrador; y quien tenga una partida con una de sus versiones (aunque se despublique o desactive). Nunca se expone el autor | solo el autor: `title`, `locale`, `visibility` (publicar solo juegos del catálogo, 5 al día); `published_at`, `verified_*`, `disabled_*` solo por trigger o funciones de administrador (permisos por columna); máx. 20 por usuario y juego |
@@ -67,7 +69,7 @@ Logger central sin PII ni tokens; sin trazas al cliente. Monitorización (Sentry
 
 ## 9. Terceros y propiedad intelectual
 - **BoardGameGeek**: proyecto personal y no comercial (confirmado por el usuario) → encaja en su licencia no comercial. Requisitos conocidos: token de autorización, atribución “Powered by BGG”, sin modificar datos, prohibido entrenar IA con ellos. Si se añadiese publicidad o cobros pasaría a ser comercial y requeriría licencia. Pendiente: leer los términos oficiales (la wiki respondió 403 a nuestra herramienta) y confirmar qué se puede guardar en caché.
-- Manuales: solo enlaces oficiales. Vídeos: embed de YouTube. Imágenes: con licencia/atribución.
+- Manuales: solo enlaces (nunca se aloja un PDF en nuestro servidor; ver §21 y ADR-046). Vídeos: embed de YouTube. Imágenes: con licencia/atribución.
 
 ## 10. Riesgos
 | Riesgo | Mitigación |
@@ -156,3 +158,14 @@ Construidas en `src/lib/security-headers.ts` (puro, con tests) y aplicadas a tod
 
 ## 20. PWA (service worker)
 `/sw.js` se sirve con `Cache-Control: no-cache, no-store, must-revalidate`. El service worker solo intercepta navegaciones y, si fallan, devuelve `/offline.html` precacheado: **no guarda respuestas autenticadas ni datos de usuario**. La CSP existente ya cubre `worker-src 'self'`; el manifest cae en `default-src 'self'`.
+
+## 21. Buscador de manuales
+- **Entrada no fiable**: toda URL que sale de un buscador es dato hostil. Antes de que el servidor la abra: `https` solamente, sin credenciales ni puerto, ≤500 caracteres, sin IP literal, `localhost` ni sufijos internos (`.local`, `.internal`…), y el nombre se **resuelve** y se rechaza si alguna dirección es privada, de loopback, enlace local (incluye el metadato de la nube), multicast o IPv4 mapeada en IPv6 (`url-safety.ts`). Se repite en **cada salto** de redirección (máx. 3, `redirect: "manual"`).
+- **Qué es un PDF**: no basta el `content-type`; hace falta la firma `%PDF-` en los primeros bytes (`pdf-verifier.ts`). Tope de tiempo (8 s verificando, 50 s descargando) y de tamaño (declarado y real: 200 MB al verificar, 100 MB al descargar). Limitación conocida: el `fetch` resuelve el nombre otra vez, así que un DNS hostil podría contestar distinto la segunda vez; la respuesta solo se inspecciona y se retransmite como PDF, nunca se interpreta.
+- **El proxy `/api/manuals/file` no es abierto**: exige sesión y **un único** selector: `resource` / `suggestion` (ids de la base de datos, filtrados por RLS: lo no visible responde igual que lo inexistente, 404) o `token` (HMAC-SHA256 con `MANUAL_LINK_SECRET`, ligado a la URL, al juego y **al usuario**, caduca a 1 h; comparación en tiempo constante). Nunca acepta una URL cruda. Responde siempre `Content-Disposition: attachment`, `X-Content-Type-Options: nosniff` y `Cache-Control: private, no-store`: un PDF ajeno **no se muestra en línea desde nuestro origen**. El nombre del archivo sale de la URL, nunca de texto del usuario.
+- **Cuota de la API de pago**: la caché (`manual_search_cache`) y el contador de llamadas (`manual_requests`, `kind='api_call'`) son solo de `service_role`; el tope mensual global se comprueba antes de cada búsqueda en vivo y el límite por usuario (3/min, 10/día) solo cuando no hay caché. Sin tope, un usuario o un bucle podría agotar el plan gratuito.
+- **Claves**: `BRAVE_SEARCH_API_KEY`, `MANUAL_LINK_SECRET` y `MANUAL_MONTHLY_CALL_LIMIT` solo en servidor (`lib/env/server.ts`), nunca `NEXT_PUBLIC`, nunca en logs ni errores. Ambas son opcionales.
+- **Coste y abuso**: búsquedas 3/min y 10/día en vivo, descargas (y verificaciones al proponer) 20/h por usuario, en `manual_requests`.
+- **Texto no fiable**: los títulos vienen de la web; se limpian de etiquetas, se limitan a 200 caracteres y se pintan como texto (React). La página sin conexión `public/offline/manuals.html` usa `textContent`, nunca `innerHTML`.
+- **Copia en el dispositivo**: Cache Storage de quien la pide; el servidor no guarda nada. El service worker solo responde de esa caché a `/offline/manuals/files/*`; las respuestas autenticadas siguen sin cachearse.
+- **Derechos de autor**: se guarda el enlace al sitio original, no el documento; se descartan los sitios que realojan PDF ajenos; la interfaz lo recuerda. La copia local es para uso personal de quien la descarga.

@@ -418,6 +418,75 @@
       "invalidVideo": "Saisissez un lien YouTube ou un identifiant de vidéo."
     }
   },
+  "Manuals": {
+    "search": {
+      "button": "Chercher le manuel",
+      "title": "Règles de {game}",
+      "intro": "Nous cherchons les règles en PDF sur le web, avec les sources officielles en espagnol d'abord, puis anglais, français et allemand. Chaque lien est vérifié avant d'être affiché.",
+      "searching": "Recherche et vérification des liens…",
+      "close": "Fermer",
+      "retry": "Relancer la recherche",
+      "copyright": "Seul le lien vers le site d'origine est conservé. Les règles appartiennent à leurs éditeurs.",
+      "unavailableTitle": "Recherche indisponible",
+      "emptyTitle": "Aucun manuel trouvé",
+      "emptyHint": "Essayez le site de l'éditeur, ou demandez à un administrateur d'ajouter un lien.",
+      "results": "Résultats"
+    },
+    "result": {
+      "official": "Officiel",
+      "source": "Source : {host}",
+      "size": "{size} Mo",
+      "sizeKb": "{size} Ko",
+      "open": "Ouvrir le PDF",
+      "add": "Ajouter à la bibliothèque",
+      "propose": "Proposer pour la bibliothèque",
+      "adding": "Ajout…",
+      "added": "Dans la bibliothèque",
+      "proposed": "Proposé",
+      "addedOk": "Ajouté à la bibliothèque.",
+      "proposedOk": "Proposé. Un administrateur le vérifiera.",
+      "download": "Télécharger",
+      "saveOffline": "Enregistrer hors ligne",
+      "saving": "Enregistrement…",
+      "savedOffline": "Enregistré sur cet appareil",
+      "removeOffline": "Retirer de l'appareil"
+    },
+    "errors": {
+      "unauthenticated": "Votre session a expiré. Veuillez vous reconnecter.",
+      "unavailable": "La recherche de manuels n'est pas encore configurée sur ce serveur.",
+      "rate_limited": "Trop de recherches. Patientez un instant et réessayez.",
+      "quota_exhausted": "La limite mensuelle de recherches de cette application est atteinte. Réessayez le mois prochain ou demandez à un administrateur d'ajouter le lien.",
+      "failed": "Une erreur est survenue. Veuillez réessayer.",
+      "invalid": "Ce lien ne peut pas être utilisé.",
+      "forbidden": "Vous n'avez pas l'autorisation de faire cela.",
+      "limit": "Trop de demandes ou de propositions pour le moment. Réessayez plus tard.",
+      "already_added": "Ce manuel est déjà dans la bibliothèque.",
+      "already_proposed": "Ce manuel a déjà été proposé.",
+      "not_pdf": "Ce lien n'est pas un PDF (ou il est trop volumineux).",
+      "unreachable": "Ce lien n'a pas répondu.",
+      "quota": "Pas assez d'espace libre sur cet appareil.",
+      "too_large": "Ce PDF est trop volumineux pour être enregistré. Ouvrez l'original.",
+      "network": "Impossible de télécharger le fichier. Vérifiez votre connexion.",
+      "offlineUnsupported": "Ce navigateur ne peut pas conserver de fichiers hors ligne."
+    },
+    "proposals": {
+      "title": "Manuels proposés",
+      "reviewTitle": "Manuels à vérifier",
+      "hint": "En attente de la vérification d'un administrateur.",
+      "pending": "En attente",
+      "rejected": "Refusé",
+      "withdraw": "Retirer",
+      "publish": "Publier",
+      "reject": "Refuser"
+    },
+    "saved": {
+      "title": "Enregistrés sur cet appareil",
+      "hint": "Disponibles sans internet.",
+      "open": "Ouvrir",
+      "remove": "Retirer",
+      "offlineList": "Tous les manuels enregistrés"
+    }
+  },
   "Scoring": {
     "copySuffix": "(copie)",
     "title": "Feuilles de score",

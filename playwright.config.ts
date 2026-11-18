@@ -81,6 +81,9 @@ export default defineConfig({
             NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
               process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!,
             CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
+            // The suite never calls the real search API: with no key the manual search says
+            // "not set up" (and nothing is billed).
+            BRAVE_SEARCH_API_KEY: "",
           },
         }
       : undefined,

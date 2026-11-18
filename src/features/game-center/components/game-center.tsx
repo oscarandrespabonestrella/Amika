@@ -65,9 +65,12 @@ function LanguageBadge({ locale }: { locale: string | null }) {
 function ResourceLink({
   resource,
   admin,
+  actions,
 }: {
   resource: ResourceView;
   admin: boolean;
+  /** Extra buttons for this link, supplied by the page (e.g. download for offline use). */
+  actions?: ReactNode;
 }) {
   const t = useTranslations("GameCenter");
   return (
@@ -85,6 +88,12 @@ function ResourceLink({
       {resource.isOfficial && (
         <Badge variant="secondary">{t("rules.official")}</Badge>
       )}
+      {resource.publisher && (
+        <span className="text-sm text-muted-foreground">
+          {resource.publisher}
+        </span>
+      )}
+      {actions}
       {admin && (
         <RemoveButton
           target={{ type: "resource", id: resource.id }}
@@ -137,9 +146,21 @@ function FaqItem({
   );
 }
 
-type Props = { gameId: string; data: GameCenterData };
+type Props = {
+  gameId: string;
+  data: GameCenterData;
+  /** Rendered at the top of the Rules section (the page plugs the manual search in here). */
+  rulesSlot?: ReactNode;
+  /** Extra buttons for each rules link (the page decides which links get them). */
+  renderRuleActions?: (resource: ResourceView) => ReactNode;
+};
 
-export function GameCenter({ gameId, data }: Props) {
+export function GameCenter({
+  gameId,
+  data,
+  rulesSlot,
+  renderRuleActions,
+}: Props) {
   const t = useTranslations("GameCenter");
   const { isAdmin, faq } = data;
   const hasRules =
@@ -169,6 +190,7 @@ export function GameCenter({ gameId, data }: Props) {
       </nav>
 
       <Section id="rules" icon={BookOpenText} title={t("rules.title")}>
+        {rulesSlot}
         {!hasRules && (
           <p className="text-muted-foreground">{t("rules.empty")}</p>
         )}
@@ -176,7 +198,12 @@ export function GameCenter({ gameId, data }: Props) {
         {data.rulesLinks.length > 0 && (
           <ul className="flex flex-col gap-2">
             {data.rulesLinks.map((r) => (
-              <ResourceLink key={r.id} resource={r} admin={isAdmin} />
+              <ResourceLink
+                key={r.id}
+                resource={r}
+                admin={isAdmin}
+                actions={renderRuleActions?.(r)}
+              />
             ))}
           </ul>
         )}

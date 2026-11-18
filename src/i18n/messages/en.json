@@ -418,6 +418,75 @@
       "invalidVideo": "Enter a YouTube link or a video id."
     }
   },
+  "Manuals": {
+    "search": {
+      "button": "Search manual",
+      "title": "Rulebooks for {game}",
+      "intro": "We search the web for PDF rulebooks, with official sources in Spanish first, then English, French and German. Every link is checked before it is shown.",
+      "searching": "Searching and checking links…",
+      "close": "Close",
+      "retry": "Search again",
+      "copyright": "Only the link to the original site is kept. Rulebooks belong to their publishers.",
+      "unavailableTitle": "Search not available",
+      "emptyTitle": "No manuals found",
+      "emptyHint": "Try the publisher's website, or ask an administrator to add a link.",
+      "results": "Results"
+    },
+    "result": {
+      "official": "Official",
+      "source": "Source: {host}",
+      "size": "{size} MB",
+      "sizeKb": "{size} KB",
+      "open": "Open PDF",
+      "add": "Add to library",
+      "propose": "Propose for library",
+      "adding": "Adding…",
+      "added": "In the library",
+      "proposed": "Proposed",
+      "addedOk": "Added to the library.",
+      "proposedOk": "Proposed. An administrator will review it.",
+      "download": "Download",
+      "saveOffline": "Save for offline",
+      "saving": "Saving…",
+      "savedOffline": "Saved on this device",
+      "removeOffline": "Remove from device"
+    },
+    "errors": {
+      "unauthenticated": "Your session expired. Please sign in again.",
+      "unavailable": "The manual search is not set up on this server yet.",
+      "rate_limited": "Too many searches. Wait a moment and try again.",
+      "quota_exhausted": "The monthly search limit of this app has been reached. Try again next month, or ask an administrator to add the link.",
+      "failed": "Something went wrong. Please try again.",
+      "invalid": "That link cannot be used.",
+      "forbidden": "You don't have permission to do that.",
+      "limit": "Too many requests or proposals for now. Try again later.",
+      "already_added": "This manual is already in the library.",
+      "already_proposed": "This manual has already been proposed.",
+      "not_pdf": "That link is not a PDF (or it is too large).",
+      "unreachable": "That link did not respond.",
+      "quota": "Not enough free space on this device.",
+      "too_large": "This PDF is too large to save. Open the original instead.",
+      "network": "Could not download the file. Check your connection.",
+      "offlineUnsupported": "This browser cannot keep files for offline use."
+    },
+    "proposals": {
+      "title": "Proposed manuals",
+      "reviewTitle": "Manuals to review",
+      "hint": "Waiting for an administrator to review them.",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "withdraw": "Withdraw",
+      "publish": "Publish",
+      "reject": "Reject"
+    },
+    "saved": {
+      "title": "Saved on this device",
+      "hint": "Available without internet.",
+      "open": "Open",
+      "remove": "Remove",
+      "offlineList": "All saved manuals"
+    }
+  },
   "Scoring": {
     "copySuffix": "(copy)",
     "title": "Score sheets",

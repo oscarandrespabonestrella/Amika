@@ -15,6 +15,43 @@ export function getSupabaseServiceRoleKey(): string {
 }
 
 /**
+ * Optional: without it the manual search answers "unavailable" and nothing else breaks.
+ * Brave Search API subscription token (server only).
+ */
+export function getBraveSearchApiKey(): string | undefined {
+  return z
+    .string()
+    .min(1)
+    .optional()
+    .parse(process.env.BRAVE_SEARCH_API_KEY || undefined);
+}
+
+/**
+ * Optional: the app's own monthly cap of search API calls (default 800, a margin under Brave's
+ * 1000-request free plan). Raise it only if the plan does.
+ */
+export function getManualMonthlyCallLimit(): number {
+  return z.coerce
+    .number()
+    .int()
+    .min(1)
+    .default(800)
+    .parse(process.env.MANUAL_MONTHLY_CALL_LIMIT || undefined);
+}
+
+/**
+ * Optional: signs the short-lived download links of manual search results. Without it only
+ * manuals already stored in the database can be downloaded through the proxy.
+ */
+export function getManualLinkSecret(): string | undefined {
+  return z
+    .string()
+    .min(32)
+    .optional()
+    .parse(process.env.MANUAL_LINK_SECRET || undefined);
+}
+
+/**
  * Optional on purpose: while BoardGameGeek's token is pending the app runs
  * without it and the BGG search shows an "unavailable" state.
  */

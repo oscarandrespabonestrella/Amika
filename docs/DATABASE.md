@@ -74,6 +74,10 @@ Solo para juegos **globales**: un juego propio y privado no tiene Game Center. E
 | Tabla | Notas |
 |---|---|
 | `game_resources` | `kind` (`rules\|video\|link`), `locale` (null = cualquier idioma), `title`, `url` (solo `https://`) o `youtube_id` (11 caracteres), `is_official`, `sort`. CHECK de forma: un vídeo es **solo** un id de YouTube; el resto, **solo** una URL https. Los manuales con copyright **no se alojan**: solo enlaces. |
+| `game_resources` (manuales) | Además: `publisher` (editorial, si se conoce) y `verified_at` (cuándo se comprobó que el enlace servía un PDF). Índice único `(game_id, url)` para `kind='rules'`: sin enlaces de reglas duplicados. |
+| `manual_suggestions` | Propuestas del buscador de manuales: `game_id`, `url` (https ≤500), `title`, `locale`, `publisher`, `source_host`, `is_official`, `size_bytes`, `verified_at`, `status` (`pending\|rejected`), `created_by`. Único `(game_id, url)` (un rechazo bloquea volver a proponer el mismo enlace); máx. **5 pendientes** por usuario y juego (trigger). `publish_manual_suggestion(id)` la pasa a `game_resources` de forma atómica (solo administradores). |
+| `manual_search_cache` | Búsquedas ya verificadas, una fila por juego (`game_id`, `outcome` `results\|not_found`, `results` jsonb con un array, `created_at`). Compartida por todos los usuarios y **sin datos por usuario** (ni enlaces firmados ni «ya añadido»); se borra con el juego. Sin acceso para usuarios, solo `service_role`. |
+| `manual_requests` | Registro por usuario (`user_id`, `kind` `search\|download\|api_call`, `created_at`) para los límites del buscador; sin acceso para usuarios, solo `service_role`. |
 | `rules_content` | Resumen de reglas con palabras propias, una fila por idioma (`game_id`,`locale`,`body` ≤20 000). Texto plano. |
 | `game_images` | Galería de imágenes **enlazadas** con `attribution` obligatoria (+ licencia y pie opcionales). No se copian archivos. |
 | `faq_entries` | `status` (`pending\|published\|rejected`), `created_by`, `reviewed_by/at`. Máximo **5 sugerencias pendientes** por usuario y juego (trigger). |

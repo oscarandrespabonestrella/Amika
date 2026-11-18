@@ -13,6 +13,7 @@ import {
   searchLocalGames,
   SearchForm,
 } from "@/features/catalog";
+import { BggCollectionImport } from "@/features/library";
 import { LiveIdentify } from "@/features/recognition/components/live-identify";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -94,6 +95,8 @@ export default async function GamesPage({
         query={query.q}
         available={getGameSource().isConfigured()}
       />
+
+      <BggCollectionImport available={getGameSource().isConfigured()} />
     </div>
   );
 }

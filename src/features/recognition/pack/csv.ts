@@ -1,4 +1,7 @@
 // Pure. Reads BoardGameGeek's `boardgames_ranks.csv` data dump (ID, Name, Year, Rank, …).
+// Relative (not "@/"): the pack scripts run this file outside the bundler's alias.
+import { parseCsvRecords } from "../../../lib/csv";
+
 export type RankedRow = {
   bggId: string;
   name: string;
@@ -6,42 +9,10 @@ export type RankedRow = {
   rank: number;
 };
 
-/** RFC 4180 records: quoted fields may hold commas, doubled quotes and line breaks. */
-function parseRecords(text: string): string[][] {
-  const records: string[][] = [];
-  let record: string[] = [];
-  let field = "";
-  let quoted = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (quoted) {
-      if (c === '"') {
-        if (text[i + 1] === '"') {
-          field += '"';
-          i++;
-        } else quoted = false;
-      } else field += c;
-    } else if (c === '"') quoted = true;
-    else if (c === ",") {
-      record.push(field);
-      field = "";
-    } else if (c === "\n" || c === "\r") {
-      if (c === "\r" && text[i + 1] === "\n") i++;
-      record.push(field);
-      field = "";
-      if (record.some((f) => f !== "")) records.push(record);
-      record = [];
-    } else field += c;
-  }
-  record.push(field);
-  if (record.some((f) => f !== "")) records.push(record);
-  return records;
-}
-
 /** The rows ranked 1..count, sorted by rank. Rows without a rank or a numeric id are dropped. */
 export function parseRanksCsv(text: string, count: number): RankedRow[] {
   if (count <= 0) return [];
-  const [header, ...records] = parseRecords(text);
+  const [header, ...records] = parseCsvRecords(text);
   if (!header) return [];
   const col = (name: string) => header.indexOf(name);
   const [iId, iName, iYear, iRank] = ["ID", "Name", "Year", "Rank"].map(col);

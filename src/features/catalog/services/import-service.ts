@@ -2,8 +2,8 @@ import "server-only";
 import { logger } from "@/lib/logger";
 import { BggError } from "../sources/bgg/errors";
 import { externalGameSchema } from "../sources/external-game.schema";
-import type { GameSource } from "../sources/game-source";
-import type { ExternalSearchHit } from "../types";
+import { MAX_BATCH, type GameSource } from "../sources/game-source";
+import type { ExternalGame, ExternalSearchHit } from "../types";
 import { createSupabaseImportStore, type ImportStore } from "./catalog-store";
 import { isOverLimit } from "./rate-limit";
 
@@ -81,7 +81,79 @@ export async function searchExternalGames(
   }
 }
 
-/** Import one game into the global catalog (idempotent; atomic in the database). */
+export type BatchImportResult =
+  | {
+      ok: true;
+      /** externalId → catalog game id, for every id that is in the catalog now. */
+      games: Map<string, string>;
+      /** External ids the source did not return or that failed to import. */
+      failed: string[];
+    }
+  | { ok: false; error: ImportError };
+
+/**
+ * Import up to MAX_BATCH games with ONE upstream call and ONE quota use. Games already in
+ * the catalog cost nothing. Partial success is normal: see `failed`.
+ */
+export async function importExternalGames(
+  source: GameSource,
+  externalIds: string[],
+  userId: string,
+  store: ImportStore = createSupabaseImportStore(),
+): Promise<BatchImportResult> {
+  const ids = [...new Set(externalIds)];
+  if (ids.length > MAX_BATCH) return { ok: false, error: "failed" };
+  try {
+    const games = await store.findGameIds(source.id, ids);
+    const missing = ids.filter((id) => !games.has(id));
+    if (missing.length === 0) return { ok: true, games, failed: [] };
+
+    if (!source.isConfigured()) return { ok: false, error: "unavailable" };
+    if (isOverLimit(await store.getUsage(userId))) {
+      return { ok: false, error: "rate_limited" };
+    }
+    await store.recordUsage(
+      userId,
+      `${source.id}:batch`,
+      String(missing.length),
+    );
+
+    const failed = new Set(missing);
+    for (const raw of await source.fetchGames(missing)) {
+      const parsed = externalGameSchema.safeParse(raw);
+      if (!parsed.success || !failed.has(parsed.data.externalId)) {
+        logger.error("external game failed validation", undefined, {
+          source: source.id,
+        });
+        continue;
+      }
+      const gameId = await upsertOrFindRaced(source, parsed.data, store);
+      games.set(parsed.data.externalId, gameId);
+      failed.delete(parsed.data.externalId);
+    }
+    return { ok: true, games, failed: [...failed] };
+  } catch (error) {
+    return { ok: false, error: toImportError(error) };
+  }
+}
+
+async function upsertOrFindRaced(
+  source: GameSource,
+  game: ExternalGame,
+  store: ImportStore,
+): Promise<string> {
+  try {
+    return await store.upsertGame(game);
+  } catch (error) {
+    // Two users imported the same game at once: the other transaction won.
+    if ((error as { code?: string }).code === UNIQUE_VIOLATION) {
+      const raced = await store.findGameId(source.id, game.externalId);
+      if (raced) return raced;
+    }
+    throw error;
+  }
+}
+
 /** Import one game into the global catalog (idempotent; atomic in the database). */
 export async function importExternalGame(
   source: GameSource,

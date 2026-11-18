@@ -203,6 +203,46 @@ export async function saveLibraryItem(
   return "saved";
 }
 
+export type NewLibraryItem = {
+  gameId: string;
+  status: LibraryStatus;
+  rating: number | null;
+};
+
+/**
+ * Adds games in bulk. Entries the user already has are left untouched (an import must
+ * never overwrite their status, rating or notes). RLS applies as for a single save.
+ */
+export async function addLibraryItems(
+  items: NewLibraryItem[],
+): Promise<{ added: number; existing: number }> {
+  if (items.length === 0) return { added: 0, existing: 0 };
+  const supabase = createSupabaseServerClient();
+
+  const { data, error: lookupError } = await supabase
+    .from("library_items")
+    .select("game_id")
+    .in(
+      "game_id",
+      items.map((i) => i.gameId),
+    );
+  if (lookupError) throw lookupError;
+  const have = new Set((data ?? []).map((r) => r.game_id));
+
+  const fresh = items.filter((i) => !have.has(i.gameId));
+  if (fresh.length > 0) {
+    const { error } = await supabase.from("library_items").insert(
+      fresh.map((i) => ({
+        game_id: i.gameId,
+        status: i.status,
+        rating: i.rating,
+      })),
+    );
+    if (error) throw error;
+  }
+  return { added: fresh.length, existing: items.length - fresh.length };
+}
+
 export async function removeLibraryItem(gameId: string): Promise<void> {
   const { error } = await createSupabaseServerClient()
     .from("library_items")

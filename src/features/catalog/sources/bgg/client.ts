@@ -1,6 +1,10 @@
-import type { GameSource } from "../game-source";
+import { MAX_BATCH, type GameSource } from "../game-source";
 import { BggError } from "./errors";
-import { parseSearchResponse, parseThingResponse } from "./parse";
+import {
+  parseSearchResponse,
+  parseThingItems,
+  parseThingResponse,
+} from "./parse";
 
 /**
  * BoardGameGeek XML API2 client.
@@ -93,6 +97,18 @@ export function createBggSource({
       if (!/^\d{1,9}$/.test(externalId)) throw new BggError("not_found");
       const xml = await get("thing", { id: externalId, stats: "0" });
       return parseThingResponse(xml);
+    },
+
+    async fetchGames(externalIds) {
+      if (externalIds.length === 0) return [];
+      if (
+        externalIds.length > MAX_BATCH ||
+        externalIds.some((id) => !/^\d{1,9}$/.test(id))
+      ) {
+        throw new BggError("not_found");
+      }
+      const xml = await get("thing", { id: externalIds.join(","), stats: "0" });
+      return parseThingItems(xml);
     },
   };
 }

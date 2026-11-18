@@ -8,7 +8,11 @@ import { BggError } from "../sources/bgg/errors";
 import type { GameSource } from "../sources/game-source";
 import type { ExternalGame, ExternalSearchHit } from "../types";
 import type { ImportStore } from "./catalog-store";
-import { importExternalGame, searchExternalGames } from "./import-service";
+import {
+  importExternalGame,
+  importExternalGames,
+  searchExternalGames,
+} from "./import-service";
 import { isOverLimit, LIMITS } from "./rate-limit";
 
 const GAME: ExternalGame = {
@@ -46,6 +50,9 @@ function fakeSource(over: Partial<GameSource> = {}): GameSource & {
     isConfigured: () => true,
     search: vi.fn(async () => [HIT]),
     fetchGame: vi.fn(async () => GAME),
+    fetchGames: vi.fn(async (ids: string[]) =>
+      ids.map((id) => ({ ...GAME, externalId: id })),
+    ),
     ...over,
   } as never;
 }
@@ -292,6 +299,112 @@ describe("importExternalGame: no background work", () => {
         "recordUsage",
         "upsertGame",
       ].sort(),
+    );
+  });
+});
+
+describe("importExternalGames", () => {
+  it("imports only the missing games with one fetch and one quota use", async () => {
+    const store = fakeStore({
+      findGameIds: vi.fn(async () => new Map([["1", "have-1"]])),
+      upsertGame: vi.fn(async (g: ExternalGame) => `new-${g.externalId}`),
+    });
+    const source = fakeSource();
+    const result = await importExternalGames(
+      source,
+      ["1", "2", "3"],
+      "u1",
+      store,
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      games: new Map([
+        ["1", "have-1"],
+        ["2", "new-2"],
+        ["3", "new-3"],
+      ]),
+      failed: [],
+    });
+    expect(source.fetchGames).toHaveBeenCalledTimes(1);
+    expect(source.fetchGames).toHaveBeenCalledWith(["2", "3"]);
+    expect(store.recordUsage).toHaveBeenCalledTimes(1);
+    expect(store.recordUsage).toHaveBeenCalledWith("u1", "bgg:batch", "2");
+  });
+
+  it("costs nothing when every game is already in the catalog", async () => {
+    const store = fakeStore({
+      findGameIds: vi.fn(async () => new Map([["1", "have-1"]])),
+    });
+    const source = fakeSource({ isConfigured: () => false });
+    const result = await importExternalGames(source, ["1"], "u1", store);
+    expect(result).toMatchObject({ ok: true, failed: [] });
+    expect(source.fetchGames).not.toHaveBeenCalled();
+    expect(store.recordUsage).not.toHaveBeenCalled();
+  });
+
+  it("reports ids the source did not return as failed", async () => {
+    const source = fakeSource({
+      fetchGames: vi.fn(async () => [{ ...GAME, externalId: "2" }]),
+    });
+    const result = await importExternalGames(
+      source,
+      ["2", "3"],
+      "u1",
+      fakeStore(),
+    );
+    expect(result).toMatchObject({ ok: true, failed: ["3"] });
+  });
+
+  it("stops when over the rate limit or the source is not configured", async () => {
+    const limited = fakeStore({
+      getUsage: vi.fn(async () => ({
+        lastMinute: LIMITS.perMinute,
+        lastHour: 0,
+      })),
+    });
+    expect(
+      await importExternalGames(fakeSource(), ["2"], "u1", limited),
+    ).toEqual({
+      ok: false,
+      error: "rate_limited",
+    });
+    expect(
+      await importExternalGames(
+        fakeSource({ isConfigured: () => false }),
+        ["2"],
+        "u1",
+        fakeStore(),
+      ),
+    ).toEqual({ ok: false, error: "unavailable" });
+  });
+
+  it("recovers from a concurrent import of the same game", async () => {
+    const store = fakeStore({
+      findGameId: vi.fn(async () => "raced"),
+      upsertGame: vi.fn(async () => {
+        throw Object.assign(new Error("dup"), { code: "23505" });
+      }),
+    });
+    const result = await importExternalGames(fakeSource(), ["2"], "u1", store);
+    expect(result).toEqual({
+      ok: true,
+      games: new Map([["2", "raced"]]),
+      failed: [],
+    });
+  });
+
+  it("maps a BGG failure to an error code", async () => {
+    const source = fakeSource({
+      fetchGames: vi.fn(async () => {
+        throw new BggError("rate_limited");
+      }),
+    });
+    expect(await importExternalGames(source, ["2"], "u1", fakeStore())).toEqual(
+      {
+        ok: false,
+        error: "rate_limited",
+      },
     );
   });
 });

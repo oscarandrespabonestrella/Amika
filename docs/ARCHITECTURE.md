@@ -26,7 +26,7 @@ Gestor de paquetes: **npm** (ya disponible; sin pnpm instalado). Ver ADR-004.
 src/
   app/[locale]/           rutas y layouts (solo composición, sin lógica de negocio)
     (public)/ (auth)/ (app)/ admin/
-  features/<módulo>/      auth, profiles, catalog, library, game-center, plays, scoring, stats, admin, ai*
+  features/<módulo>/      auth, profiles, catalog, library, game-center, manuals, plays, scoring, stats, admin, ai*
     components/           UI del módulo
     actions/              Server Actions (validan con Zod y delegan en services)
     services/             lógica de negocio + acceso a datos (Supabase)
@@ -60,7 +60,7 @@ docs/
 - Cambios de esquema solo mediante migraciones versionadas.
 
 ## 6. Online-first
-Guardado en backend; UI con estados claros (pending/saved/error), revalidación con `revalidatePath/Tag` y botón de refrescar. Datos externos (p. ej. BGG) se importan bajo demanda por admins con caché en BD, no en cada petición. Sin offline de datos; la app es una PWA instalable (manifest, íconos y un service worker que solo muestra una página «sin conexión»; ADR-045, `features/pwa`).
+Guardado en backend; UI con estados claros (pending/saved/error), revalidación con `revalidatePath/Tag` y botón de refrescar. Datos externos (p. ej. BGG) se importan bajo demanda por admins con caché en BD, no en cada petición. Sin offline de datos (salvo los manuales PDF que el usuario guarda a propósito en su dispositivo; ADR-046); la app es una PWA instalable (manifest, íconos y un service worker que solo muestra una página «sin conexión»; ADR-045, `features/pwa`).
 
 ## 7. Internacionalización
 - Locales iniciales: `en` (defecto y fallback), `es`, `fr`; alemán/neerlandés u otros se añaden después sin tocar la lógica; añadir un idioma = añadir `messages/<xx>.json` + entrada en `routing`.

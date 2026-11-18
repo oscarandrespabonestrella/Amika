@@ -421,9 +421,11 @@ export type Database = {
           is_official: boolean;
           kind: string;
           locale: string | null;
+          publisher: string | null;
           sort: number;
           title: string;
           url: string | null;
+          verified_at: string | null;
           youtube_id: string | null;
         };
         Insert: {
@@ -434,9 +436,11 @@ export type Database = {
           is_official?: boolean;
           kind: string;
           locale?: string | null;
+          publisher?: string | null;
           sort?: number;
           title: string;
           url?: string | null;
+          verified_at?: string | null;
           youtube_id?: string | null;
         };
         Update: {
@@ -447,9 +451,11 @@ export type Database = {
           is_official?: boolean;
           kind?: string;
           locale?: string | null;
+          publisher?: string | null;
           sort?: number;
           title?: string;
           url?: string | null;
+          verified_at?: string | null;
           youtube_id?: string | null;
         };
         Relationships: [
@@ -643,6 +649,119 @@ export type Database = {
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      manual_requests: {
+        Row: {
+          created_at: string;
+          id: number;
+          kind: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: never;
+          kind: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: never;
+          kind?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      manual_search_cache: {
+        Row: {
+          created_at: string;
+          game_id: string;
+          outcome: string;
+          results: Json;
+        };
+        Insert: {
+          created_at?: string;
+          game_id: string;
+          outcome: string;
+          results?: Json;
+        };
+        Update: {
+          created_at?: string;
+          game_id?: string;
+          outcome?: string;
+          results?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "manual_search_cache_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: true;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      manual_suggestions: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          game_id: string;
+          id: string;
+          is_official: boolean;
+          locale: string | null;
+          publisher: string | null;
+          size_bytes: number | null;
+          source_host: string;
+          status: string;
+          title: string;
+          url: string;
+          verified_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          game_id: string;
+          id?: string;
+          is_official?: boolean;
+          locale?: string | null;
+          publisher?: string | null;
+          size_bytes?: number | null;
+          source_host: string;
+          status?: string;
+          title: string;
+          url: string;
+          verified_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          game_id?: string;
+          id?: string;
+          is_official?: boolean;
+          locale?: string | null;
+          publisher?: string | null;
+          size_bytes?: number | null;
+          source_host?: string;
+          status?: string;
+          title?: string;
+          url?: string;
+          verified_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "manual_suggestions_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "manual_suggestions_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
             referencedColumns: ["id"];
           },
         ];
@@ -1525,6 +1644,7 @@ export type Database = {
           version_id: string;
         }[];
       };
+      publish_manual_suggestion: { Args: { p_id: string }; Returns: string };
       redeem_friend_invite: { Args: { p_code: string }; Returns: string };
       remove_friend: { Args: { p_friend: string }; Returns: undefined };
       respond_play_invite: {

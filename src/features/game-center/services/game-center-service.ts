@@ -12,6 +12,10 @@ export type ResourceView = {
   url: string | null;
   youtubeId: string | null;
   isOfficial: boolean;
+  /** Who published the document, when known (manuals found by the manual search). */
+  publisher: string | null;
+  /** When the link was last verified as a working PDF; null for hand-typed links. */
+  verifiedAt: string | null;
 };
 
 export type ImageView = {
@@ -105,7 +109,7 @@ export async function getGameCenter(
     supabase
       .from("game_resources")
       .select(
-        "id, kind, locale, title, url, youtube_id, is_official, sort, created_at",
+        "id, kind, locale, title, url, youtube_id, is_official, publisher, verified_at, sort, created_at",
       )
       .eq("game_id", gameId)
       .order("sort")
@@ -137,6 +141,8 @@ export async function getGameCenter(
     url: r.url,
     youtubeId: r.youtube_id,
     isOfficial: r.is_official,
+    publisher: r.publisher,
+    verifiedAt: r.verified_at,
   }));
 
   const faqRows = (faq.data ?? []) as FaqRow[];

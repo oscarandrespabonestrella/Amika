@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0f14" />
+    <title>Amika</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        padding: 1rem;
+        background: #0b0f14;
+        color: #e8eef2;
+        font-family: system-ui, sans-serif;
+      }
+      main {
+        max-width: 40rem;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.4rem;
+        margin: 0 0 0.25rem;
+      }
+      h2 {
+        font-size: 1.05rem;
+        margin: 1.5rem 0 0.5rem;
+      }
+      p {
+        color: #9aa7b2;
+        margin: 0 0 1rem;
+      }
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      li {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #243040;
+        border-radius: 0.75rem;
+        background: #121922;
+      }
+      .title {
+        flex: 1 1 12rem;
+        min-width: 0;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+      }
+      .meta {
+        color: #9aa7b2;
+        font-size: 0.85rem;
+      }
+      a.open,
+      button {
+        min-height: 2.75rem;
+        padding: 0 1rem;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      a.open {
+        background: #5ed3b5;
+        color: #04241c;
+      }
+      button {
+        border: 1px solid #3a4a5e;
+        background: transparent;
+        color: #e8eef2;
+      }
+      a.home {
+        color: #5ed3b5;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1 id="title"></h1>
+      <p id="intro"></p>
+      <div id="list"></div>
+      <p><a id="home" class="home" href="/"></a></p>
+    </main>
+    <script>
+      var CACHE = "amika-manuals-v1";
+      var FILE_PREFIX = "/offline/manuals/files/";
+      var META_PREFIX = "/offline/manuals/meta/";
+
+      var texts = {
+        en: {
+          title: "Saved manuals",
+          intro:
+            "Rulebooks you saved on this device. They open without internet.",
+          empty:
+            "You have not saved any manual yet. Save one from a game page while online.",
+          open: "Open",
+          remove: "Remove",
+          home: "Back to Amika",
+          unsupported: "This browser cannot keep files for offline use.",
+          unknown: "Other",
+        },
+        es: {
+          title: "Manuales guardados",
+          intro:
+            "Reglamentos que guardaste en este dispositivo. Se abren sin internet.",
+          empty:
+            "Aún no has guardado ningún manual. Guarda uno desde la ficha de un juego con conexión.",
+          open: "Abrir",
+          remove: "Quitar",
+          home: "Volver a Amika",
+          unsupported:
+            "Este navegador no puede guardar archivos para usarlos sin conexión.",
+          unknown: "Otros",
+        },
+        fr: {
+          title: "Manuels enregistrés",
+          intro:
+            "Règles enregistrées sur cet appareil. Elles s'ouvrent sans internet.",
+          empty:
+            "Vous n'avez encore enregistré aucun manuel. Enregistrez-en un depuis la fiche d'un jeu, en ligne.",
+          open: "Ouvrir",
+          remove: "Retirer",
+          home: "Retour à Amika",
+          unsupported:
+            "Ce navigateur ne peut pas conserver de fichiers hors ligne.",
+          unknown: "Autres",
+        },
+        pt: {
+          title: "Manuais salvos",
+          intro:
+            "Regras que você salvou neste dispositivo. Abrem sem internet.",
+          empty:
+            "Você ainda não salvou nenhum manual. Salve um na página de um jogo, com conexão.",
+          open: "Abrir",
+          remove: "Remover",
+          home: "Voltar ao Amika",
+          unsupported:
+            "Este navegador não consegue guardar arquivos para uso offline.",
+          unknown: "Outros",
+        },
+      };
+      var lang = (navigator.language || "en").slice(0, 2);
+      var t = texts[lang] || texts.en;
+      document.documentElement.lang = texts[lang] ? lang : "en";
+      document.getElementById("title").textContent = t.title;
+      document.getElementById("intro").textContent = t.intro;
+      document.getElementById("home").textContent = t.home;
+
+      var list = document.getElementById("list");
+
+      function el(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text) node.textContent = text; // never innerHTML: titles come from the web
+        return node;
+      }
+
+      function size(bytes) {
+        if (!bytes) return "";
+        return bytes >= 1048576
+          ? (bytes / 1048576).toFixed(1) + " MB"
+          : Math.max(1, Math.round(bytes / 1024)) + " KB";
+      }
+
+      async function readAll(cache) {
+        var keys = await cache.keys();
+        var out = [];
+        for (var i = 0; i < keys.length; i++) {
+          if (new URL(keys[i].url).pathname.indexOf(META_PREFIX) !== 0)
+            continue;
+          try {
+            var res = await cache.match(keys[i]);
+            out.push(await res.json());
+          } catch (e) {}
+        }
+        return out;
+      }
+
+      async function render() {
+        list.textContent = "";
+        if (!("caches" in window)) {
+          list.appendChild(el("p", "", t.unsupported));
+          return;
+        }
+        var cache = await caches.open(CACHE);
+        var manuals = await readAll(cache);
+        if (manuals.length === 0) {
+          list.appendChild(el("p", "", t.empty));
+          return;
+        }
+        var byGame = {};
+        manuals.forEach(function (m) {
+          (byGame[m.gameName || t.unknown] =
+            byGame[m.gameName || t.unknown] || []).push(m);
+        });
+        Object.keys(byGame)
+          .sort()
+          .forEach(function (game) {
+            list.appendChild(el("h2", "", game));
+            var ul = el("ul");
+            byGame[game].forEach(function (m) {
+              var li = el("li");
+              var info = el("div", "title", m.title);
+              var meta = [
+                m.locale ? m.locale.toUpperCase() : "",
+                m.publisher || "",
+                size(m.sizeBytes),
+              ]
+                .filter(Boolean)
+                .join(" · ");
+              if (meta) info.appendChild(el("div", "meta", meta));
+              var open = el("a", "open", t.open);
+              open.href = FILE_PREFIX + m.key;
+              open.target = "_blank";
+              open.rel = "noopener";
+              var remove = el("button", "", t.remove);
+              remove.type = "button";
+              remove.addEventListener("click", async function () {
+                await cache.delete(new Request(FILE_PREFIX + m.key));
+                await cache.delete(new Request(META_PREFIX + m.key));
+                render();
+              });
+              li.appendChild(info);
+              li.appendChild(open);
+              li.appendChild(remove);
+              ul.appendChild(li);
+            });
+            list.appendChild(ul);
+          });
+      }
+
+      render();
+    </script>
+  </body>
+</html>

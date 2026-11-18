@@ -418,6 +418,75 @@
       "invalidVideo": "Introduce un enlace de YouTube o un id de vídeo."
     }
   },
+  "Manuals": {
+    "search": {
+      "button": "Buscar manual",
+      "title": "Reglamentos de {game}",
+      "intro": "Buscamos reglamentos en PDF en la web, con las fuentes oficiales en español primero, luego inglés, francés y alemán. Cada enlace se comprueba antes de mostrarlo.",
+      "searching": "Buscando y comprobando enlaces…",
+      "close": "Cerrar",
+      "retry": "Buscar de nuevo",
+      "copyright": "Solo se guarda el enlace al sitio original. Los reglamentos pertenecen a sus editoriales.",
+      "unavailableTitle": "Búsqueda no disponible",
+      "emptyTitle": "No se encontraron manuales",
+      "emptyHint": "Prueba en la web de la editorial, o pide a un administrador que añada un enlace.",
+      "results": "Resultados"
+    },
+    "result": {
+      "official": "Oficial",
+      "source": "Fuente: {host}",
+      "size": "{size} MB",
+      "sizeKb": "{size} KB",
+      "open": "Abrir PDF",
+      "add": "Añadir a la biblioteca",
+      "propose": "Proponer para la biblioteca",
+      "adding": "Añadiendo…",
+      "added": "En la biblioteca",
+      "proposed": "Propuesto",
+      "addedOk": "Añadido a la biblioteca.",
+      "proposedOk": "Propuesto. Un administrador lo revisará.",
+      "download": "Descargar",
+      "saveOffline": "Guardar sin conexión",
+      "saving": "Guardando…",
+      "savedOffline": "Guardado en este dispositivo",
+      "removeOffline": "Quitar del dispositivo"
+    },
+    "errors": {
+      "unauthenticated": "Tu sesión ha caducado. Vuelve a iniciar sesión.",
+      "unavailable": "La búsqueda de manuales aún no está configurada en este servidor.",
+      "rate_limited": "Demasiadas búsquedas. Espera un momento e inténtalo de nuevo.",
+      "quota_exhausted": "Se ha alcanzado el límite mensual de búsquedas de esta app. Inténtalo el mes que viene o pide a un administrador que añada el enlace.",
+      "failed": "Algo salió mal. Inténtalo de nuevo.",
+      "invalid": "Ese enlace no se puede usar.",
+      "forbidden": "No tienes permiso para hacer eso.",
+      "limit": "Demasiadas solicitudes o propuestas por ahora. Inténtalo más tarde.",
+      "already_added": "Este manual ya está en la biblioteca.",
+      "already_proposed": "Este manual ya fue propuesto.",
+      "not_pdf": "Ese enlace no es un PDF (o es demasiado grande).",
+      "unreachable": "Ese enlace no respondió.",
+      "quota": "No hay espacio libre suficiente en este dispositivo.",
+      "too_large": "Este PDF es demasiado grande para guardarlo. Abre el original.",
+      "network": "No se pudo descargar el archivo. Revisa tu conexión.",
+      "offlineUnsupported": "Este navegador no puede guardar archivos para usarlos sin conexión."
+    },
+    "proposals": {
+      "title": "Manuales propuestos",
+      "reviewTitle": "Manuales por revisar",
+      "hint": "Esperando la revisión de un administrador.",
+      "pending": "Pendiente",
+      "rejected": "Rechazado",
+      "withdraw": "Retirar",
+      "publish": "Publicar",
+      "reject": "Rechazar"
+    },
+    "saved": {
+      "title": "Guardados en este dispositivo",
+      "hint": "Disponibles sin internet.",
+      "open": "Abrir",
+      "remove": "Quitar",
+      "offlineList": "Todos los manuales guardados"
+    }
+  },
   "Scoring": {
     "copySuffix": "(copia)",
     "title": "Hojas de puntuación",

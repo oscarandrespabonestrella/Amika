@@ -33,6 +33,9 @@
         color: #9aa7b2;
         margin: 0 0 1.5rem;
       }
+      a {
+        color: #5ed3b5;
+      }
       button {
         min-height: 2.75rem;
         padding: 0 1.25rem;
@@ -52,6 +55,7 @@
       <h1 id="title"></h1>
       <p id="body"></p>
       <button id="retry" type="button"></button>
+      <p><a id="saved" href="/offline/manuals.html"></a></p>
     </main>
     <script>
       var texts = {
@@ -59,16 +63,25 @@
           "You're offline",
           "Amika needs a connection. Check your network and try again.",
           "Retry",
+          "Saved manuals",
         ],
         es: [
           "Sin conexión",
           "Amika necesita conexión. Revisa tu red e inténtalo de nuevo.",
           "Reintentar",
+          "Manuales guardados",
         ],
         fr: [
           "Hors ligne",
           "Amika a besoin d'une connexion. Vérifiez votre réseau et réessayez.",
           "Réessayer",
+          "Manuels enregistrés",
+        ],
+        pt: [
+          "Sem conexão",
+          "O Amika precisa de conexão. Verifique sua rede e tente de novo.",
+          "Tentar de novo",
+          "Manuais salvos",
         ],
       };
       var lang = (navigator.language || "en").slice(0, 2);
@@ -78,6 +91,7 @@
       document.getElementById("body").textContent = t[1];
       var btn = document.getElementById("retry");
       btn.textContent = t[2];
+      document.getElementById("saved").textContent = t[3];
       btn.addEventListener("click", function () {
         location.reload();
       });

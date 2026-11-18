@@ -8,6 +8,7 @@ import {
   getGameSource,
 } from "@/features/catalog";
 import { GameCenter, getGameCenter } from "@/features/game-center";
+import { ManualPanel, RuleFileActions } from "@/features/manuals";
 import {
   getLibraryItem,
   LibraryPanel,
@@ -67,7 +68,37 @@ export default async function GamePage({
       ownedGameIds={library.map((entry) => entry.game.id)}
       onExpansionImported={ownImportedExpansion}
       libraryPanel={<LibraryPanel gameId={game.id} item={item} />}
-      gameCenter={center && <GameCenter gameId={game.id} data={center} />}
+      gameCenter={
+        center &&
+        userId && (
+          <GameCenter
+            gameId={game.id}
+            data={center}
+            rulesSlot={
+              <ManualPanel
+                gameId={game.id}
+                gameName={game.name}
+                userId={userId}
+                isAdmin={center.isAdmin}
+              />
+            }
+            renderRuleActions={(r) =>
+              // only links that are known to be a PDF can be downloaded or kept offline
+              r.url && (r.verifiedAt || /\.pdf(\?|$)/i.test(r.url)) ? (
+                <RuleFileActions
+                  resourceId={r.id}
+                  url={r.url}
+                  gameId={game.id}
+                  gameName={game.name}
+                  title={r.title}
+                  locale={r.locale}
+                  publisher={r.publisher}
+                />
+              ) : null
+            }
+          />
+        )
+      }
       scoringPanel={<SheetsLink gameId={game.id} count={sheets.length} />}
       playsPanel={<PlaysPanel gameId={game.id} plays={plays} />}
       statsPanel={<GameStatsPanel data={stats} categories={categories} />}

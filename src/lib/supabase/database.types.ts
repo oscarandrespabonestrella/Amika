@@ -823,6 +823,68 @@ export type Database = {
           },
         ];
       };
+      player_group_members: {
+        Row: {
+          group_id: string;
+          player_id: string;
+        };
+        Insert: {
+          group_id: string;
+          player_id: string;
+        };
+        Update: {
+          group_id?: string;
+          player_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "player_group_members_group_id_fkey";
+            columns: ["group_id"];
+            isOneToOne: false;
+            referencedRelation: "player_groups";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "player_group_members_player_id_fkey";
+            columns: ["player_id"];
+            isOneToOne: false;
+            referencedRelation: "players";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      player_groups: {
+        Row: {
+          created_at: string;
+          id: string;
+          name: string;
+          owner_id: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          name: string;
+          owner_id?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          name?: string;
+          owner_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "player_groups_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       player_link_requests: {
         Row: {
           created_at: string;

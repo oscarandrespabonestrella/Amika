@@ -19,6 +19,7 @@
     "prebuild": "node scripts/copy-model-assets.mjs",
     "admin:grant": "node scripts/grant-admin.mjs",
     "pwa:icons": "node scripts/generate-pwa-icons.mjs",
+    "routes:map": "node --import tsx scripts/route-map.mts",
     "recognition:eval": "node --conditions=react-server --import tsx scripts/eval-recognition.mts",
     "recognition:pack": "node --conditions=react-server --import tsx scripts/build-reference-pack.mts",
     "catalog:seed-top500": "node --conditions=react-server --import tsx scripts/seed-catalog-top500.mts"

@@ -27,7 +27,7 @@ import {
 } from "../actions/play-actions";
 import { computePlay } from "../compute";
 import { PLAY_LIMITS } from "../schemas";
-import { ScoreBoard } from "./score-board";
+import { ScoreBoard } from "../components/score-board";
 import type { PlayDetail } from "../services/play-service";
 
 type Props = {

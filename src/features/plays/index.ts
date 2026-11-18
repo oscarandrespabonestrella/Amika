@@ -13,5 +13,5 @@ export {
   type PlayDetail,
   type PlaySummary,
 } from "./services/play-service";
-export { PlayForm } from "./components/play-form";
+export { PlayForm } from "./views/play-form";
 export { PlaysPanel } from "./components/plays-panel";

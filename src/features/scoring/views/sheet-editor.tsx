@@ -24,8 +24,8 @@ import {
 } from "../engine/definition";
 import { validateDefinition, type DefinitionIssue } from "../engine/validate";
 import { SHEET_TITLE_MAX } from "../schemas";
-import { CategoryEditor } from "./category-editor";
-import { ScorePreview } from "./score-preview";
+import { CategoryEditor } from "../components/category-editor";
+import { ScorePreview } from "../components/score-preview";
 
 type Props = {
   gameId: string;

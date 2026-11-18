@@ -4,7 +4,7 @@ import { EmptyState } from "@/components/empty-state";
 import { Link } from "@/i18n/navigation";
 import { winRate } from "../format";
 import type { MyStats as MyStatsData } from "../services/stats-service";
-import { HeadToHead } from "./head-to-head";
+import { HeadToHead } from "../components/head-to-head";
 
 const linkClass =
   "inline-flex h-11 items-center rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground outline-none hover:bg-primary/80 focus-visible:ring-3 focus-visible:ring-ring/50";

@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getGameDetail } from "@/features/catalog";
 import { listFriends } from "@/features/friends";
 import { getPlay } from "@/features/plays";
-import { LivePlay } from "@/features/plays/components/live-play";
+import { LivePlay } from "@/features/plays/views/live-play";
 import { getLivePlay } from "@/features/plays/services/sharing-service";
 import { assertLocale } from "@/i18n/locale";
 

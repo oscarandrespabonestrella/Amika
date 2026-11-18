@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getMyStats } from "@/features/stats";
-import { MyStatsView } from "@/features/stats/components/my-stats";
+import { MyStatsView } from "@/features/stats/views/my-stats";
 import { assertLocale } from "@/i18n/locale";
 
 export default async function StatsPage({

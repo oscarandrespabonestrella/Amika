@@ -5,12 +5,12 @@ export {
   searchExternalAction,
   type CreateCustomGameResult,
 } from "./actions/catalog-actions";
-export { CustomGameForm } from "./components/custom-game-form";
+export { CustomGameForm } from "./views/custom-game-form";
 export { ExternalSearch } from "./components/external-search";
 export { groupExpansions, pickExpansionParent } from "./group-expansions";
 export { findExpansionParents } from "./services/expansion-parents";
 export { GameCard } from "./components/game-card";
-export { GameDetailView } from "./components/game-detail";
+export { GameDetailView } from "./views/game-detail";
 export { SearchForm } from "./components/search-form";
 export { customGameSchema, parseSearchParams } from "./schemas";
 export type { CustomGameInput, SearchParams } from "./schemas";

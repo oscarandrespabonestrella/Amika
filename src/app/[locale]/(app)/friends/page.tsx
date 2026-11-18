@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { FriendsPanel } from "@/features/friends/components/friends-panel";
+import { FriendsPanel } from "@/features/friends/views/friends-panel";
 import { listFriends } from "@/features/friends";
 import { ensureDisplayName } from "@/features/profiles";
 import {

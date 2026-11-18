@@ -29,7 +29,7 @@ export default async function GroupsPage({
         <p className="text-muted-foreground">{t("subtitle")}</p>
       </header>
 
-      {players.length === 0 ? (
+      {players.length === 0 && groups.length === 0 ? (
         <>
           <EmptyState
             icon={Users}

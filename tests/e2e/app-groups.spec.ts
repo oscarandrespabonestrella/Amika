@@ -184,3 +184,18 @@ test("the groups page has no accessibility violations", async ({ page }) => {
     .analyze();
   expect(results.violations).toEqual([]);
 });
+
+test("groups stay reachable after the roster is emptied", async ({ page }) => {
+  await withDb(async (c) => {
+    await c.query(
+      `insert into public.player_groups (owner_id, name) values ($1, 'Huérfano')`,
+      [userR],
+    );
+    await c.query(`delete from public.players where owner_id = $1`, [userR]);
+  });
+  await page.goto("/en/groups");
+  await expect(groupItem(page, "Huérfano")).toBeVisible();
+  await expect(
+    groupItem(page, "Huérfano").getByText("No players", { exact: true }),
+  ).toBeVisible();
+});

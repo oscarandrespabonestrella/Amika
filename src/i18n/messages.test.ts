@@ -3,8 +3,9 @@ import { routing } from "./routing";
 import en from "./messages/en.json";
 import es from "./messages/es.json";
 import fr from "./messages/fr.json";
+import pt from "./messages/pt.json";
 
-const CATALOGS = { en, es, fr } as const;
+const CATALOGS = { en, es, fr, pt } as const;
 
 type Json = string | { [key: string]: Json };
 
@@ -26,7 +27,7 @@ describe("i18n catalogs", () => {
     expect(Object.keys(CATALOGS).sort()).toEqual([...routing.locales].sort());
   });
 
-  it.each(["es", "fr"] as const)(
+  it.each(["es", "fr", "pt"] as const)(
     "%s has exactly the same keys as en",
     (locale) => {
       expect(Object.keys(flatten(CATALOGS[locale])).sort()).toEqual(
@@ -35,7 +36,7 @@ describe("i18n catalogs", () => {
     },
   );
 
-  it.each(["en", "es", "fr"] as const)("%s has no empty strings", (locale) => {
+  it.each(["en", "es", "fr", "pt"] as const)("%s has no empty strings", (locale) => {
     const empty = Object.entries(flatten(CATALOGS[locale])).filter(
       ([, value]) => value.trim() === "",
     );

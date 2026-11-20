@@ -114,9 +114,7 @@ export function SearchForm({ params }: { params: SearchParams }) {
         </div>
         {hasFilters && (
           <Link
-            href={
-              `/games?q=${encodeURIComponent(params.q)}`
-            }
+            href={`/games?q=${encodeURIComponent(params.q)}`}
             className="inline-block pb-2 text-sm text-primary underline-offset-4 hover:underline"
           >
             {t("clear")}

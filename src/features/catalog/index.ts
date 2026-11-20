@@ -12,6 +12,7 @@ export { findExpansionParents } from "./services/expansion-parents";
 export { GameCard } from "./components/game-card";
 export { GameDetailView } from "./views/game-detail";
 export { SearchForm } from "./components/search-form";
+export { SearchMemory } from "./components/search-memory";
 export { customGameSchema, parseSearchParams } from "./schemas";
 export type { CustomGameInput, SearchParams } from "./schemas";
 export {

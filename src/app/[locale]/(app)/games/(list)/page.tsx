@@ -12,8 +12,14 @@ import {
   parseSearchParams,
   searchLocalGames,
   SearchForm,
+  SearchMemory,
 } from "@/features/catalog";
-import { BggCollectionImport } from "@/features/library";
+import {
+  BggCollectionImport,
+  getLibraryStatuses,
+  LibraryBadges,
+  libraryStatusesAction,
+} from "@/features/library";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +40,12 @@ export default async function GamesPage({
     getTranslations("Games"),
   ]);
   const groups = groupExpansions(games, await findExpansionParents(games));
+  // Los juegos que ya están en tu biblioteca se marcan con un chip, no se ocultan.
+  const inLibrary = await getLibraryStatuses(games.map((g) => g.id));
+  const libraryChip = (id: string) => {
+    const entry = inLibrary[id];
+    return entry ? <LibraryBadges {...entry} /> : undefined;
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -56,6 +68,7 @@ export default async function GamesPage({
         </Link>
       </header>
 
+      <SearchMemory />
       <SearchForm params={query} />
 
       <section aria-label={t("title")} className="flex flex-col gap-3">
@@ -69,8 +82,9 @@ export default async function GamesPage({
                 <GameCard
                   key={item.id}
                   game={item}
+                  extra={libraryChip(item.id)}
                   expansions={expansions.map((e) => (
-                    <GameCard key={e.id} game={e} />
+                    <GameCard key={e.id} game={e} extra={libraryChip(e.id)} />
                   ))}
                 />
               ))}
@@ -91,6 +105,7 @@ export default async function GamesPage({
         key={query.q}
         query={query.q}
         available={getGameSource().isConfigured()}
+        lookupLibrary={libraryStatusesAction}
       />
 
       <BggCollectionImport available={getGameSource().isConfigured()} />

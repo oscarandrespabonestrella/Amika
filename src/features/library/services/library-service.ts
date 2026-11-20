@@ -50,6 +50,35 @@ export async function getLibraryItem(
   };
 }
 
+export type LibraryStatusEntry = {
+  status: LibraryStatus;
+  isFavorite: boolean;
+  rating: number | null;
+};
+
+/** Which of these games are in the signed-in user's library (RLS: only their own rows). */
+export async function getLibraryStatuses(
+  gameIds: string[],
+): Promise<Record<string, LibraryStatusEntry>> {
+  const ids = gameIds.filter((id) => z.uuid().safeParse(id).success);
+  if (ids.length === 0) return {};
+  const { data, error } = await createSupabaseServerClient()
+    .from("library_items")
+    .select("game_id, status, is_favorite, rating")
+    .in("game_id", ids);
+  if (error) throw error;
+  return Object.fromEntries(
+    (data ?? []).map((row) => [
+      row.game_id,
+      {
+        status: row.status as LibraryStatus,
+        isFavorite: row.is_favorite,
+        rating: row.rating,
+      },
+    ]),
+  );
+}
+
 export async function countLibrary(): Promise<number> {
   const { count, error } = await createSupabaseServerClient()
     .from("library_items")

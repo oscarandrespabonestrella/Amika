@@ -1,11 +1,12 @@
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import Form from "next/form";
 import { useLocale, useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import type { SearchParams } from "../schemas";
 
 /** Plain GET form: works without JavaScript and keeps the state in the URL. */
@@ -21,6 +22,13 @@ export function SearchForm({ params }: { params: SearchParams }) {
       role="search"
       className="flex flex-col gap-3"
     >
+      {/* CSS-only toggle (same as the library): the checkbox drives the filters panel. */}
+      <input
+        id="more-filters"
+        type="checkbox"
+        defaultChecked={hasFilters}
+        className="peer sr-only"
+      />
       <div className="flex gap-2">
         <div className="relative flex-1">
           <Search
@@ -37,19 +45,32 @@ export function SearchForm({ params }: { params: SearchParams }) {
             className="h-12 rounded-xl pl-9 focus-visible:border-primary"
           />
         </div>
+        <label
+          htmlFor="more-filters"
+          title={t("filters")}
+          className={cn(
+            buttonVariants({ variant: "outline", size: "lg" }),
+            "relative h-12 cursor-pointer rounded-xl px-3 select-none sm:px-4",
+            "peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50",
+            "peer-checked:border-primary peer-checked:bg-primary/10",
+          )}
+        >
+          <SlidersHorizontal className="size-4" aria-hidden />
+          <span className="sr-only sm:not-sr-only">{t("filters")}</span>
+          {hasFilters && (
+            <span
+              aria-hidden
+              className="absolute -top-1 -right-1 size-2.5 rounded-full bg-primary"
+            />
+          )}
+        </label>
         <Button type="submit" size="lg" className="h-12 rounded-xl px-5">
           {t("submit")}
         </Button>
       </div>
 
-      <details
-        open={hasFilters}
-        className="rounded-xl border border-border bg-card px-4 py-2"
-      >
-        <summary className="cursor-pointer py-1 text-sm font-medium select-none">
-          {t("filters")}
-        </summary>
-        <div className="grid grid-cols-1 gap-4 pt-3 pb-2 sm:grid-cols-3">
+      <div className="hidden rounded-xl border border-border bg-card px-4 py-3 peer-checked:block">
+        <div className="grid grid-cols-1 gap-4 pb-2 sm:grid-cols-3">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="kind">{t("kind")}</Label>
             <NativeSelect
@@ -94,14 +115,14 @@ export function SearchForm({ params }: { params: SearchParams }) {
         {hasFilters && (
           <Link
             href={
-              params.q ? `/games?q=${encodeURIComponent(params.q)}` : "/games"
+              `/games?q=${encodeURIComponent(params.q)}`
             }
             className="inline-block pb-2 text-sm text-primary underline-offset-4 hover:underline"
           >
             {t("clear")}
           </Link>
         )}
-      </details>
+      </div>
     </Form>
   );
 }

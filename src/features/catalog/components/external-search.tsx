@@ -2,7 +2,7 @@
 
 import { Globe, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -17,7 +17,16 @@ type Props = {
   query: string;
   /** False while the BGG token is pending: the section explains it instead. */
   available: boolean;
+  /**
+   * Looks up which catalog games the user already has in their library. Injected by the
+   * page (the library module depends on the catalog, not the other way round).
+   */
+  lookupLibrary?: (gameIds: string[]) => Promise<Record<string, LibraryMark>>;
 };
+
+type LibraryMark = { status: string };
+
+const STORE_KEY = "games-external-search";
 
 type ErrorCode =
   | "unauthenticated"
@@ -27,10 +36,12 @@ type ErrorCode =
   | "not_found"
   | "failed";
 
-export function ExternalSearch({ query, available }: Props) {
+export function ExternalSearch({ query, available, lookupLibrary }: Props) {
   const t = useTranslations("Games");
+  const tLibrary = useTranslations("Library.badge");
   const router = useRouter();
   const [hits, setHits] = useState<SearchHit[] | null>(null);
+  const [owned, setOwned] = useState<Record<string, LibraryMark>>({});
   const [error, setError] = useState<ErrorCode | null>(null);
   const [addingId, setAddingId] = useState<string | null>(null);
   const [searching, startSearch] = useTransition();
@@ -39,12 +50,59 @@ export function ExternalSearch({ query, available }: Props) {
   const text = query.trim();
   const canSearch = available && text.length >= 2;
 
+  // A failed lookup only loses the chips: the results themselves still show.
+  const fetchMarks = useCallback(
+    async (list: SearchHit[]): Promise<Record<string, LibraryMark>> => {
+      const known = list.flatMap((h) => (h.gameId ? [h.gameId] : []));
+      if (!lookupLibrary || known.length === 0) return {};
+      return lookupLibrary(known).catch(() => ({}));
+    },
+    [lookupLibrary],
+  );
+
+  // Coming back to the page (back button, menu): show the last BGG results for this text.
+  useEffect(() => {
+    let cancelled = false;
+    try {
+      const raw = sessionStorage.getItem(STORE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as { query?: string; hits?: SearchHit[] };
+      if (saved.query !== text || !Array.isArray(saved.hits)) return;
+      const restored = saved.hits;
+      // Library state may have changed since: refresh the chips, then show the results.
+      void fetchMarks(restored).then((marks) => {
+        if (cancelled) return;
+        setOwned(marks);
+        setHits(restored);
+      });
+    } catch {
+      // Storage unavailable or corrupt: just start without results.
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, [text, fetchMarks]);
+
+  function remember(list: SearchHit[]) {
+    try {
+      sessionStorage.setItem(
+        STORE_KEY,
+        JSON.stringify({ query: text, hits: list }),
+      );
+    } catch {
+      // Not remembering is fine.
+    }
+  }
+
   function search() {
     startSearch(async () => {
       setError(null);
       const result = await searchExternalAction(text);
-      if (result.ok) setHits(result.hits);
-      else setError(result.error);
+      if (result.ok) {
+        setOwned(await fetchMarks(result.hits));
+        setHits(result.hits);
+        remember(result.hits);
+      } else setError(result.error);
     });
   }
 
@@ -54,6 +112,16 @@ export function ExternalSearch({ query, available }: Props) {
       setError(null);
       const result = await importGameAction(hit.externalId);
       if (result.ok) {
+        // It is in the catalog now: when the user comes back it shows "Open", not "Add".
+        if (hits) {
+          remember(
+            hits.map((h) =>
+              h.externalId === hit.externalId
+                ? { ...h, gameId: result.gameId }
+                : h,
+            ),
+          );
+        }
         router.push(`/games/${result.gameId}`);
       } else {
         setAddingId(null);
@@ -138,6 +206,21 @@ export function ExternalSearch({ query, available }: Props) {
                       {hit.yearPublished && <span>{hit.yearPublished}</span>}
                       {hit.kind === "expansion" && (
                         <Badge variant="secondary">{t("kind.expansion")}</Badge>
+                      )}
+                      {hit.gameId && owned[hit.gameId] && (
+                        <Badge
+                          variant={
+                            owned[hit.gameId].status === "owned"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {tLibrary(
+                            owned[hit.gameId].status === "owned"
+                              ? "owned"
+                              : "previously_owned",
+                          )}
+                        </Badge>
                       )}
                     </span>
                   </span>

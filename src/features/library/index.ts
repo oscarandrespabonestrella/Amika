@@ -5,9 +5,12 @@ export { LibraryPanel } from "./components/library-panel";
 export { LibraryView } from "./views/library-view";
 export { parseLibraryFilters } from "./schemas";
 export type { LibraryFilters, LibraryStatus } from "./schemas";
+export { libraryStatusesAction } from "./actions/library-actions";
 export {
   countLibrary,
   getLibraryCounts,
+  getLibraryStatuses,
+  type LibraryStatusEntry,
   getLibraryItem,
   listLibraryTerms,
   searchLibrary,

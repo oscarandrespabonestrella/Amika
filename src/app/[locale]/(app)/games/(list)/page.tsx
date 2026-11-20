@@ -14,7 +14,6 @@ import {
   SearchForm,
 } from "@/features/catalog";
 import { BggCollectionImport } from "@/features/library";
-import { LiveIdentify } from "@/features/recognition/components/live-identify";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -58,8 +57,6 @@ export default async function GamesPage({
       </header>
 
       <SearchForm params={query} />
-
-      <LiveIdentify />
 
       <section aria-label={t("title")} className="flex flex-col gap-3">
         {games.length > 0 ? (

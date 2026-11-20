@@ -7,6 +7,8 @@ import { PIC_H, PIC_W, syntheticCover, writeY4m } from "../support/y4m";
 import { canRunAppTests, STATE_FILE } from "./helpers";
 
 test.skip(!canRunAppTests, "Clerk keys / database not configured");
+// Reconocimiento por cámara desactivado temporalmente: quitar al reactivarlo.
+test.skip(true, "Live recognition UI temporarily disabled");
 
 // The REAL cover of a game of the top-500 pack (Brass: Birmingham, BGG rank 1), as the
 // generator saw it. The user of this spec has NO games, so the camera can only know it

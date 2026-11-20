@@ -14,6 +14,10 @@ import {
 } from "./helpers";
 
 test.skip(!canRunAppTests, "Clerk keys / database not configured");
+// Reconocimiento por cámara desactivado temporalmente (lento y poco fiable):
+// se retiró <LiveIdentify /> de /games y <RecognitionSettings /> de /settings.
+// Quitar este skip al reactivar la funcionalidad.
+test.skip(true, "Live recognition UI temporarily disabled");
 
 // Chromium's fake camera plays this file: the synthetic cover of the fixture game.
 const TARGET_SEED = 424242;

@@ -10,9 +10,28 @@ import { importCollectionBatch } from "../import-collection";
 import { collectionBatchSchema, libraryInputSchema } from "../schemas";
 import {
   addLibraryItems,
+  getLibraryStatuses,
+  type LibraryStatusEntry,
   removeLibraryItem,
   saveLibraryItem,
 } from "../services/library-service";
+
+/** Which of the given catalog games the user already has (empty when signed out). */
+export async function libraryStatusesAction(
+  gameIds: unknown,
+): Promise<Record<string, LibraryStatusEntry>> {
+  try {
+    const { userId } = await auth();
+    if (!userId) return {};
+    const parsed = z.array(z.uuid()).max(50).safeParse(gameIds);
+    if (!parsed.success) return {};
+    return await getLibraryStatuses(parsed.data);
+  } catch (error) {
+    unstable_rethrow(error);
+    logger.error("library.statuses failed", error);
+    return {};
+  }
+}
 
 export type LibraryActionResult =
   | { ok: true }

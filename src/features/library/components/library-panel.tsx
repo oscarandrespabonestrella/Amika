@@ -69,12 +69,8 @@ export function LibraryPanel({ gameId, item }: Props) {
               type="button"
               disabled={pending}
               onClick={() => save({ status })}
-              className={cn(
-                "min-h-10 rounded-lg px-3 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60",
-                status === "owned"
-                  ? "bg-primary font-semibold text-primary-foreground"
-                  : "text-foreground/80 hover:bg-muted hover:text-foreground",
-              )}
+              // Both options look the same: none is selected until the user picks one.
+              className="min-h-10 rounded-lg px-3 text-sm text-foreground/80 outline-none hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60"
             >
               {t(`add.${status}`)}
             </button>

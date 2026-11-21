@@ -17,7 +17,7 @@
 - The pack's vectors must be produced with the SAME model and image preparation as `embed.worker.ts` (`EMBED_DIM` 512, L2-normalized).
 - Honesty rule unchanged: **0 wrong answers shown as "high" or "medium"**; thresholds only in `embedding/thresholds.ts`.
 - The catalog wins over the pack for the same BGG id; the `buildReferences` purge never removes pack entries.
-- The 500 = `Rank` 1..500 of `boardgame_ranks.csv` (kept OUTSIDE the repo in `C:\Users\andre\Documents\amika-eval\`; photos and `labels.resolved.json` live there too). The CSV only has 64 px thumbnails: full covers come from BGG's API through the existing `createBggSource` (token in `.env.local`).
+- The 500 = `Rank` 1..500 of `boardgame_ranks.csv` (kept OUTSIDE the repo in `<eval-dir>/`; photos and `labels.resolved.json` live there too). The CSV only has 64 px thumbnails: full covers come from BGG's API through the existing `createBggSource` (token in `.env.local`).
 - Pack covers are only served from `coverUrl` values **in the manifest**, never from the request, through `isAllowedCoverUrl`/`fetchCoverBytes`/`coverJpeg`.
 - No hard-coded UI strings: `src/i18n/messages/{en,es,fr}.json` with identical keys. Never import `cn` from `"cn"`.
 - E2E fixture prefix `9910` (9900–9909 taken); spec files named `app-*.spec.ts`; CPU-heavy ones in `app-heavy`.
@@ -101,7 +101,7 @@ src/app/api/covers/pack/[bggId]/route.ts                pack cover endpoint
 - [ ] **Step 1: Failing test** (`scripts/build-reference-pack.test.ts` or a unit test of the pure `buildManifest(rows, details, hash)`): rows without a cover are reported in `skipped` and absent from the manifest; manifest order equals rank order; `vectors` names `vectors-<hash8>.bin` where `hash8` is the first 8 hex chars of the SHA-256 of the bytes; count in manifest equals vector count.
 - [ ] **Step 2:** run → FAIL.
 - [ ] **Step 3: Implement.** Sequential `fetchGame` with `--delay` between calls (BGG throttles), resumable through a JSON cache of details and cover JPEGs in `--cache`, embedding with the shared Node CLIP, a final summary (generated, skipped with ids). `--self-test` runs on 3 synthetic rows without network.
-- [ ] **Step 4: Run it for real:** `npm run recognition:pack -- C:\Users\andre\Documents\amika-eval\boardgame_ranks.csv --count 500` (needs `BGG_API_TOKEN` in `.env.local` and the model from `copy-model-assets`; expect 15–30 min). Record in the ledger: generated count, skipped list, `vectors` size, elapsed time. Spot check: the first three manifest names are Brass: Birmingham, Ark Nova, Pandemic Legacy: Season 1.
+- [ ] **Step 4: Run it for real:** `npm run recognition:pack -- <eval-dir>/boardgame_ranks.csv --count 500` (needs `BGG_API_TOKEN` in `.env.local` and the model from `copy-model-assets`; expect 15–30 min). Record in the ledger: generated count, skipped list, `vectors` size, elapsed time. Spot check: the first three manifest names are Brass: Birmingham, Ark Nova, Pandemic Legacy: Season 1.
 - [ ] **Step 5:** unit suite, lint, typecheck. **Step 6: Commit** — `feat(recognition): top-500 reference pack and its generator`.
 
 ### Task 5: Use the pack in the live session and offer "Add to catalog"
@@ -125,7 +125,7 @@ src/app/api/covers/pack/[bggId]/route.ts                pack cover endpoint
 **Interfaces:** Consumes `getPackManifest` data and the `.bin`; produces a per-photo report line `file | expected | in top-500? | answer | level`.
 
 - [ ] **Step 1:** add `--pack` (references = dev catalog covers + the pack minus games already in the catalog); a self-test case where a synthetic photo not in any reference must end "not sure".
-- [ ] **Step 2: Run** `npm run recognition:eval -- C:\Users\andre\Documents\amika-eval --labels labels.resolved.json --pack`. Record the table in the ledger: recognized / not sure / WRONG, which photos are in the top 500.
+- [ ] **Step 2: Run** `npm run recognition:eval -- <eval-dir> --labels labels.resolved.json --pack`. Record the table in the ledger: recognized / not sure / WRONG, which photos are in the top 500.
 - [ ] **Step 3: Gate:** 0 wrong at "high"/"medium", and every photo whose game is not in the top 500 and not in the catalog ends "not sure". If a wrong answer appears, STOP and report with the table; do not tune thresholds to fit silently. If thresholds change, change them only in `thresholds.ts` and re-run both this evaluation and the old 65-cover check from the 7a-2 ledger.
 - [ ] **Step 4: Commit** — `feat(recognition): evaluation against the pack, calibration results`.
 

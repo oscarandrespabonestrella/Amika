@@ -21,7 +21,7 @@ Todo en el dispositivo; la función sigue **apagada por defecto y por dispositiv
 ## Diseño
 
 ### 1. Fuente de la lista
-`boardgame_ranks.csv` (volcado oficial de BGG, descargado por el usuario a `C:\Users\andre\Documents\amika-eval\`; fuera del repo). Columnas: `ID, Name, Year, Rank, Average, Bayes average, Users rated, URL, Thumbnail`. Se toman las filas con `Rank` 1..500 (descartando filas sin id o sin ranking). El CSV solo trae miniaturas de 64 px: las portadas completas se piden a la API de BGG (`thing`, lotes de 20, con el token y pausas entre peticiones).
+`boardgame_ranks.csv` (volcado oficial de BGG, descargado por el usuario a `<eval-dir>/`; fuera del repo). Columnas: `ID, Name, Year, Rank, Average, Bayes average, Users rated, URL, Thumbnail`. Se toman las filas con `Rank` 1..500 (descartando filas sin id o sin ranking). El CSV solo trae miniaturas de 64 px: las portadas completas se piden a la API de BGG (`thing`, lotes de 20, con el token y pausas entre peticiones).
 
 ### 2. Generación (script de un solo uso, en la máquina del desarrollador)
 `scripts/build-reference-pack.mts <csv> [--count 500]`:

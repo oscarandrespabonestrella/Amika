@@ -1278,6 +1278,42 @@
         "urlLabel": "Lien public de la soirée",
         "active": "Lien actif jusqu’à la fin du {date} (UTC)."
       }
+    },
+    "guest": {
+      "metaTitle": "Soirée jeux",
+      "title": "Soirée jeux",
+      "hostedBy": "Organisée par {host}",
+      "someone": "Quelqu’un",
+      "what": "Qu’est-ce qu’Amika ?",
+      "loading": "Chargement de la soirée…",
+      "gamesTitle": "Jeux",
+      "noGames": "Il n’y a pas encore de jeux pour cette soirée.",
+      "closedNotice": "Cette soirée est fermée : les votes ne peuvent plus changer.",
+      "nameTitle": "Qui êtes-vous ?",
+      "nameHint": "Saisissez votre nom pour que les autres voient votre vote. Pas besoin de compte.",
+      "nameLabel": "Votre nom",
+      "join": "Rejoindre",
+      "joining": "Connexion…",
+      "needNameToVote": "Saisissez d’abord votre nom et votre vote sera compté.",
+      "youAre": "Vous votez en tant que {name}",
+      "changeName": "Changer de nom",
+      "saveName": "Enregistrer le nom",
+      "cancel": "Annuler",
+      "voteFor": "Voter pour {name}",
+      "votedBy": "{count, plural, one {# vote} other {# votes}} : {names}",
+      "noVotes": "Pas encore de votes",
+      "players": "{range} joueurs",
+      "minutes": "{range} min",
+      "updated": "Votes mis à jour.",
+      "errors": {
+        "inactive": "Ce lien n’est plus actif",
+        "rate": "Trop de votes à la suite, attendez un instant",
+        "full": "Cette soirée a déjà le nombre maximum d’invités.",
+        "closed": "Cette soirée est fermée.",
+        "invalidName": "Saisissez un nom de 1 à 40 caractères.",
+        "needName": "Saisissez votre nom pour voter.",
+        "failed": "Une erreur s’est produite. Réessayez."
+      }
     }
   }
 }

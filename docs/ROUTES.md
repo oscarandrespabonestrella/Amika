@@ -24,6 +24,7 @@ Pages live in `src/app/[locale]/**/page.tsx`. The URL is the folder path without
 | `/home` | `[locale]/(app)/home/page.tsx` | — |
 | `/library` | `[locale]/(app)/library/page.tsx` | `library/views/library-view.tsx` |
 | `/log` | `[locale]/(app)/log/page.tsx` | — |
+| `/n/:token` | `[locale]/n/[token]/page.tsx` | `nights/views/guest-night.tsx` |
 | `/nights` | `[locale]/(app)/nights/page.tsx` | `nights/views/nights-home.tsx` |
 | `/nights/:id` | `[locale]/(app)/nights/[id]/page.tsx` | `nights/views/night-detail.tsx` |
 | `/nights/new` | `[locale]/(app)/nights/new/page.tsx` | `nights/views/night-picker.tsx` |

@@ -1278,6 +1278,42 @@
         "urlLabel": "Public link of the night",
         "active": "Link active until the end of {date} (UTC)."
       }
+    },
+    "guest": {
+      "metaTitle": "Game night",
+      "title": "Game night",
+      "hostedBy": "Hosted by {host}",
+      "someone": "Someone",
+      "what": "What is Amika?",
+      "loading": "Loading the night…",
+      "gamesTitle": "Games",
+      "noGames": "There are no games on this night yet.",
+      "closedNotice": "This night is closed: votes can no longer change.",
+      "nameTitle": "Who are you?",
+      "nameHint": "Type your name so the others can see your vote. No account needed.",
+      "nameLabel": "Your name",
+      "join": "Join",
+      "joining": "Joining…",
+      "needNameToVote": "Type your name first and your vote will be counted.",
+      "youAre": "You vote as {name}",
+      "changeName": "Change name",
+      "saveName": "Save name",
+      "cancel": "Cancel",
+      "voteFor": "Vote for {name}",
+      "votedBy": "{count, plural, one {# vote} other {# votes}}: {names}",
+      "noVotes": "No votes yet",
+      "players": "{range} players",
+      "minutes": "{range} min",
+      "updated": "Votes updated.",
+      "errors": {
+        "inactive": "This link is no longer active",
+        "rate": "Too many votes in a row, wait a moment",
+        "full": "This night already has the maximum number of guests.",
+        "closed": "This night is closed.",
+        "invalidName": "Type a name between 1 and 40 characters.",
+        "needName": "Type your name to vote.",
+        "failed": "Something went wrong. Try again."
+      }
     }
   }
 }

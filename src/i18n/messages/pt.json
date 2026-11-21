@@ -1278,6 +1278,42 @@
         "urlLabel": "Ligação pública da noite",
         "active": "Ligação ativa até ao fim de {date} (UTC)."
       }
+    },
+    "guest": {
+      "metaTitle": "Noite de jogos",
+      "title": "Noite de jogos",
+      "hostedBy": "Organizada por {host}",
+      "someone": "Alguém",
+      "what": "O que é o Amika?",
+      "loading": "Carregando a noite…",
+      "gamesTitle": "Jogos",
+      "noGames": "Ainda não há jogos nesta noite.",
+      "closedNotice": "Esta noite está encerrada: os votos não podem mais mudar.",
+      "nameTitle": "Quem é você?",
+      "nameHint": "Digite seu nome para que os outros vejam seu voto. Não precisa de conta.",
+      "nameLabel": "Seu nome",
+      "join": "Entrar",
+      "joining": "Entrando…",
+      "needNameToVote": "Digite primeiro seu nome e seu voto será contado.",
+      "youAre": "Você vota como {name}",
+      "changeName": "Mudar nome",
+      "saveName": "Salvar nome",
+      "cancel": "Cancelar",
+      "voteFor": "Votar em {name}",
+      "votedBy": "{count, plural, one {# voto} other {# votos}}: {names}",
+      "noVotes": "Ainda sem votos",
+      "players": "{range} jogadores",
+      "minutes": "{range} min",
+      "updated": "Votos atualizados.",
+      "errors": {
+        "inactive": "Este link não está mais ativo",
+        "rate": "Votos demais seguidos, aguarde um momento",
+        "full": "Esta noite já tem o máximo de convidados.",
+        "closed": "Esta noite está encerrada.",
+        "invalidName": "Digite um nome de 1 a 40 caracteres.",
+        "needName": "Digite seu nome para votar.",
+        "failed": "Algo deu errado. Tente novamente."
+      }
     }
   }
 }

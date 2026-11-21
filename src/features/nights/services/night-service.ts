@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 import { auth } from "@clerk/nextjs/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { fromPgCode, type NightErrorCode } from "../error-codes";
 import { rankCandidates, type Ranked } from "../rank";
@@ -40,7 +41,7 @@ export type NightDetail = {
   players: number | null;
   maxMinutes: number | null;
   groupId: string | null;
-  /** The links table is private to clients: always null until a host-side read exists. */
+  /** Host only: end of validity of the active link, null if none or not the host. */
   linkExpiresAt: string | null;
   games: {
     id: string;
@@ -150,6 +151,7 @@ export async function getNight(id: string): Promise<NightDetail | null> {
   if (error) throw error;
   if (!night) return null;
 
+  const isOwner = night.owner_id === me;
   const [games, members, votes, voters, friends, profile] = await Promise.all([
     supabase
       .from("game_night_games")
@@ -158,11 +160,14 @@ export async function getNight(id: string): Promise<NightDetail | null> {
       )
       .eq("night_id", id)
       .order("created_at"),
-    supabase
-      .from("game_night_members")
-      .select("user_id, status")
-      .eq("night_id", id)
-      .order("invited_at"),
+    // Only the host sees the member list (they are all the host's friends).
+    isOwner
+      ? supabase
+          .from("game_night_members")
+          .select("user_id, status")
+          .eq("night_id", id)
+          .order("invited_at")
+      : Promise.resolve({ data: [], error: null }),
     supabase.from("game_night_votes").select("night_game_id, user_id"),
     supabase.rpc("night_votes", { p_night: id }),
     supabase.rpc("list_friends"),
@@ -192,17 +197,37 @@ export async function getNight(id: string): Promise<NightDetail | null> {
     namesByGame.set(v.night_game_id, list);
   }
 
+  let linkExpiresAt: string | null = null;
+  if (isOwner) {
+    // The links table is private to clients. The admin client is safe here: the RLS
+    // client already returned this night and its owner is the signed-in user. Only the
+    // existence of an active link is read, never token_hash. Validity follows the
+    // night (starts_on + 2 days, 00:00 UTC); the stored expires_at is informational.
+    const { data: link, error: linkError } = await createSupabaseAdminClient()
+      .from("game_night_links")
+      .select("id")
+      .eq("night_id", night.id)
+      .is("revoked_at", null)
+      .maybeSingle();
+    if (linkError) throw linkError;
+    if (link) {
+      linkExpiresAt = new Date(
+        Date.parse(`${night.starts_on}T00:00:00Z`) + 2 * MS_PER_DAY,
+      ).toISOString();
+    }
+  }
+
   return {
     id: night.id,
     title: night.title,
     startsOn: night.starts_on,
     status: statusOf(night.status, night.starts_on),
-    isOwner: night.owner_id === me,
+    isOwner,
     hostName: names.get(night.owner_id) ?? "",
     players: night.players,
     maxMinutes: night.max_minutes,
     groupId: night.group_id,
-    linkExpiresAt: null,
+    linkExpiresAt,
     games: (games.data ?? []).map((g) => ({
       id: g.id,
       gameId: g.game_id,

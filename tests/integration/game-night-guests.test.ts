@@ -92,11 +92,66 @@ describe.skipIf(!hasDb)("game night guests", () => {
     });
   }
 
-  it("link tables are closed to authenticated", async () => {
-    const code = await withRole("authenticated", { sub: A }, withLink, (c) =>
-      pgErrorCode(c.query("select * from public.game_night_links")),
+  for (const role of ["authenticated", "anon"] as const) {
+    it(`link tables are closed to ${role}`, async () => {
+      for (const t of [
+        "game_night_links",
+        "game_night_guests",
+        "game_night_requests",
+      ]) {
+        const code = await withRole(
+          role,
+          role === "anon" ? null : { sub: A },
+          withLink,
+          (c) => pgErrorCode(c.query(`select * from public.${t}`)),
+        );
+        expect(code, t).toBe("42501");
+      }
+    });
+  }
+
+  it("link validity follows starts_on of the night", async () => {
+    // moved later: still valid although the stored expires_at is older
+    await svc(
+      async (c) => {
+        const s = (
+          await c.query("select public.guest_night_state($1) as s", [TOKEN])
+        ).rows[0].s;
+        expect(s.night.startsOn).toBe("2099-06-01");
+        expect(s.night.status).toBe("open");
+      },
+      async (c) => {
+        await c.query(
+          `update public.game_nights set starts_on = '2099-06-01' where id = '${N1}'`,
+        );
+      },
     );
-    expect(code).toBe("42501");
+    // moved into the past: the link is dead although expires_at is in the future
+    await svc(
+      async (c) => {
+        expect(
+          await pgErrorCode(
+            c.query("select public.guest_night_state($1)", [TOKEN]),
+          ),
+        ).toBe("GN005");
+      },
+      async (c) => {
+        await c.query(
+          `update public.game_nights set starts_on = '2000-01-01' where id = '${N1}'`,
+        );
+      },
+    );
+  });
+
+  it("resolve_night_link is not callable by service_role", async () => {
+    await svc(async (c) => {
+      await c.query("set local role service_role");
+      expect(
+        await pgErrorCode(
+          c.query("select public.resolve_night_link($1)", [TOKEN]),
+        ),
+      ).toBe("42501");
+    });
   });
 
   it("host creates a link: expires two days after starts_on, replaces the old one", async () => {
@@ -183,7 +238,7 @@ describe.skipIf(!hasDb)("game night guests", () => {
       },
       async (c) => {
         await c.query(
-          `update public.game_night_links set expires_at = now() - interval '1 second'`,
+          `update public.game_nights set starts_on = current_date - 2`,
         );
       },
     );
@@ -366,6 +421,17 @@ describe.skipIf(!hasDb)("game night guests", () => {
     });
     await svc(async (c) => {
       expect(await pgErrorCode(join(c, "   "))).toBe("23514");
+    });
+    await svc(async (c) => {
+      expect(await pgErrorCode(join(c, " \t\r\n "))).toBe("23514");
+    });
+    await svc(async (c) => {
+      await join(c);
+      expect(
+        await pgErrorCode(
+          c.query("select public.guest_rename($1,$2,E'\t\n')", [TOKEN, KEY]),
+        ),
+      ).toBe("23514");
     });
     await svc(async (c) => {
       expect(await pgErrorCode(join(c, "x".repeat(41)))).toBe("23514");

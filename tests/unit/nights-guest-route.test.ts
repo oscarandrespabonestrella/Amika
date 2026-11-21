@@ -21,14 +21,25 @@ const STATE = {
   games: [],
   guest: { name: "Ana" },
 };
+const K1 = "B".repeat(43);
 const GAME = "11111111-1111-4111-8111-111111111111";
 
-function post(body: unknown, cookie?: string, token = TOKEN) {
+function post(
+  body: unknown,
+  cookie?: string,
+  token = TOKEN,
+  headers: Record<string, string> = {},
+  raw?: string,
+) {
   return POST(
     new NextRequest(`http://localhost/api/nights/guest/${token}`, {
       method: "POST",
-      body: JSON.stringify(body),
-      headers: cookie ? { cookie: `amika_guest=${cookie}` } : {},
+      body: raw ?? JSON.stringify(body),
+      headers: {
+        "content-type": "application/json",
+        ...(cookie ? { cookie: `amika_guest=${cookie}` } : {}),
+        ...headers,
+      },
     }),
     ctx(token),
   );
@@ -70,7 +81,7 @@ describe("guest route", () => {
     expect(cookie).toMatch(/HttpOnly/i);
     expect(cookie).toMatch(/SameSite=lax/i);
     expect(cookie).toMatch(/Secure/i);
-    expect(cookie).toContain("Path=/api/nights/guest");
+    expect(cookie).toContain(`Path=/api/nights/guest/${TOKEN}`);
     expect(cookie).toContain("Expires=Thu, 03 Dec 2026 00:00:00 GMT");
     expect(res.headers.get("referrer-policy")).toBe("no-referrer");
     expect(res.headers.get("x-robots-tag")).toBe("noindex");
@@ -87,7 +98,7 @@ describe("guest route", () => {
     vi.mocked(service.logGuestRequest).mockResolvedValue({
       error: "link_invalid",
     });
-    const res = await post({ action: "vote", nightGameId: GAME }, "k");
+    const res = await post({ action: "vote", nightGameId: GAME }, K1);
     expect(res.status).toBe(404);
     vi.mocked(service.logGuestRequest).mockResolvedValue({
       lastMinute: 1,
@@ -96,7 +107,7 @@ describe("guest route", () => {
     vi.mocked(service.guestToggleVote).mockResolvedValue({
       error: "link_invalid",
     });
-    const again = await post({ action: "vote", nightGameId: GAME }, "k");
+    const again = await post({ action: "vote", nightGameId: GAME }, K1);
     expect(again.status).toBe(404);
     expect(await again.json()).toEqual({ error: "link_invalid" });
   });
@@ -110,8 +121,8 @@ describe("guest route", () => {
   });
 
   it("a cookie renames the existing guest on join", async () => {
-    await post({ action: "join", name: "Ana" }, "key-1");
-    await post({ action: "join", name: "Bea" }, "key-1");
+    await post({ action: "join", name: "Ana" }, K1);
+    await post({ action: "join", name: "Bea" }, K1);
     const [a, b] = joinKeyHashes();
     expect(a).toBe(b);
   });
@@ -121,7 +132,7 @@ describe("guest route", () => {
       lastMinute: 31,
       lastHour: 31,
     });
-    const res = await post({ action: "vote", nightGameId: GAME }, "k");
+    const res = await post({ action: "vote", nightGameId: GAME }, K1);
     expect(res.status).toBe(429);
     expect(await res.json()).toEqual({ error: "rate_limited" });
     expect(service.guestToggleVote).not.toHaveBeenCalled();
@@ -129,7 +140,7 @@ describe("guest route", () => {
 
   it("invalid body is 400", async () => {
     expect((await post({ action: "join", name: "  " })).status).toBe(400);
-    expect((await post({ action: "vote", nightGameId: "x" }, "k")).status).toBe(
+    expect((await post({ action: "vote", nightGameId: "x" }, K1)).status).toBe(
       400,
     );
     expect((await post({ action: "nope" })).status).toBe(400);
@@ -141,11 +152,11 @@ describe("guest route", () => {
     vi.mocked(service.guestToggleVote).mockResolvedValue({
       error: "not_found",
     });
-    expect(
-      (await post({ action: "vote", nightGameId: GAME }, "k")).status,
-    ).toBe(404);
+    expect((await post({ action: "vote", nightGameId: GAME }, K1)).status).toBe(
+      404,
+    );
     vi.mocked(service.guestRename).mockResolvedValue({ error: "closed" });
-    expect((await post({ action: "rename", name: "B" }, "k")).status).toBe(409);
+    expect((await post({ action: "rename", name: "B" }, K1)).status).toBe(409);
   });
 
   it("GET is no-store and hashes the cookie", async () => {
@@ -160,5 +171,56 @@ describe("guest route", () => {
     expect(res.headers.get("referrer-policy")).toBe("no-referrer");
     const [, keyHash] = vi.mocked(service.getGuestState).mock.calls[0];
     expect(keyHash).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it("rejects non-JSON content types with 415 before logging", async () => {
+    const res = await post({}, undefined, TOKEN, {
+      "content-type": "text/plain",
+    });
+    expect(res.status).toBe(415);
+    expect(service.logGuestRequest).not.toHaveBeenCalled();
+  });
+
+  it("rejects cross-origin and cross-site posts with 403", async () => {
+    const body = { action: "join", name: "Ana" };
+    const a = await post(body, undefined, TOKEN, {
+      origin: "https://evil.example",
+    });
+    const b = await post(body, undefined, TOKEN, {
+      "sec-fetch-site": "cross-site",
+    });
+    const c = await post(body, undefined, TOKEN, {
+      "sec-fetch-site": "same-site",
+    });
+    expect([a.status, b.status, c.status]).toEqual([403, 403, 403]);
+    expect(service.logGuestRequest).not.toHaveBeenCalled();
+    const ok = await post(body, undefined, TOKEN, {
+      origin: "http://localhost",
+      "sec-fetch-site": "same-origin",
+    });
+    expect(ok.status).toBe(200);
+  });
+
+  it("treats a malformed cookie as absent", async () => {
+    const vote = await post({ action: "vote", nightGameId: GAME }, "bad!");
+    expect(vote.status).toBe(401);
+    await post({ action: "join", name: "Ana" }, "bad");
+    await post({ action: "join", name: "Ana" }, "bad");
+    const [a, b] = joinKeyHashes();
+    expect(a).not.toBe(b);
+  });
+
+  it("rejects bodies over 1 KB with 413", async () => {
+    const res = await post(null, undefined, TOKEN, {}, "x".repeat(1025));
+    expect(res.status).toBe(413);
+    expect(service.logGuestRequest).not.toHaveBeenCalled();
+  });
+
+  it("still sets the cookie when the state read fails after join", async () => {
+    vi.mocked(service.getGuestState).mockResolvedValue({ error: "failed" });
+    const res = await post({ action: "join", name: "Ana" });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ ok: true });
+    expect(res.headers.get("set-cookie")).toContain("amika_guest=");
   });
 });

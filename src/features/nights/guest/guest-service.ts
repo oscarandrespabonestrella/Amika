@@ -1,4 +1,5 @@
 import "server-only";
+import { logger } from "@/lib/logger";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { fromPgCode, type NightErrorCode } from "../error-codes";
 
@@ -26,9 +27,15 @@ export type GuestState = {
 
 export type GuestFailure = { error: NightErrorCode };
 
-function failure(error: { code?: string }): GuestFailure {
+function failure(error: { code?: string; message?: string }): GuestFailure {
   // 23514 = the name failed the CHECK (empty after trimming).
-  return { error: error.code === "23514" ? "invalid" : fromPgCode(error.code) };
+  const code: NightErrorCode =
+    error.code === "23514" ? "invalid" : fromPgCode(error.code);
+  // Only code and message: never details or hint, which can echo arguments.
+  if (code === "failed") {
+    logger.error("guest rpc failed", error, { message: error.message });
+  }
+  return { error: code };
 }
 
 /** Night as the guest sees it. `link_invalid` when the link is unknown, expired or revoked. */
@@ -100,6 +107,6 @@ export async function logGuestRequest(
     { p_token_hash: tokenHash, p_guest_key_hash: guestKeyHash },
   );
   if (error) return failure(error);
-  const row = data[0];
+  const row = data?.[0];
   return { lastMinute: row?.last_minute ?? 0, lastHour: row?.last_hour ?? 0 };
 }

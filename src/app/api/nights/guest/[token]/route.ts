@@ -33,6 +33,8 @@ const bodySchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("rename"), name: guestNameSchema }),
 ]);
 
+const MAX_BODY = 1024;
+
 type Ctx = { params: Promise<{ token: string }> };
 
 const STATUS: Partial<Record<NightErrorCode, number>> = {
@@ -96,11 +98,32 @@ export async function POST(req: NextRequest, { params }: Ctx) {
   const { token } = await params;
   if (!isTokenShape(token)) return fail("link_invalid");
 
-  const body = bodySchema.safeParse(await req.json().catch(() => null));
+  // CSRF: only same-origin JSON. A cross-site form could otherwise replace the guest cookie.
+  if (!(req.headers.get("content-type") ?? "").startsWith("application/json")) {
+    return reply({ error: "unsupported_media_type" }, 415);
+  }
+  const origin = req.headers.get("origin");
+  const site = req.headers.get("sec-fetch-site");
+  if (
+    (origin !== null && origin !== req.nextUrl.origin) ||
+    site === "cross-site" ||
+    site === "same-site"
+  ) {
+    return reply({ error: "forbidden" }, 403);
+  }
+
+  const text = await req.text();
+  if (text.length > MAX_BODY) return reply({ error: "too_large" }, 413);
+  let json: unknown = null;
+  try {
+    json = JSON.parse(text);
+  } catch {}
+  const body = bodySchema.safeParse(json);
   if (!body.success) return fail("invalid");
   const input = body.data;
 
-  const cookieKey = req.cookies.get(GUEST_COOKIE)?.value;
+  const raw = req.cookies.get(GUEST_COOKIE)?.value;
+  const cookieKey = raw && isTokenShape(raw) ? raw : undefined;
   if (input.action !== "join" && !cookieKey) {
     return reply({ error: "no_guest" }, 401);
   }
@@ -130,15 +153,19 @@ export async function POST(req: NextRequest, { params }: Ctx) {
 
     const joined = await guestJoin(tokenHash, input.name, keyHash);
     if (isFailure(joined)) return fail(joined.error);
+    // The guest exists now: always hand out the cookie, even if the state read fails.
     const state = await getGuestState(tokenHash, keyHash);
-    if (isFailure(state)) return fail(state.error);
-    const response = reply(state, 200);
+    const response = isFailure(state)
+      ? reply({ ok: true }, 200)
+      : reply(state, 200);
     response.cookies.set(GUEST_COOKIE, key, {
       httpOnly: true,
       sameSite: "lax",
       secure: true,
-      path: "/api/nights/guest",
-      expires: linkExpiry(state.night.startsOn),
+      path: `/api/nights/guest/${token}`,
+      expires: isFailure(state)
+        ? new Date(Date.now() + 3 * 24 * 3600 * 1000)
+        : linkExpiry(state.night.startsOn),
     });
     return response;
   } catch (error) {

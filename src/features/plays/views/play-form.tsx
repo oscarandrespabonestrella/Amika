@@ -42,6 +42,10 @@ type Props = {
   roster: Player[];
   /** The user's saved groups: one click adds their members to the match. */
   groups: Group[];
+  /** "Play this" from a night or the picker: a group to pre-fill (creating only). */
+  initialGroupId?: string;
+  /** Extra roster players to pre-fill after the group, without duplicates. */
+  initialPlayerIds?: string[];
   /** Present when editing a saved match. */
   initial?: PlayDetail;
 };
@@ -74,6 +78,41 @@ const newRow = (
   manual,
   touched: false,
 });
+
+/**
+ * Rows of a new match: two empty ones, then the group (through `groupFill`) and the extra
+ * roster players. Ids that are not in `groups` / `roster` are ignored.
+ */
+function prefilledRows(
+  roster: Player[],
+  groups: Group[],
+  groupId: string | undefined,
+  playerIds: string[] | undefined,
+): Row[] {
+  let rows = [newRow(), newRow()];
+  const members: { id: string; name: string }[] = [];
+  const group = groupId ? groups.find((g) => g.id === groupId) : undefined;
+  if (group) members.push(...group.members);
+  for (const id of playerIds ?? []) {
+    const player = roster.find((p) => p.id === id);
+    if (player && !members.some((m) => m.id === player.id)) {
+      members.push({ id: player.id, name: player.name });
+    }
+  }
+  if (members.length === 0) return rows;
+  const { fillIndexes, append } = groupFill(
+    rows,
+    members,
+    PLAY_LIMITS.maxParticipants,
+  );
+  rows = rows.map((row, index) => {
+    const fill = fillIndexes.find((f) => f.rowIndex === index);
+    return fill
+      ? { ...row, playerId: fill.member.id, name: fill.member.name }
+      : row;
+  });
+  return [...rows, ...append.map((m) => newRow(m.name, {}, undefined, m.id))];
+}
 
 const subscribeNothing = () => () => {};
 
@@ -113,6 +152,8 @@ export function PlayForm({
   expansions,
   roster,
   groups,
+  initialGroupId,
+  initialPlayerIds,
   initial,
 }: Props) {
   const t = useTranslations("Plays.form");
@@ -135,7 +176,7 @@ export function PlayForm({
       ? initial.entries.map((e) =>
           newRow(e.name, e.values, e.manualTotal ?? undefined, e.playerId),
         )
-      : [newRow(), newRow()],
+      : prefilledRows(roster, groups, initialGroupId, initialPlayerIds),
   }));
   const [playedOn, setPlayedOn] = useState(start.playedOn);
   // Today is the viewer's, not the server's: "" while hydrating, then the local date.

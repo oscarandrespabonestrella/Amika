@@ -169,3 +169,17 @@ Construidas en `src/lib/security-headers.ts` (puro, con tests) y aplicadas a tod
 - **Texto no fiable**: los títulos vienen de la web; se limpian de etiquetas, se limitan a 200 caracteres y se pintan como texto (React). La página sin conexión `public/offline/manuals.html` usa `textContent`, nunca `innerHTML`.
 - **Copia en el dispositivo**: Cache Storage de quien la pide; el servidor no guarda nada. El service worker solo responde de esa caché a `/offline/manuals/files/*`; las respuestas autenticadas siguen sin cachearse.
 - **Derechos de autor**: se guarda el enlace al sitio original, no el documento; se descartan los sitios que realojan PDF ajenos; la interfaz lo recuerda. La copia local es para uso personal de quien la descarga.
+
+## 22. Noche de juegos: ruta pública del invitado (`/n/:token`, `/api/nights/guest/[token]`)
+Es la única superficie pública de la función; toda la lógica pasa por **un** route handler de Next (ADR-049).
+- **Token y clave hasheados**: el token del enlace (32 bytes aleatorios, base64url) solo se muestra una vez; en la BD queda su sha256 (`game_night_links.token_hash`). La clave del invitado (aleatoria) vive en su cookie y en la BD solo su hash (`game_night_guests.guest_key_hash`). Una filtración de la base de datos no da enlaces ni identidades de invitado utilizables.
+- **Solo `service_role`**: las funciones `guest_*` no tienen `grant execute` para `anon` ni `authenticated`; el navegador no habla con Supabase. Se prueba en los tests SQL.
+- **Un enlace expone una noche, nada más**: título, fecha, nombre visible del anfitrión, juegos (nombre, portada, jugadores, duración) y votos con los nombres de quien votó. Ni bibliotecas, ni partidas, ni perfiles, ni fichas de juegos propios (solo `name_snapshot`/`cover_snapshot`).
+- **CSRF** (el invitado usa cookie): el POST exige `Content-Type: application/json`, rechaza `Sec-Fetch-Site` distinto de `same-origin`/`none` y comprueba que `Origin`, si viene, sea el de la aplicación. Cuerpo máximo 1 KiB.
+- **Cookie por enlace**: `httpOnly`, `Secure`, `SameSite=Lax`, `Path=/api/nights/guest/<token>`, válida hasta la caducidad del enlace. Dos noches no comparten cookie y el navegador no la manda a ninguna otra ruta.
+- **Límites de frecuencia**: 30 escrituras/min por invitado y 300/h por enlace (registro en Postgres, límite blando); tope de 30 invitados por enlace. Sin ellos un bucle podría llenar la noche de invitados falsos.
+- **Cabeceras**: respuestas con `Referrer-Policy: no-referrer` y `X-Robots-Tag: noindex`; la página `/n/:token` es `noindex` y no envía `Referer` hacia fuera, así el token no se filtra a terceros ni a buscadores.
+- **Validez del enlace**: se evalúa en SQL desde la fecha de la noche (caduca al final del día siguiente a `starts_on`, UTC), no desde un valor guardado que pudiera quedar desfasado; además se puede revocar o regenerar (`revoked_at`) y una noche cerrada no acepta votos. Un enlace inválido, caducado o revocado responde igual (error `GN005`).
+- **Texto no fiable**: el nombre de invitado (1–40 caracteres, recortado) se pinta como texto (React), nunca como HTML.
+- **Limitación conocida**: sin cuentas, nada impide que alguien con el enlace vote dos veces con dos nombres; los nombres son visibles en la noche y el anfitrión puede revocar el enlace.
+- **Amigos**: leen la noche solo una vez aceptada la invitación (`is_night_member`); escriben (votar, sugerir, salir) únicamente por funciones `security definer` que comprueban amistad, noche abierta y topes.

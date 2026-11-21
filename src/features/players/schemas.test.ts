@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  addPlayerSchema,
   mergePlayersSchema,
   PLAYER_NAME_MAX,
   playerIdSchema,
@@ -61,5 +62,16 @@ describe("renamePlayerSchema / mergePlayersSchema / setMeSchema / playerIdSchema
   it("playerIdSchema is a uuid", () => {
     expect(playerIdSchema.safeParse(A).success).toBe(true);
     expect(playerIdSchema.safeParse("nope").success).toBe(false);
+  });
+});
+
+describe("addPlayerSchema", () => {
+  it("takes a trimmed name and nothing else", () => {
+    const parsed = addPlayerSchema.safeParse({ name: "  Ana " });
+    expect(parsed.success && parsed.data).toEqual({ name: "Ana" });
+    expect(addPlayerSchema.safeParse({ name: "" }).success).toBe(false);
+    expect(addPlayerSchema.safeParse({ name: "Ana", x: 1 }).success).toBe(
+      false,
+    );
   });
 });

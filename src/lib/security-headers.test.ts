@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildCsp,
   clerkFrontendHost,
+  privateLinkHeaders,
   securityHeaders,
   type HeaderEnv,
 } from "./security-headers";
@@ -163,5 +164,15 @@ describe("securityHeaders", () => {
         "Strict-Transport-Security",
       ),
     ).toBeUndefined();
+  });
+});
+
+describe("privateLinkHeaders", () => {
+  it("sends no referrer and asks not to be indexed", () => {
+    const h = Object.fromEntries(
+      privateLinkHeaders().map((x) => [x.key, x.value]),
+    );
+    expect(h["Referrer-Policy"]).toBe("no-referrer");
+    expect(h["X-Robots-Tag"]).toBe("noindex, nofollow");
   });
 });

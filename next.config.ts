@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import { securityHeaders } from "./src/lib/security-headers";
+import {
+  privateLinkHeaders,
+  securityHeaders,
+} from "./src/lib/security-headers";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
@@ -34,6 +37,9 @@ const nextConfig: NextConfig = {
           cspEnforce: process.env.CSP_ENFORCE === "1",
         }),
       },
+      // After the global entry so these override its Referrer-Policy.
+      { source: "/api/nights/guest/:path*", headers: privateLinkHeaders() },
+      { source: "/:locale/n/:path*", headers: privateLinkHeaders() },
     ];
   },
   // `cacheComponents` / `partialPrefetching` (scaffold defaults) are off on purpose:

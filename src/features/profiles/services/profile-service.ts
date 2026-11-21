@@ -51,11 +51,11 @@ async function fillNameFromClerk(profile: Profile): Promise<Profile> {
 
 /**
  * For the screens that show a person to others (friends): makes sure the signed-in user's
- * profile has a name, filling it from Clerk if it is still empty.
+ * profile has a name, filling it from Clerk if it is still empty. Returns that name.
  */
-export async function ensureDisplayName(): Promise<void> {
+export async function ensureDisplayName(): Promise<string> {
   const profile = await getOrCreateProfile();
-  if (profile) await fillNameFromClerk(profile);
+  return profile ? (await fillNameFromClerk(profile)).display_name : "";
 }
 
 /**

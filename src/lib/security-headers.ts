@@ -151,3 +151,15 @@ export function securityHeaders(
     });
   return headers;
 }
+
+/**
+ * Pages and API of the shared night link: the token is in the URL, so nothing may leak it
+ * through the Referer header and search engines must not index it. Listed after the global
+ * entry in next.config.ts so these values win.
+ */
+export function privateLinkHeaders(): { key: string; value: string }[] {
+  return [
+    { key: "Referrer-Policy", value: "no-referrer" },
+    { key: "X-Robots-Tag", value: "noindex, nofollow" },
+  ];
+}

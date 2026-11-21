@@ -17,8 +17,10 @@ export type RenameOutcome = "ok" | "exists" | "not_found";
 export type MergeOutcome = "ok" | "together" | "not_found";
 export type DeleteOutcome = "ok" | "in_use" | "not_found";
 export type SetMeOutcome = "ok" | "me_taken" | "not_found";
+export type AddOutcome =
+  { outcome: "ok"; id: string } | { outcome: "exists" | "too_many" };
 
-/** Postgres codes: 23505 = name taken / second "me", 23503 = still has matches, PL001 = played together, P0002 = not found. */
+/** Postgres codes: 23505 = name taken / second "me", 23503 = still has matches, PL001 = played together, P0002 = not found, P0001 = roster cap (200). */
 const pgCode = (error: unknown) => (error as { code?: string } | null)?.code;
 
 /** The roster (RLS: only the signed-in user's own players), most played first. */
@@ -45,6 +47,21 @@ export async function listPlayers(): Promise<Player[]> {
         b.matchCount - a.matchCount ||
         a.name.localeCompare(b.name, undefined, { sensitivity: "base" }),
     );
+}
+
+/** Adds a player to the roster without a match (RLS: the owner is the signed-in user). */
+export async function addPlayer(name: string): Promise<AddOutcome> {
+  const { data, error } = await createSupabaseServerClient()
+    .from("players")
+    .insert({ name })
+    .select("id")
+    .single();
+  if (error) {
+    if (pgCode(error) === "23505") return { outcome: "exists" };
+    if (pgCode(error) === "P0001") return { outcome: "too_many" };
+    throw error;
+  }
+  return { outcome: "ok", id: data.id };
 }
 
 export async function renamePlayer(

@@ -12,6 +12,17 @@ export const playerNameSchema = z
 
 export const playerIdSchema = z.uuid();
 
+export const addPlayerSchema = z.strictObject({ name: playerNameSchema });
+
+/** A friend added to the roster under a name (their display name, or a fallback). */
+export const addFriendPlayerSchema = z.strictObject({
+  friendId: z.string().min(1).max(200),
+  name: playerNameSchema,
+});
+
+/** The signed-in user's own player, created under this name when there is none. */
+export const ensureMeSchema = z.strictObject({ name: playerNameSchema });
+
 export const renamePlayerSchema = z.strictObject({
   playerId: z.uuid(),
   name: playerNameSchema,

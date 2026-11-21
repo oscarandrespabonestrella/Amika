@@ -4,6 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import { respondNightInviteAction } from "@/features/nights/actions/night-actions";
+import { toNightError, type NightInvite } from "@/features/nights/client";
 import { toFriendError } from "../error-codes";
 import {
   respondPlayerLinkAction,
@@ -24,17 +26,25 @@ type Props = {
   friends: Friend[];
   invites: PlayInvite[];
   linkRequests: LinkRequest[];
+  nightInvites: NightInvite[];
 };
 
 /** Friends, my invitation link, and what is waiting for my answer. */
-export function FriendsPanel({ friends, invites, linkRequests }: Props) {
+export function FriendsPanel({
+  friends,
+  invites,
+  linkRequests,
+  nightInvites,
+}: Props) {
   const t = useTranslations("Friends");
   const te = useTranslations("Friends.errors");
+  const tn = useTranslations("Nights.errors");
   const locale = useLocale();
   const router = useRouter();
   const [code, setCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [nightError, setNightError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -56,8 +66,25 @@ export function FriendsPanel({ friends, invites, linkRequests }: Props) {
     });
   }
 
+  function respondNight(nightId: string, accept: boolean) {
+    setNightError(null);
+    startTransition(async () => {
+      const result = await respondNightInviteAction(nightId, accept);
+      if (result.ok) {
+        // An accepted night is now visible to me: go to it.
+        if (accept) router.push(`/nights/${nightId}`);
+        else router.refresh();
+      } else setNightError(toNightError(result.error));
+    });
+  }
+
   return (
     <div className="flex flex-col gap-8">
+      {nightError && (
+        <p role="alert" className="text-sm text-destructive">
+          {tn(toNightError(nightError))}
+        </p>
+      )}
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {te(toFriendError(error))}
@@ -106,6 +133,51 @@ export function FriendsPanel({ friends, invites, linkRequests }: Props) {
                         }),
                       )
                     }
+                  >
+                    {t("decline")}
+                  </Button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {nightInvites.length > 0 && (
+        <section
+          aria-labelledby="night-invites"
+          className="flex flex-col gap-3"
+        >
+          <h2 id="night-invites" className="text-xl font-semibold">
+            {t("nightInvitesTitle")}
+          </h2>
+          <ul className="flex flex-col gap-2">
+            {nightInvites.map((n) => (
+              <li
+                key={n.nightId}
+                data-testid="night-invite"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border p-3"
+              >
+                <span>
+                  {t("nightInvite", {
+                    who: n.hostName || t("unnamed"),
+                    title: n.title,
+                    date: n.startsOn,
+                  })}
+                </span>
+                <span className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    disabled={pending}
+                    onClick={() => respondNight(n.nightId, true)}
+                  >
+                    {t("accept")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={pending}
+                    onClick={() => respondNight(n.nightId, false)}
                   >
                     {t("decline")}
                   </Button>

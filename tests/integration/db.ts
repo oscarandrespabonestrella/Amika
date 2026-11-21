@@ -49,6 +49,27 @@ export async function withRole<T>(
   }
 }
 
+/**
+ * Like withRole but WITHOUT switching role: `fn` runs as the privileged role of the
+ * connection, which is what the service-role client of the route handlers is.
+ * Always rolled back.
+ */
+export async function asService<T>(
+  fixtures: (c: Client) => Promise<void>,
+  fn: (c: Client) => Promise<T>,
+): Promise<T> {
+  const client = new Client({ connectionString: dbUrl! });
+  await client.connect();
+  try {
+    await client.query("begin");
+    await fixtures(client);
+    return await fn(client);
+  } finally {
+    await client.query("rollback").catch(() => undefined);
+    await client.end();
+  }
+}
+
 /** Postgres error code of a rejected query (e.g. 42501 = RLS / permission denied). */
 export async function pgErrorCode(
   promise: Promise<unknown>,

@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { FriendsPanel } from "@/features/friends/views/friends-panel";
 import { listFriends } from "@/features/friends";
+import { listNightInvites } from "@/features/nights";
 import { ensureDisplayName } from "@/features/profiles";
 import {
   listMyInvites,
@@ -18,11 +19,12 @@ export default async function FriendsPage({
 
   // Fills my own name first when it is empty, so the people I am friends with can read it.
   await ensureDisplayName();
-  const [t, friends, invites, linkRequests] = await Promise.all([
+  const [t, friends, invites, linkRequests, nightInvites] = await Promise.all([
     getTranslations("Friends"),
     listFriends(),
     listMyInvites(),
     listMyLinkRequests(),
+    listNightInvites(),
   ]);
 
   return (
@@ -42,6 +44,7 @@ export default async function FriendsPage({
         friends={friends}
         invites={invites}
         linkRequests={linkRequests}
+        nightInvites={nightInvites}
       />
     </div>
   );

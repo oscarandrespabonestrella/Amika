@@ -9,9 +9,18 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 /** Entry point of the centre "Log a match" action: pick the game, then fill the play form. */
-export default async function LogPage({ params }: PageProps<"/[locale]/log">) {
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export default async function LogPage({
+  params,
+  searchParams,
+}: PageProps<"/[locale]/log">) {
   const locale = assertLocale((await params).locale);
   setRequestLocale(locale);
+  // "Log match" from a group card: the play form then starts with the group's players.
+  const group = (await searchParams).group;
+  const suffix =
+    typeof group === "string" && UUID.test(group) ? `?group=${group}` : "";
 
   const [entries, t] = await Promise.all([
     searchLibrary(parseLibraryFilters({})),
@@ -31,7 +40,7 @@ export default async function LogPage({ params }: PageProps<"/[locale]/log">) {
             <GameCard
               key={entry.game.id}
               game={entry.game}
-              href={`/games/${entry.game.id}/plays/new`}
+              href={`/games/${entry.game.id}/plays/new${suffix}`}
             />
           ))}
         </ul>

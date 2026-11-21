@@ -1131,5 +1131,84 @@
       "ios": "No iPhone/iPad: toque em Compartilhar e depois em «Adicionar à Tela de Início».",
       "manual": "Seu navegador não ofereceu um botão de instalação. Procure «Instalar app» no menu do navegador."
     }
+  },
+  "Nights": {
+    "title": "Noite de jogos",
+    "subtitle": "Escolha o que jogar ou planeje uma noite com seus amigos.",
+    "pickNow": "Escolher um jogo agora",
+    "planNight": "Planejar uma noite",
+    "newTitle": "Planejar uma noite",
+    "back": "Voltar às noites",
+    "homeBody": "Escolha um jogo da sua biblioteca ou planeje uma noite com votos.",
+    "homeOpen": "Abrir noites",
+    "filters": {
+      "label": "Filtros do seletor",
+      "players": "Jogadores",
+      "playersHint": "Qualquer",
+      "maxMinutes": "Tempo máximo",
+      "anyTime": "Qualquer",
+      "minutes": "{minutes} min",
+      "group": "Grupo",
+      "noGroup": "Sem grupo",
+      "groupSetsPlayers": "O número de jogadores vem do grupo."
+    },
+    "shortlist": {
+      "title": "Lista curta",
+      "empty": "Nenhum jogo se encaixa: tente com mais tempo ou sem número de jogadores"
+    },
+    "spin": {
+      "action": "Girar",
+      "again": "Girar de novo",
+      "spinning": "Girando…",
+      "resultLabel": "Jogo escolhido",
+      "result": "Hora de jogar: {name}",
+      "playThis": "Jogar este"
+    },
+    "reasons": {
+      "neverPlayed": "Você nunca jogou",
+      "notPlayedFor": "Sem jogar há {months, plural, one {# mês} other {# meses}}",
+      "favorite": "Favorito",
+      "highlyRated": "Muito bem avaliado",
+      "fitsPlayers": "Serve para {players, plural, one {# jogador} other {# jogadores}}"
+    },
+    "plan": {
+      "titleLabel": "Título da noite",
+      "titlePlaceholder": "Noite de jogos de sexta",
+      "dateLabel": "Data",
+      "save": "Salvar noite",
+      "saving": "Salvando…",
+      "remove": "Remover",
+      "restore": "Adicionar de volta",
+      "removedLabel": "Removido",
+      "needOne": "Mantenha ao menos um jogo para salvar a noite."
+    },
+    "invites": {
+      "title": "Convites",
+      "from": "Convite de {host}",
+      "accept": "Aceitar",
+      "reject": "Recusar"
+    },
+    "list": {
+      "open": "Próximas noites",
+      "closed": "Noites encerradas",
+      "empty": "Você ainda não tem noites. Planeje a primeira.",
+      "games": "{count, plural, one {# jogo} other {# jogos}}",
+      "hosting": "Você é o anfitrião",
+      "guest": "Convidado",
+      "closedBadge": "Encerrada"
+    },
+    "errors": {
+      "unauthenticated": "Entre para continuar.",
+      "invalid": "Confira os dados e tente de novo.",
+      "failed": "Algo deu errado. Tente de novo.",
+      "not_found": "Não encontramos essa noite.",
+      "not_friend": "Você só pode convidar seus amigos.",
+      "closed": "Esta noite já está encerrada.",
+      "already": "Isso já estava feito.",
+      "limit": "Você atingiu o limite.",
+      "not_owned": "Esse jogo não está na sua biblioteca.",
+      "link_invalid": "Este link não é mais válido.",
+      "rate_limited": "Muitas tentativas. Aguarde um momento."
+    }
   }
 }

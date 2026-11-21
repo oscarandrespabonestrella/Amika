@@ -1131,5 +1131,84 @@
       "ios": "On iPhone/iPad: tap Share, then “Add to Home Screen”.",
       "manual": "Your browser didn't offer an install button. Look for “Install app” in the browser menu."
     }
+  },
+  "Nights": {
+    "title": "Game night",
+    "subtitle": "Pick what to play or plan a night with your friends.",
+    "pickNow": "Pick a game now",
+    "planNight": "Plan a night",
+    "newTitle": "Plan a night",
+    "back": "Back to nights",
+    "homeBody": "Pick a game from your library or plan a night with votes.",
+    "homeOpen": "Open nights",
+    "filters": {
+      "label": "Picker filters",
+      "players": "Players",
+      "playersHint": "Any",
+      "maxMinutes": "Max time",
+      "anyTime": "Any",
+      "minutes": "{minutes} min",
+      "group": "Group",
+      "noGroup": "No group",
+      "groupSetsPlayers": "The number of players comes from the group."
+    },
+    "shortlist": {
+      "title": "Shortlist",
+      "empty": "No game fits: try more time or no player count"
+    },
+    "spin": {
+      "action": "Spin",
+      "again": "Spin again",
+      "spinning": "Spinning…",
+      "resultLabel": "Chosen game",
+      "result": "Time to play: {name}",
+      "playThis": "Play this"
+    },
+    "reasons": {
+      "neverPlayed": "You have never played it",
+      "notPlayedFor": "Not played for {months, plural, one {# month} other {# months}}",
+      "favorite": "Favorite",
+      "highlyRated": "Highly rated",
+      "fitsPlayers": "Fits {players, plural, one {# player} other {# players}}"
+    },
+    "plan": {
+      "titleLabel": "Night title",
+      "titlePlaceholder": "Friday game night",
+      "dateLabel": "Date",
+      "save": "Save night",
+      "saving": "Saving…",
+      "remove": "Remove",
+      "restore": "Add back",
+      "removedLabel": "Removed",
+      "needOne": "Keep at least one game to save the night."
+    },
+    "invites": {
+      "title": "Invitations",
+      "from": "Invited by {host}",
+      "accept": "Accept",
+      "reject": "Decline"
+    },
+    "list": {
+      "open": "Upcoming nights",
+      "closed": "Closed nights",
+      "empty": "You have no nights yet. Plan the first one.",
+      "games": "{count, plural, one {# game} other {# games}}",
+      "hosting": "You are hosting",
+      "guest": "Guest",
+      "closedBadge": "Closed"
+    },
+    "errors": {
+      "unauthenticated": "Sign in to continue.",
+      "invalid": "Check the data and try again.",
+      "failed": "Something went wrong. Try again.",
+      "not_found": "We could not find that night.",
+      "not_friend": "You can only invite your friends.",
+      "closed": "This night is already closed.",
+      "already": "That was already done.",
+      "limit": "You have reached the limit.",
+      "not_owned": "That game is not in your library.",
+      "link_invalid": "This link is no longer valid.",
+      "rate_limited": "Too many attempts. Wait a moment."
+    }
   }
 }

@@ -18,6 +18,7 @@ export default async function HomePage({
   const locale = assertLocale((await params).locale);
   setRequestLocale(locale);
 
+  const tn = await getTranslations("Nights");
   const [t, profile, libraryCount, shelf] = await Promise.all([
     getTranslations("Home"),
     getOrCreateProfile(),
@@ -96,6 +97,26 @@ export default async function HomePage({
           </ul>
         </section>
       )}
+
+      <section
+        aria-labelledby="nights-card"
+        className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5"
+      >
+        <h2 id="nights-card" className="flex items-center gap-2 font-semibold">
+          <Dices className="size-5 text-primary" aria-hidden />
+          {tn("title")}
+        </h2>
+        <p className="text-muted-foreground">{tn("homeBody")}</p>
+        <Link
+          href="/nights"
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "h-11 w-fit px-6",
+          )}
+        >
+          {tn("homeOpen")}
+        </Link>
+      </section>
 
       <Link
         href="/games"

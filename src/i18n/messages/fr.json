@@ -1131,5 +1131,84 @@
       "ios": "Sur iPhone/iPad : touchez Partager, puis « Sur l'écran d'accueil ».",
       "manual": "Votre navigateur n'a pas proposé de bouton d'installation. Cherchez « Installer l'app » dans le menu du navigateur."
     }
+  },
+  "Nights": {
+    "title": "Soirée jeux",
+    "subtitle": "Choisissez à quoi jouer ou planifiez une soirée avec vos amis.",
+    "pickNow": "Choisir un jeu maintenant",
+    "planNight": "Planifier une soirée",
+    "newTitle": "Planifier une soirée",
+    "back": "Retour aux soirées",
+    "homeBody": "Choisissez un jeu de votre bibliothèque ou planifiez une soirée avec des votes.",
+    "homeOpen": "Ouvrir les soirées",
+    "filters": {
+      "label": "Filtres du sélecteur",
+      "players": "Joueurs",
+      "playersHint": "Peu importe",
+      "maxMinutes": "Durée maximale",
+      "anyTime": "Peu importe",
+      "minutes": "{minutes} min",
+      "group": "Groupe",
+      "noGroup": "Sans groupe",
+      "groupSetsPlayers": "Le nombre de joueurs vient du groupe."
+    },
+    "shortlist": {
+      "title": "Sélection",
+      "empty": "Aucun jeu ne convient : essayez avec plus de temps ou sans nombre de joueurs"
+    },
+    "spin": {
+      "action": "Tirer au sort",
+      "again": "Tirer à nouveau",
+      "spinning": "Tirage…",
+      "resultLabel": "Jeu choisi",
+      "result": "On joue à : {name}",
+      "playThis": "Jouer à celui-ci"
+    },
+    "reasons": {
+      "neverPlayed": "Vous n’y avez jamais joué",
+      "notPlayedFor": "Pas joué depuis {months, plural, one {# mois} other {# mois}}",
+      "favorite": "Favori",
+      "highlyRated": "Très bien noté",
+      "fitsPlayers": "Convient à {players, plural, one {# joueur} other {# joueurs}}"
+    },
+    "plan": {
+      "titleLabel": "Titre de la soirée",
+      "titlePlaceholder": "Soirée jeux du vendredi",
+      "dateLabel": "Date",
+      "save": "Enregistrer la soirée",
+      "saving": "Enregistrement…",
+      "remove": "Retirer",
+      "restore": "Remettre",
+      "removedLabel": "Retiré",
+      "needOne": "Gardez au moins un jeu pour enregistrer la soirée."
+    },
+    "invites": {
+      "title": "Invitations",
+      "from": "Invité par {host}",
+      "accept": "Accepter",
+      "reject": "Refuser"
+    },
+    "list": {
+      "open": "Prochaines soirées",
+      "closed": "Soirées terminées",
+      "empty": "Vous n’avez pas encore de soirée. Planifiez la première.",
+      "games": "{count, plural, one {# jeu} other {# jeux}}",
+      "hosting": "Vous organisez",
+      "guest": "Invité",
+      "closedBadge": "Terminée"
+    },
+    "errors": {
+      "unauthenticated": "Connectez-vous pour continuer.",
+      "invalid": "Vérifiez les données et réessayez.",
+      "failed": "Une erreur s’est produite. Réessayez.",
+      "not_found": "Soirée introuvable.",
+      "not_friend": "Vous ne pouvez inviter que vos amis.",
+      "closed": "Cette soirée est déjà terminée.",
+      "already": "C’était déjà fait.",
+      "limit": "Vous avez atteint la limite.",
+      "not_owned": "Ce jeu n’est pas dans votre bibliothèque.",
+      "link_invalid": "Ce lien n’est plus valide.",
+      "rate_limited": "Trop de tentatives. Patientez un instant."
+    }
   }
 }

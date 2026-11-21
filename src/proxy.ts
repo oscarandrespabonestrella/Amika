@@ -13,7 +13,7 @@ const handleI18n = createIntlMiddleware(routing);
 // Every signed-in section: a signed-out visitor is sent to sign-in WITH `redirect_url`, so a
 // friend link (or any deep link) survives creating an account and lands where it pointed.
 const PROTECTED_PATH = new RegExp(
-  `^/(${routing.locales.join("|")})/(home|settings|friends|games|library|log|stats|players|plays)(/|$)`,
+  `^/(${routing.locales.join("|")})/(home|settings|friends|games|library|log|stats|players|plays|nights)(/|$)`,
 );
 
 export default clerkMiddleware(async (auth, req) => {

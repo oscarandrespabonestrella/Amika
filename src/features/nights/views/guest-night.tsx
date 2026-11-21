@@ -105,6 +105,10 @@ export function GuestNight({ token }: { token: string }) {
   const [renaming, setRenaming] = useState(false);
   const [wantsVote, setWantsVote] = useState<string | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
+  // Latest GET wins: a slow poll that started before a vote must not overwrite newer state.
+  const requestId = useRef(0);
+  const voting = useRef(false);
+  const submitting = useRef(false);
 
   const apply = useCallback((out: Outcome): boolean => {
     if (out.ok) {
@@ -117,9 +121,13 @@ export function GuestNight({ token }: { token: string }) {
   }, []);
 
   const refresh = useCallback(async () => {
+    const id = ++requestId.current;
     const out = await call(token);
-    if (out.ok && out.state) setState(out.state);
-    else if (!out.ok && out.error === "inactive") setInactive(true);
+    if (id !== requestId.current) return;
+    if (out.ok && out.state) {
+      setState(out.state);
+      setError((e) => (e === "needName" ? e : null));
+    } else if (!out.ok && out.error === "inactive") setInactive(true);
     else if (!out.ok) setError((e) => e ?? out.error);
   }, [token]);
 
@@ -134,6 +142,8 @@ export function GuestNight({ token }: { token: string }) {
   });
 
   async function vote(nightGameId: string) {
+    if (voting.current) return;
+    voting.current = true;
     setError(null);
     setNotice("");
     setBusy(true);
@@ -147,6 +157,7 @@ export function GuestNight({ token }: { token: string }) {
       setWantsVote(nightGameId);
       setError("needName");
     } else apply(out);
+    voting.current = false;
     setBusy(false);
   }
 
@@ -158,11 +169,13 @@ export function GuestNight({ token }: { token: string }) {
 
   async function submitName(event: React.FormEvent) {
     event.preventDefault();
+    if (submitting.current) return;
     const parsed = guestNameSchema.safeParse(name);
     if (!parsed.success) {
       setError("invalidName");
       return;
     }
+    submitting.current = true;
     setError(null);
     setNotice("");
     setBusy(true);
@@ -177,8 +190,10 @@ export function GuestNight({ token }: { token: string }) {
       setRenaming(false);
       const pending = wantsVote;
       setWantsVote(null);
+      submitting.current = false;
       if (joining && pending) await vote(pending);
     }
+    submitting.current = false;
     setBusy(false);
   }
 

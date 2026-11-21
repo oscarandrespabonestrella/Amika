@@ -1089,23 +1089,16 @@
     "title": "Mis grupos",
     "subtitle": "Guarda a las personas con las que siempre juegas y añádelas a una partida con un clic.",
     "empty": "Aún no hay grupos. Crea uno arriba, por ejemplo «Jueves».",
-    "newLabel": "Nuevo grupo",
     "newPlaceholder": "p. ej. Jueves",
     "create": "Crear grupo",
     "listLabel": "Tus grupos",
     "members": "{count, plural, =0 {Sin jugadores} one {# jugador} other {# jugadores}}",
     "noMembers": "Este grupo aún no tiene jugadores.",
-    "editMembers": "Elegir jugadores",
-    "membersLegend": "Jugadores de {name}",
-    "noRoster": "Aún no tienes jugadores: añade los primeros por su nombre aquí abajo.",
-    "addPlayerLabel": "Añadir un jugador nuevo",
-    "addPlayerPlaceholder": "p. ej. Ana",
-    "addPlayer": "Añadir",
+    "editMembers": "Editar jugadores",
+    "noRoster": "Aún no tienes jugadores: escribe un nombre arriba para añadirlo, o elige un amigo.",
     "rename": "Renombrar",
-    "renameLabel": "Nuevo nombre para {name}",
     "save": "Guardar",
-    "cancel": "Cancelar",
-    "delete": "Eliminar",
+    "delete": "Eliminar grupo",
     "deleteConfirm": "¿Eliminar el grupo {name}? Sus jugadores se conservan.",
     "deleteYes": "Sí, eliminar",
     "deleteNo": "Conservar",
@@ -1117,8 +1110,31 @@
       "too_many": "Has llegado al límite de 50 grupos.",
       "failed": "Algo salió mal. Inténtalo de nuevo.",
       "playerExists": "Ya tienes un jugador con ese nombre.",
-      "playersFull": "Has llegado al límite de 200 jugadores."
-    }
+      "playersFull": "Has llegado al límite de 200 jugadores.",
+      "notFriend": "No eres amigo de esa persona."
+    },
+    "newGroup": "Nuevo grupo",
+    "createWith": "Crear grupo con {count}",
+    "options": "Opciones de {name}",
+    "tooFew": "Este grupo tiene menos de 2 jugadores. Añade al menos uno más para usarlo.",
+    "addPlayers": "Añadir jugadores",
+    "pickGame": "Elegir juego",
+    "pickGameFor": "Elegir un juego con {name}",
+    "logMatch": "Anotar partida",
+    "logMatchFor": "Anotar una partida con {name}",
+    "newTitle": "Nuevo grupo",
+    "editTitle": "Editar {name}",
+    "sheetHint": "Ponle nombre y elige quién juega.",
+    "nameLabel": "Nombre",
+    "membersLegendShort": "¿Quién juega?",
+    "selected": "{count} elegidos",
+    "searchLabel": "Buscar o añadir un jugador",
+    "searchPlaceholder": "Busca o añade un jugador nuevo",
+    "addNew": "Añadir «{name}» como jugador nuevo",
+    "tagMe": "Tú",
+    "tagFriend": "Amigo",
+    "needName": "Ponle un nombre al grupo",
+    "needPlayers": "Elige al menos 2 jugadores"
   },
   "AddFriendPlayer": {
     "label": "Añadir un amigo como jugador",
@@ -1163,29 +1179,36 @@
     "homeBody": "Elige un juego de tu biblioteca o planea una noche con votos.",
     "homeOpen": "Abrir noches",
     "filters": {
-      "label": "Filtros del selector",
-      "players": "Jugadores",
-      "playersHint": "Cualquiera",
-      "maxMinutes": "Tiempo máximo",
+      "players": "¿Cuántos?",
+      "maxMinutes": "¿Cuánto tiempo?",
       "anyTime": "Cualquiera",
       "minutes": "{minutes} min",
-      "group": "Grupo",
-      "noGroup": "Sin grupo",
-      "groupSetsPlayers": "El número de jugadores sale del grupo.",
-      "createGroup": "Crear un grupo",
-      "manageGroups": "Gestionar grupos"
+      "createGroup": "Nuevo grupo",
+      "manageGroups": "Grupos",
+      "anyone": "Cualquiera",
+      "whoNow": "¿Quién juega?",
+      "who": "Quién",
+      "groupOption": "{name}, {count, plural, one {# jugador} other {# jugadores}}",
+      "anyCount": "Cualquiera",
+      "playersCount": "{count} jugadores",
+      "hours": "{hours} h",
+      "hoursMinutes": "{hours} h {minutes}"
     },
     "shortlist": {
       "title": "Lista corta",
-      "empty": "Ningún juego encaja: prueba con más tiempo o sin número de jugadores"
+      "empty": "Ningún juego encaja: prueba con más tiempo o sin número de jugadores",
+      "picked": "{count} de {total} elegidos",
+      "hint": "Desmarca un juego para dejarlo fuera del giro.",
+      "include": "Incluir {name}"
     },
     "spin": {
-      "action": "Girar",
+      "action": "Girar entre {count, plural, one {# juego} other {# juegos}}",
       "again": "Girar otra vez",
       "spinning": "Girando…",
-      "resultLabel": "Juego elegido",
+      "resultLabel": "Esta noche jugáis a",
       "result": "Toca jugar: {name}",
-      "playThis": "Jugar este"
+      "playThis": "¡A jugar!",
+      "noneFit": "Ningún juego encaja, amplía los filtros"
     },
     "reasons": {
       "neverPlayed": "Nunca lo has jugado",
@@ -1196,14 +1219,20 @@
     },
     "plan": {
       "titleLabel": "Título de la noche",
-      "titlePlaceholder": "Noche de juegos del viernes",
       "dateLabel": "Fecha",
       "save": "Guardar noche",
       "saving": "Guardando…",
-      "remove": "Quitar",
-      "restore": "Volver a añadir",
-      "removedLabel": "Quitado",
-      "needOne": "Deja al menos un juego para guardar la noche."
+      "needOne": "Deja al menos un juego para guardar la noche.",
+      "when": "Cuándo",
+      "otherDate": "Otra",
+      "defaultTitle": "Noche de juegos",
+      "defaultTitleGroup": "Noche de {group}",
+      "inviteHint": "{count, plural, one {# amigo recibe} other {# amigos reciben}} una invitación: {names}.",
+      "noFriendsHint": "Nadie de este grupo está vinculado a un amigo todavía: comparte el enlace después de guardar.",
+      "gamesTitle": "Que voten",
+      "gamesHint": "Desmarca los juegos que no quieras en la noche.",
+      "saveAndInvite": "Guardar e invitar a {count, plural, one {# amigo} other {# amigos}}",
+      "afterSave": "Los amigos votan y sugieren juegos; quien no tiene cuenta vota con un enlace."
     },
     "invites": {
       "title": "Invitaciones",
@@ -1238,7 +1267,7 @@
       "hostedBy": "Organiza {host}",
       "players": "{count, plural, one {# jugador} other {# jugadores}}",
       "closedNotice": "Esta noche está cerrada: los votos ya no pueden cambiar.",
-      "gamesTitle": "Juegos",
+      "gamesTitle": "¿A qué jugamos?",
       "noGames": "No hay juegos en esta noche.",
       "pinned": "Fijado",
       "played": "Jugado",
@@ -1246,7 +1275,6 @@
       "votedBy": "{count, plural, one {# voto} other {# votos}}: {names}",
       "noVotes": "Aún sin votos",
       "voteFor": "Votar por {name}",
-      "actionFor": "{action}: {name}",
       "playThis": "Jugar este",
       "pin": "Fijar",
       "unpin": "Desfijar",
@@ -1267,14 +1295,16 @@
         "yes": "Sí, salir"
       },
       "invite": {
-        "title": "Amigos",
+        "title": "Invitados",
         "action": "Invitar",
         "inviteName": "Invitar a {name}",
         "invited": "Invitado",
         "accepted": "Viene",
         "declined": "Rechazó",
         "noFriends": "Aún no tienes amigos a quienes invitar.",
-        "allInvited": "Todos tus amigos ya están invitados."
+        "allInvited": "Todos tus amigos ya están invitados.",
+        "going": "{count} vienen",
+        "host": "anfitrión"
       },
       "suggest": {
         "title": "Sugerir un juego",
@@ -1297,7 +1327,14 @@
         "share": "Compartir",
         "urlLabel": "Enlace público de la noche",
         "active": "Enlace activo hasta el final del {date} (UTC)."
-      }
+      },
+      "options": "Opciones de la noche",
+      "today": "Hoy",
+      "tomorrow": "Mañana",
+      "inDays": "En {count} días",
+      "totalVotes": "{count, plural, one {# voto} other {# votos}}",
+      "moreFor": "Más acciones para {name}",
+      "startMatch": "Empezar partida: {name}"
     },
     "guest": {
       "metaTitle": "Noche de juegos",
@@ -1333,6 +1370,11 @@
         "needName": "Escribe tu nombre para votar.",
         "failed": "Algo salió mal. Inténtalo de nuevo."
       }
+    },
+    "tabs": {
+      "label": "Noche de juegos",
+      "now": "Jugar ahora",
+      "plan": "Planear una noche"
     }
   }
 }

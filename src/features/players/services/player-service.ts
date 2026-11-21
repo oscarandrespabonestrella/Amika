@@ -18,8 +18,7 @@ export type MergeOutcome = "ok" | "together" | "not_found";
 export type DeleteOutcome = "ok" | "in_use" | "not_found";
 export type SetMeOutcome = "ok" | "me_taken" | "not_found";
 export type AddOutcome =
-  | { outcome: "ok"; id: string }
-  | { outcome: "exists" | "too_many" };
+  { outcome: "ok"; id: string } | { outcome: "exists" | "too_many" };
 
 /** Postgres codes: 23505 = name taken / second "me", 23503 = still has matches, PL001 = played together, P0002 = not found, P0001 = roster cap (200). */
 const pgCode = (error: unknown) => (error as { code?: string } | null)?.code;

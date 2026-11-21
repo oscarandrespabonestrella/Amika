@@ -132,12 +132,15 @@ const shortlist = (page: Page, name = "Shortlist") =>
 const candidates = (page: Page, name?: string) =>
   shortlist(page, name).getByRole("list").first().locator(":scope > li");
 
-async function filterPlayers(page: Page, n: number) {
-  const input = page.getByLabel("Players", { exact: true });
-  await input.fill(String(n));
-  await input.press("Tab");
+async function filterPlayers(page: Page, n: number, label = "players") {
+  await page
+    .getByRole("button", { name: `${n} ${label}`, exact: true })
+    .click();
   await expect(page).toHaveURL(new RegExp(`players=${n}`));
 }
+
+const spinButton = (page: Page, prefix = "Spin from") =>
+  page.getByRole("button", { name: new RegExp(`^${prefix}`) });
 
 async function asFriend(browser: Browser) {
   const context = await browser.newContext({ storageState: STATE_FILE.t });
@@ -160,29 +163,32 @@ test("picker ranks and spins", async ({ page }) => {
   await expect(items.first()).toContainText("You have never played it");
   await expect(items.last()).toContainText("You have never played it");
 
-  await page.getByRole("button", { name: "Spin", exact: true }).click();
-  const chosen = page.getByText("Chosen game", { exact: true });
-  await expect(chosen).toBeVisible({ timeout: 5_000 });
+  await expect(spinButton(page)).toHaveText("Spin from 2 games");
+  await spinButton(page).click();
+  const chosen = page.getByRole("region", { name: "Tonight you play" });
   await expect(
-    page.getByRole("link", { name: "Play this", exact: true }),
-  ).toBeVisible();
-  const text = (await chosen.locator("..").innerText()).trim();
+    chosen.getByRole("link", { name: "Let’s play", exact: true }),
+  ).toBeVisible({ timeout: 5_000 });
+  const text = (await chosen.innerText()).trim();
   expect(text.includes(NAMES.alpha) || text.includes(NAMES.beta)).toBe(true);
 });
 
 test("empty picker explains", async ({ page }) => {
-  await page.goto("/en/nights");
-  await filterPlayers(page, 12);
+  // 12 is not a preset chip: the URL still carries any count.
+  await page.goto("/en/nights?players=12");
+  await expect(
+    page.getByRole("button", { name: "12 players", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("No game fits", { exact: false })).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Spin", exact: true }),
+    page.getByRole("button", { name: "No games fit, widen the filters" }),
   ).toBeDisabled();
 });
 
 test("plan, invite, friend votes and suggests", async ({ page, browser }) => {
   test.setTimeout(90_000); // several round trips plus the 10 s fallback poll
   await page.goto("/en/nights/new?players=4");
-  await expect(candidates(page)).toHaveCount(2);
+  await expect(candidates(page, "Let them vote")).toHaveCount(2);
   await page.getByLabel("Night title", { exact: true }).fill(NIGHT_TITLE);
   await page.getByRole("button", { name: "Save night" }).click();
   await page.waitForURL(/\/en\/nights\/[0-9a-f-]{36}$/);
@@ -368,8 +374,9 @@ test("revoked link shows inactive", async ({ page, browser }) => {
 test("play this pre-fills players", async ({ page }) => {
   await page.goto(`/en/nights/${nightId}`);
   await page
-    .getByRole("link", { name: `Play this: ${NAMES.alpha}`, exact: true })
+    .getByRole("button", { name: `More actions for ${NAMES.alpha}` })
     .click();
+  await page.getByRole("menuitem", { name: "Play this", exact: true }).click();
   await expect(page).toHaveURL(
     new RegExp(`/en/games/${gameIds.alpha}/plays/new\\?night=${nightId}`),
   );
@@ -386,20 +393,18 @@ test("the night works in Spanish and Portuguese", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Noche de juegos",
   );
-  await page.getByLabel("Jugadores", { exact: true }).fill("4");
-  await page.getByLabel("Jugadores", { exact: true }).press("Tab");
+  await filterPlayers(page, 4, "jugadores");
   await expect(candidates(page, "Lista corta")).toHaveCount(2);
-  await page.getByRole("button", { name: "Girar", exact: true }).click();
-  await expect(page.getByText("Juego elegido", { exact: true })).toBeVisible({
-    timeout: 5_000,
-  });
+  await spinButton(page, "Girar entre").click();
+  await expect(
+    page.getByRole("region", { name: "Esta noche jugáis a" }),
+  ).toBeVisible({ timeout: 5_000 });
 
   await page.goto("/pt/nights");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Noite de jogos",
   );
-  await page.getByLabel("Jogadores", { exact: true }).fill("4");
-  await page.getByLabel("Jogadores", { exact: true }).press("Tab");
+  await filterPlayers(page, 4, "jogadores");
   await expect(candidates(page, "Lista curta")).toHaveCount(2);
 
   // The public page speaks the language of its link.

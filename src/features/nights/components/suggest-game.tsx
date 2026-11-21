@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { suggestNightGameAction } from "../actions/night-actions";
+import { SectionLabel } from "./choice-chips";
 import { toNightError, type NightErrorCode } from "../error-codes";
 
 export type SuggestOption = { gameId: string; name: string };
@@ -51,9 +52,7 @@ export function SuggestGame({
 
   return (
     <section aria-labelledby="suggest-title" className="flex flex-col gap-3">
-      <h2 id="suggest-title" className="font-semibold">
-        {t("title")}
-      </h2>
+      <SectionLabel id="suggest-title">{t("title")}</SectionLabel>
       <p className="text-sm text-muted-foreground">{t("hint")}</p>
       {options.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t("none")}</p>

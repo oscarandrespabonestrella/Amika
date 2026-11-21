@@ -95,31 +95,42 @@ const playerCombobox = (page: Page, n: number) =>
     .getByRole("group", { name: `Player ${n}` })
     .getByRole("combobox", { name: new RegExp(`^Name of player ${n}\\b`) });
 
+const openNewGroup = async (page: Page) => {
+  await page.getByRole("button", { name: "New group", exact: true }).click();
+  return page.getByRole("dialog", { name: "New group" });
+};
+
 test("create a group and choose its players", async ({ page }) => {
   await page.goto("/en/groups");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("My groups");
-  await page.getByLabel("New group").fill("Jueves");
-  await page.getByRole("button", { name: "Create group" }).click();
+  const sheet = await openNewGroup(page);
+  await sheet.getByLabel("Name", { exact: true }).fill("Jueves");
+  await expect(sheet.getByText("Pick at least 2 players")).toBeVisible();
+  await sheet.getByLabel("Ana", { exact: true }).check();
+  await sheet.getByLabel("Bo", { exact: true }).check();
+  await sheet.getByRole("button", { name: "Create group with 2" }).click();
+  await expect(sheet).toBeHidden();
 
-  // A new group opens straight on its players.
   const item = groupItem(page, "Jueves");
-  await expect(item).toBeVisible();
-  await item.getByLabel("Ana", { exact: true }).check();
-  await item.getByLabel("Bo", { exact: true }).check();
-  await item.getByRole("button", { name: "Save", exact: true }).click();
-
-  await expect(item.getByText("Ana, Bo")).toBeVisible();
-  await expect(item.getByText("2 players")).toBeVisible();
+  await expect(item.getByText("Ana, Bo · 2 players")).toBeVisible();
+  await expect(
+    item.getByRole("link", { name: "Pick a game with Jueves" }),
+  ).toHaveAttribute("href", /\/en\/nights\?groupId=/);
   expect(await memberNames("Jueves")).toEqual(["Ana", "Bo"]);
 });
 
 test("a duplicate group name is refused", async ({ page }) => {
   await page.goto("/en/groups");
-  await page.getByLabel("New group").fill("jueves ");
-  await page.getByRole("button", { name: "Create group" }).click();
+  const sheet = await openNewGroup(page);
+  await sheet.getByLabel("Name", { exact: true }).fill("jueves ");
+  await sheet.getByLabel("Ana", { exact: true }).check();
+  await sheet.getByLabel("Cy", { exact: true }).check();
+  await sheet.getByRole("button", { name: "Create group with 2" }).click();
   await expect(
-    page.getByText("You already have a group with that name."),
+    sheet.getByText("You already have a group with that name."),
   ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(sheet).toBeHidden();
 });
 
 test("adding the group fills the match, keeps who is there and adds no duplicate", async ({
@@ -156,15 +167,18 @@ test("the table can still be edited without touching the group", async ({
 
 test("renaming and deleting a group keeps the players", async ({ page }) => {
   await page.goto("/en/groups");
-  const item = groupItem(page, "Jueves");
-  await item.getByRole("button", { name: "Rename" }).click();
-  await item.getByLabel("New name for Jueves").fill("Familia");
-  await item.getByRole("button", { name: "Save", exact: true }).click();
+  await page.getByRole("button", { name: "Options for Jueves" }).click();
+  await page.getByRole("menuitem", { name: "Rename" }).click();
+  const sheet = page.getByRole("dialog", { name: "Edit Jueves" });
+  await sheet.getByLabel("Name", { exact: true }).fill("Familia");
+  await sheet.getByRole("button", { name: "Save", exact: true }).click();
   await expect(groupItem(page, "Familia")).toBeVisible();
 
-  const renamed = groupItem(page, "Familia");
-  await renamed.getByRole("button", { name: "Delete" }).click();
-  await renamed.getByRole("button", { name: "Yes, delete" }).click();
+  await page.getByRole("button", { name: "Options for Familia" }).click();
+  await page.getByRole("menuitem", { name: "Delete group" }).click();
+  await groupItem(page, "Familia")
+    .getByRole("button", { name: "Yes, delete" })
+    .click();
   await expect(groupItem(page, "Familia")).toHaveCount(0);
 
   const roster = await withDb(async (c) =>
@@ -198,9 +212,9 @@ test("groups stay reachable after the roster is emptied", async ({ page }) => {
   });
   await page.goto("/en/groups");
   await expect(groupItem(page, "Huérfano")).toBeVisible();
-  await expect(
-    groupItem(page, "Huérfano").getByText("No players", { exact: true }),
-  ).toBeVisible();
+  const item = groupItem(page, "Huérfano");
+  await expect(item.getByText("No players in this group yet.")).toBeVisible();
+  await expect(item.getByText(/fewer than 2 players/)).toBeVisible();
 });
 
 test("a group can be made from an empty roster by adding players by name", async ({
@@ -208,22 +222,26 @@ test("a group can be made from an empty roster by adding players by name", async
 }) => {
   // The previous test emptied the roster.
   await page.goto("/en/groups");
-  await page.getByLabel("New group").fill("Viernes");
-  await page.getByRole("button", { name: "Create group" }).click();
-
-  const item = groupItem(page, "Viernes");
-  await expect(item.getByText("No players yet")).toBeVisible();
-  await item.getByLabel("Add a new player").fill("Eva");
-  await item.getByRole("button", { name: "Add", exact: true }).click();
-  await expect(item.getByLabel("Eva", { exact: true })).toBeChecked();
+  const sheet = await openNewGroup(page);
+  await sheet.getByLabel("Name", { exact: true }).fill("Viernes");
+  await expect(sheet.getByText("No players yet")).toBeVisible();
+  const search = sheet.getByLabel("Search or add a player");
+  await search.fill("Eva");
+  await sheet
+    .getByRole("button", { name: "Add “Eva” as a new player" })
+    .click();
+  await expect(sheet.getByLabel("Eva", { exact: true })).toBeChecked();
   // The same name again picks the existing player instead of a duplicate.
-  await item.getByLabel("Add a new player").fill(" eva");
-  await item.getByLabel("Add a new player").press("Enter");
-  await expect(item.getByLabel("Add a new player")).toHaveValue("");
-  await item.getByRole("button", { name: "Save", exact: true }).click();
+  await search.fill(" eva");
+  await search.press("Enter");
+  await expect(search).toHaveValue("");
+  await search.fill("Fede");
+  await search.press("Enter");
+  await expect(sheet.getByLabel("Fede", { exact: true })).toBeChecked();
+  await sheet.getByRole("button", { name: "Create group with 2" }).click();
 
-  await expect(item.getByText("1 player")).toBeVisible();
-  expect(await memberNames("Viernes")).toEqual(["Eva"]);
+  await expect(groupItem(page, "Viernes").getByText("2 players")).toBeVisible();
+  expect(await memberNames("Viernes")).toEqual(["Eva", "Fede"]);
 });
 
 test("a friend can be added as a player straight into a group", async ({
@@ -243,16 +261,16 @@ test("a friend can be added as a player straight into a group", async ({
     );
   });
   await page.goto("/en/groups");
-  const item = groupItem(page, "Viernes");
-  await item.getByRole("button", { name: "Choose players" }).click();
-  await item.getByLabel("Add a friend as a player").selectOption("Gina");
-  await item.getByRole("button", { name: "Add friend" }).click();
-  await expect(item.getByText(/Gina was added/)).toBeVisible();
-  await expect(item.getByLabel("Gina", { exact: true })).toBeChecked();
-  await item.getByRole("button", { name: "Save", exact: true }).click();
+  await page.getByRole("button", { name: "Options for Viernes" }).click();
+  await page.getByRole("menuitem", { name: "Edit players" }).click();
+  const sheet = page.getByRole("dialog", { name: "Edit Viernes" });
+  // Friends not yet in the roster are listed, tagged as friends.
+  await sheet.getByLabel("Gina", { exact: true }).check();
+  await sheet.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(sheet).toBeHidden();
 
-  await expect(item.getByText("2 players")).toBeVisible();
-  expect(await memberNames("Viernes")).toEqual(["Eva", "Gina"]);
+  await expect(groupItem(page, "Viernes").getByText("3 players")).toBeVisible();
+  expect(await memberNames("Viernes")).toEqual(["Eva", "Fede", "Gina"]);
   // The friend is asked to confirm the link, as when linking from My players.
   const requests = await withDb(async (c) =>
     (
@@ -266,7 +284,16 @@ test("a friend can be added as a player straight into a group", async ({
   );
   expect(requests).toEqual(["Gina"]);
 
-  // My players offers the same control.
+  // My players offers the same through its own control.
   await page.goto("/en/players");
   await expect(page.getByLabel("Add a friend as a player")).toBeVisible();
+});
+
+test("the group sheet has no accessibility violations", async ({ page }) => {
+  await page.goto("/en/groups");
+  await openNewGroup(page);
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+    .analyze();
+  expect(results.violations).toEqual([]);
 });

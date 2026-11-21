@@ -8,6 +8,7 @@ import {
   revokeNightLinkAction,
 } from "../actions/night-actions";
 import { toNightError, type NightErrorCode } from "../error-codes";
+import { SectionLabel } from "./choice-chips";
 
 const subscribeNothing = () => () => {};
 const canShareSnapshot = () => typeof navigator.share === "function";
@@ -106,10 +107,11 @@ export function ShareLink({
   }
 
   return (
-    <section aria-labelledby="share-title" className="flex flex-col gap-3">
-      <h2 id="share-title" className="font-semibold">
-        {t("title")}
-      </h2>
+    <section
+      aria-labelledby="share-title"
+      className="flex scroll-mt-20 flex-col gap-3 rounded-2xl border border-border bg-card p-4"
+    >
+      <SectionLabel id="share-title">{t("title")}</SectionLabel>
       <p className="text-sm text-muted-foreground">{t("hint")}</p>
       <p className="text-sm font-medium">{t("warning")}</p>
 

@@ -1,10 +1,15 @@
 "use client";
 
-import { Dices } from "lucide-react";
+import { ChevronLeft, Dices, Ellipsis, Share2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
-import { Badge } from "@/components/ui/badge";
+import { useState, useSyncExternalStore, useTransition } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -12,6 +17,7 @@ import {
   leaveNightAction,
   setNightGameAction,
 } from "../actions/night-actions";
+import { SectionLabel } from "../components/choice-chips";
 import { InviteFriends, type InviteFriend } from "../components/invite-friends";
 import { ShareLink } from "../components/share-link";
 import { SpinCard } from "../components/spin-card";
@@ -24,10 +30,30 @@ import type { NightDetail as Night } from "../services/night-service";
 
 type Game = Night["games"][number];
 
+const subscribeNothing = () => () => {};
+const MS_PER_DAY = 86_400_000;
+
+/** Days from the viewer's own today to `iso` (null on the server). */
+function useDaysUntil(iso: string): number | null {
+  const today = useSyncExternalStore(
+    subscribeNothing,
+    () => {
+      const d = new Date();
+      return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+    },
+    () => null,
+  );
+  if (today === null) return null;
+  return Math.round((Date.parse(`${iso}T00:00:00Z`) - today) / MS_PER_DAY);
+}
+
 /** Most voted first, then pinned; the rest keeps the order they were added in. */
 function sortGames(games: Game[]): Game[] {
   return [...games].sort(
-    (a, b) => b.votes - a.votes || Number(b.pinned) - Number(a.pinned),
+    (a, b) =>
+      Number(a.played) - Number(b.played) ||
+      b.votes - a.votes ||
+      Number(b.pinned) - Number(a.pinned),
   );
 }
 
@@ -69,6 +95,7 @@ export function NightDetail({
   const [error, setError] = useState<NightErrorCode | null>(null);
   const [confirming, setConfirming] = useState<"close" | "leave" | null>(null);
   const [pending, startTransition] = useTransition();
+  const days = useDaysUntil(night.startsOn);
 
   const open = night.status === "open";
   const refresh = () => router.refresh();
@@ -77,9 +104,12 @@ export function NightDetail({
   });
 
   const games = sortGames(night.games);
-  const candidates = games.filter((g) => !g.played).map(toCandidate);
+  const unplayed = games.filter((g) => !g.played);
+  const candidates = unplayed.map(toCandidate);
   const votes = Object.fromEntries(games.map((g) => [g.gameId, g.votes]));
+  const totalVotes = games.reduce((sum, g) => sum + g.votes, 0);
   const hostName = night.hostName || td("someone");
+  const leader = unplayed[0] && unplayed[0].votes > 0 ? unplayed[0] : null;
 
   function run(
     call: () => Promise<{ ok: true } | { ok: false; error: string }>,
@@ -97,18 +127,62 @@ export function NightDetail({
   const playHref = (gameId: string) =>
     night.isOwner ? `/games/${gameId}/plays/new?night=${night.id}` : null;
 
+  const when = !open
+    ? t("list.closedBadge")
+    : days === null
+      ? null
+      : days <= 0
+        ? td("today")
+        : days === 1
+          ? td("tomorrow")
+          : td("inDays", { count: days });
+
   return (
-    <div className="flex max-w-2xl flex-col gap-8">
-      <header className="flex flex-col gap-2">
-        <Link href="/nights" className="text-sm font-medium underline">
-          {t("back")}
+    <div className="flex max-w-2xl flex-col gap-6">
+      <div className="-mx-3 flex items-center justify-between">
+        <Link
+          href="/nights"
+          aria-label={t("back")}
+          className="grid size-11 place-items-center rounded-lg text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          <ChevronLeft className="size-6" aria-hidden />
         </Link>
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-semibold tracking-tight text-balance">
-            {night.title}
-          </h1>
-          {!open && <Badge variant="secondary">{t("list.closedBadge")}</Badge>}
-        </div>
+        {open && (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              aria-label={td("options")}
+              className="grid size-11 place-items-center rounded-lg text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              <Ellipsis className="size-5" aria-hidden />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-52">
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() =>
+                  setConfirming(night.isOwner ? "close" : "leave")
+                }
+              >
+                {night.isOwner ? td("close.action") : td("leave.action")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
+
+      <header className="-mt-4 flex flex-col gap-1.5">
+        {when && (
+          <p
+            className={cn(
+              "text-sm font-semibold",
+              open ? "text-primary" : "text-muted-foreground",
+            )}
+          >
+            {when}
+          </p>
+        )}
+        <h1 className="text-3xl font-bold tracking-tight text-balance">
+          {night.title}
+        </h1>
         <p className="text-muted-foreground">
           {night.startsOn} · {td("hostedBy", { host: hostName })}
           {night.players !== null &&
@@ -121,16 +195,70 @@ export function NightDetail({
         )}
       </header>
 
+      {night.isOwner && open && (
+        <a
+          href="#share-title"
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "h-11 w-fit gap-2 px-4",
+          )}
+        >
+          <Share2 className="size-4" aria-hidden />
+          {td("share.title")}
+        </a>
+      )}
+
+      {confirming && (
+        <div
+          role="alertdialog"
+          aria-labelledby="confirm-text"
+          className="flex flex-col gap-3 rounded-2xl border border-destructive/40 bg-destructive/5 p-4"
+        >
+          <p id="confirm-text" className="text-sm">
+            {confirming === "close" ? td("close.confirm") : td("leave.confirm")}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="destructive"
+              className="h-11 px-4"
+              disabled={pending}
+              onClick={() =>
+                confirming === "close"
+                  ? run(() => closeNightAction(night.id))
+                  : run(
+                      () => leaveNightAction(night.id),
+                      () => router.push("/nights"),
+                    )
+              }
+            >
+              {confirming === "close" ? td("close.yes") : td("leave.yes")}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 px-4"
+              onClick={() => setConfirming(null)}
+            >
+              {td("keep")}
+            </Button>
+          </div>
+        </div>
+      )}
+
       <div aria-live="assertive" role="alert" className="empty:hidden">
         {error && (
           <p className="text-sm text-destructive">{t(`errors.${error}`)}</p>
         )}
       </div>
 
-      <section aria-labelledby="games-title" className="flex flex-col gap-3">
-        <h2 id="games-title" className="font-semibold">
-          {td("gamesTitle")}
-        </h2>
+      <section aria-labelledby="games-title" className="flex flex-col gap-2.5">
+        <div className="flex items-baseline justify-between gap-3">
+          <SectionLabel id="games-title">{td("gamesTitle")}</SectionLabel>
+          <span className="text-sm text-muted-foreground">
+            {td("totalVotes", { count: totalVotes })}
+          </span>
+        </div>
         {games.length === 0 ? (
           <p className="text-sm text-muted-foreground">{td("noGames")}</p>
         ) : (
@@ -142,6 +270,7 @@ export function NightDetail({
                 game={g}
                 open={open}
                 pending={pending}
+                totalVotes={totalVotes}
                 onError={setError}
                 onDone={refresh}
                 onSet={(change) =>
@@ -153,20 +282,6 @@ export function NightDetail({
         )}
       </section>
 
-      {open && candidates.length > 0 && (
-        <section
-          aria-labelledby="spin-title"
-          className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5"
-        >
-          <h2 id="spin-title" className="flex items-center gap-2 font-semibold">
-            <Dices className="size-5 text-primary" aria-hidden />
-            {td("spinTitle")}
-          </h2>
-          <p className="text-sm text-muted-foreground">{td("spinHint")}</p>
-          <SpinCard candidates={candidates} votes={votes} playHref={playHref} />
-        </section>
-      )}
-
       {open && !night.isOwner && (
         <SuggestGame
           nightId={night.id}
@@ -177,10 +292,25 @@ export function NightDetail({
         />
       )}
 
+      {open && candidates.length > 1 && (
+        <section
+          aria-labelledby="spin-title"
+          className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-4"
+        >
+          <h2 id="spin-title" className="flex items-center gap-2 font-semibold">
+            <Dices className="size-5 text-primary" aria-hidden />
+            {td("spinTitle")}
+          </h2>
+          <p className="text-sm text-muted-foreground">{td("spinHint")}</p>
+          <SpinCard candidates={candidates} votes={votes} playHref={playHref} />
+        </section>
+      )}
+
       {night.isOwner && (
         <>
           <InviteFriends
             nightId={night.id}
+            hostName={hostName}
             friends={friends}
             members={night.members}
             disabled={!open || pending}
@@ -199,51 +329,17 @@ export function NightDetail({
         </>
       )}
 
-      {open && (
-        <div className="flex flex-wrap items-center gap-2">
-          {confirming === null ? (
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 px-4"
-              disabled={pending}
-              onClick={() => setConfirming(night.isOwner ? "close" : "leave")}
-            >
-              {night.isOwner ? td("close.action") : td("leave.action")}
-            </Button>
-          ) : (
-            <>
-              <span className="text-sm">
-                {confirming === "close"
-                  ? td("close.confirm")
-                  : td("leave.confirm")}
-              </span>
-              <Button
-                type="button"
-                variant="destructive"
-                className="h-11 px-4"
-                disabled={pending}
-                onClick={() =>
-                  confirming === "close"
-                    ? run(() => closeNightAction(night.id))
-                    : run(
-                        () => leaveNightAction(night.id),
-                        () => router.push("/nights"),
-                      )
-                }
-              >
-                {confirming === "close" ? td("close.yes") : td("leave.yes")}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11 px-4"
-                onClick={() => setConfirming(null)}
-              >
-                {td("keep")}
-              </Button>
-            </>
-          )}
+      {night.isOwner && open && leader && (
+        <div className="sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-20 -mx-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0 md:mx-0 md:rounded-2xl md:border">
+          <Link
+            href={`/games/${leader.gameId}/plays/new?night=${night.id}`}
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "h-13 w-full rounded-2xl text-base",
+            )}
+          >
+            {td("startMatch", { name: leader.name })}
+          </Link>
         </div>
       )}
     </div>
@@ -255,6 +351,7 @@ function GameRow({
   game,
   open,
   pending,
+  totalVotes,
   onError,
   onDone,
   onSet,
@@ -263,108 +360,73 @@ function GameRow({
   game: Game;
   open: boolean;
   pending: boolean;
+  totalVotes: number;
   onError: (code: NightErrorCode | null) => void;
   onDone: () => void;
   onSet: (change: { pinned?: boolean; played?: boolean } | "remove") => void;
 }) {
   const td = useTranslations("Nights.detail");
   const voters = game.voters.map((n) => n || td("someone"));
-  const label = (action: string) =>
-    td("actionFor", { action, name: game.name });
+  const tags = [
+    game.pinned && td("pinned"),
+    game.played && td("played"),
+    game.source === "suggested" && td("suggested"),
+  ].filter(Boolean);
+  const subtitle = [
+    voters.length > 0
+      ? td("votedBy", { count: game.votes, names: voters.join(", ") })
+      : td("noVotes"),
+    ...tags,
+  ].join(" · ");
 
   return (
     <li
       data-testid="night-game"
-      className={cn(
-        "flex flex-col gap-3 rounded-xl border border-border bg-card p-3",
-        game.played && "opacity-70",
-      )}
+      className={cn("flex items-center gap-1", game.played && "opacity-70")}
     >
-      <div className="flex items-center gap-3">
-        <span className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-tint text-tint-foreground">
-          {game.coverUrl ? (
-            // External hotlinked image (BGG): next/image optimization is not applicable.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={game.coverUrl}
-              alt=""
-              referrerPolicy="no-referrer"
-              className="size-full object-cover"
-            />
-          ) : (
-            <Dices className="size-6" aria-hidden />
-          )}
-        </span>
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <span className="font-medium break-words">{game.name}</span>
-          <span className="flex flex-wrap gap-1.5">
-            {game.pinned && <Badge variant="secondary">{td("pinned")}</Badge>}
-            {game.played && <Badge variant="secondary">{td("played")}</Badge>}
-            {game.source === "suggested" && (
-              <Badge variant="secondary">{td("suggested")}</Badge>
-            )}
-          </span>
-        </div>
+      <div className="min-w-0 flex-1">
         <VoteButton
           nightGameId={game.id}
           name={game.name}
+          coverUrl={game.coverUrl}
           votes={game.votes}
           mine={game.mine}
+          totalVotes={totalVotes}
+          subtitle={subtitle}
           disabled={!open}
           onError={onError}
           onDone={onDone}
         />
       </div>
-      <p className="text-sm text-muted-foreground">
-        {voters.length > 0
-          ? td("votedBy", {
-              count: game.votes,
-              names: voters.join(", "),
-            })
-          : td("noVotes")}
-      </p>
       {night.isOwner && open && (
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href={`/games/${game.gameId}/plays/new?night=${night.id}`}
-            aria-label={label(td("playThis"))}
-            className={cn(buttonVariants({ size: "sm" }), "h-11 px-4")}
-          >
-            {td("playThis")}
-          </Link>
-          <Button
-            type="button"
-            variant="outline"
-            className="h-11 px-4"
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            aria-label={td("moreFor", { name: game.name })}
             disabled={pending}
-            aria-label={label(game.pinned ? td("unpin") : td("pin"))}
-            onClick={() => onSet({ pinned: !game.pinned })}
+            className="grid size-11 shrink-0 place-items-center rounded-lg text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
           >
-            {game.pinned ? td("unpin") : td("pin")}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="h-11 px-4"
-            disabled={pending}
-            aria-label={label(
-              game.played ? td("unmarkPlayed") : td("markPlayed"),
-            )}
-            onClick={() => onSet({ played: !game.played })}
-          >
-            {game.played ? td("unmarkPlayed") : td("markPlayed")}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="h-11 px-4"
-            disabled={pending}
-            aria-label={label(td("remove"))}
-            onClick={() => onSet("remove")}
-          >
-            {td("remove")}
-          </Button>
-        </div>
+            <Ellipsis className="size-5" aria-hidden />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-48">
+            <DropdownMenuItem asChild>
+              <Link href={`/games/${game.gameId}/plays/new?night=${night.id}`}>
+                {td("playThis")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onSet({ pinned: !game.pinned })}>
+              {game.pinned ? td("unpin") : td("pin")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onSet({ played: !game.played })}>
+              {game.played ? td("unmarkPlayed") : td("markPlayed")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={() => onSet("remove")}
+            >
+              {td("remove")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
     </li>
   );

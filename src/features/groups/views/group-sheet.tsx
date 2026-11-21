@@ -18,6 +18,7 @@ import type { Friend } from "@/features/friends";
 import {
   addFriendPlayerAction,
   addPlayerAction,
+  ensureMePlayerAction,
 } from "@/features/players/actions/player-actions";
 import {
   normalizePlayerName,
@@ -76,8 +77,11 @@ export function Avatar({
   );
 }
 
+/** The row standing for the user when no player is marked "This is me" yet. */
+const ME_NEW = "me:new";
+
 type Row = {
-  /** A player id, or `friend:<userId>` for a friend not yet in the roster. */
+  /** A player id, `friend:<userId>` for a friend not yet in the roster, or ME_NEW. */
   key: string;
   name: string;
   tag: "me" | "friend" | null;
@@ -93,20 +97,30 @@ export function GroupSheet({
   focus,
   players,
   friends,
+  myName,
   onClose,
 }: {
   group: Group | null;
   focus: "name" | "members";
   players: Player[];
   friends: Friend[];
+  /** The user's profile name, for their own player when none is marked yet. */
+  myName: string;
   onClose: () => void;
 }) {
   const t = useTranslations("Groups");
   const te = useTranslations("Groups.errors");
   const tf = useTranslations("Friends");
   const [name, setName] = useState(group?.name ?? "");
+  const mePlayer = players.find((p) => p.isMe);
+  // A new group always starts with the user in it.
   const [selected, setSelected] = useState<ReadonlySet<string>>(
-    new Set(group?.members.map((m) => m.id) ?? []),
+    () =>
+      new Set(
+        group
+          ? group.members.map((m) => m.id)
+          : [mePlayer ? mePlayer.id : ME_NEW],
+      ),
   );
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<ErrorCode | null>(null);
@@ -114,11 +128,22 @@ export function GroupSheet({
 
   const linked = new Set(players.map((p) => p.friendId).filter(Boolean));
   const rows: Row[] = [
-    ...players.map((p) => ({
-      key: p.id,
-      name: p.name,
-      tag: p.isMe ? ("me" as const) : p.friendId ? ("friend" as const) : null,
-    })),
+    ...(mePlayer
+      ? [{ key: mePlayer.id, name: mePlayer.name, tag: "me" as const }]
+      : [
+          {
+            key: ME_NEW,
+            name: (myName.trim() || t("meFallback")).slice(0, PLAYER_NAME_MAX),
+            tag: "me" as const,
+          },
+        ]),
+    ...players
+      .filter((p) => !p.isMe)
+      .map((p) => ({
+        key: p.id,
+        name: p.name,
+        tag: p.friendId ? ("friend" as const) : null,
+      })),
     ...friends
       .filter((f) => !linked.has(f.userId))
       .map((f) => ({
@@ -194,6 +219,23 @@ export function GroupSheet({
 
       const playerIds: string[] = [];
       for (const key of selected) {
+        if (key === ME_NEW) {
+          const me = await ensureMePlayerAction({
+            name: rows.find((r) => r.key === ME_NEW)?.name ?? "",
+          });
+          if (!me.ok) {
+            setError(
+              me.error === "exists"
+                ? "playerExists"
+                : me.error === "too_many"
+                  ? "playersFull"
+                  : me.error,
+            );
+            return;
+          }
+          playerIds.push(me.id);
+          continue;
+        }
         if (!key.startsWith("friend:")) {
           playerIds.push(key);
           continue;
@@ -316,7 +358,7 @@ export function GroupSheet({
               </Button>
             )}
 
-            {rows.length === 0 && draft.trim() === "" && (
+            {rows.length === 1 && draft.trim() === "" && (
               <p className="text-sm text-muted-foreground">{t("noRoster")}</p>
             )}
 

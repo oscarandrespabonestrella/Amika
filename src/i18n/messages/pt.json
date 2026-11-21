@@ -1095,7 +1095,7 @@
     "members": "{count, plural, =0 {Sem jogadores} one {# jogador} other {# jogadores}}",
     "noMembers": "Este grupo ainda não tem jogadores.",
     "editMembers": "Editar jogadores",
-    "noRoster": "Ainda não tem jogadores: escreva um nome acima para o adicionar, ou escolha um amigo.",
+    "noRoster": "Ainda não tem outros jogadores: escreva um nome acima para o adicionar, ou escolha um amigo.",
     "rename": "Mudar o nome",
     "save": "Salvar",
     "delete": "Eliminar grupo",
@@ -1134,7 +1134,8 @@
     "tagMe": "Você",
     "tagFriend": "Amigo",
     "needName": "Dê um nome ao grupo",
-    "needPlayers": "Escolha pelo menos 2 jogadores"
+    "needPlayers": "Escolha pelo menos 2 jogadores",
+    "meFallback": "Eu"
   },
   "AddFriendPlayer": {
     "label": "Adicionar um amigo como jogador",

@@ -31,10 +31,12 @@ export function GroupsManager({
   groups,
   players,
   friends = [],
+  myName = "",
 }: {
   groups: Group[];
   players: Player[];
   friends?: Friend[];
+  myName?: string;
 }) {
   const t = useTranslations("Groups");
   const te = useTranslations("Groups.errors");
@@ -215,6 +217,7 @@ export function GroupsManager({
           focus={sheet.kind === "edit" ? sheet.focus : "name"}
           players={players}
           friends={friends}
+          myName={myName}
           onClose={() => setSheet(null)}
         />
       )}

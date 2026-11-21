@@ -4,6 +4,7 @@ import { listFriends } from "@/features/friends";
 import { listGroups } from "@/features/groups";
 import { GroupsManager } from "@/features/groups/views/groups-manager";
 import { listPlayers } from "@/features/players";
+import { ensureDisplayName } from "@/features/profiles";
 import { assertLocale } from "@/i18n/locale";
 
 export default async function GroupsPage({
@@ -13,11 +14,12 @@ export default async function GroupsPage({
   const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [t, groups, players, friends] = await Promise.all([
+  const [t, groups, players, friends, myName] = await Promise.all([
     getTranslations("Groups"),
     listGroups(),
     listPlayers(),
     listFriends(),
+    ensureDisplayName(),
   ]);
 
   return (
@@ -28,7 +30,12 @@ export default async function GroupsPage({
         <p className="text-muted-foreground">{t("subtitle")}</p>
       </header>
 
-      <GroupsManager groups={groups} players={players} friends={friends} />
+      <GroupsManager
+        groups={groups}
+        players={players}
+        friends={friends}
+        myName={myName}
+      />
       {groups.length === 0 && (
         <p className="text-sm text-muted-foreground">{t("empty")}</p>
       )}

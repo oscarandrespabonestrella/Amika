@@ -20,6 +20,9 @@ export const addFriendPlayerSchema = z.strictObject({
   name: playerNameSchema,
 });
 
+/** The signed-in user's own player, created under this name when there is none. */
+export const ensureMeSchema = z.strictObject({ name: playerNameSchema });
+
 export const renamePlayerSchema = z.strictObject({
   playerId: z.uuid(),
   name: playerNameSchema,

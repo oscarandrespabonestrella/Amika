@@ -1095,7 +1095,7 @@
     "members": "{count, plural, =0 {No players} one {# player} other {# players}}",
     "noMembers": "No players in this group yet.",
     "editMembers": "Edit players",
-    "noRoster": "No players yet: type a name above to add one, or pick a friend.",
+    "noRoster": "No other players yet: type a name above to add one, or pick a friend.",
     "rename": "Rename",
     "save": "Save",
     "delete": "Delete group",
@@ -1134,7 +1134,8 @@
     "tagMe": "You",
     "tagFriend": "Friend",
     "needName": "Give the group a name",
-    "needPlayers": "Pick at least 2 players"
+    "needPlayers": "Pick at least 2 players",
+    "meFallback": "Me"
   },
   "AddFriendPlayer": {
     "label": "Add a friend as a player",

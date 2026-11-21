@@ -10,6 +10,7 @@ import { normalizePlayerName } from "../normalize";
 import {
   addFriendPlayerSchema,
   addPlayerSchema,
+  ensureMeSchema,
   mergePlayersSchema,
   playerIdSchema,
   renamePlayerSchema,
@@ -158,6 +159,43 @@ export async function addFriendPlayerAction(
   } catch (error) {
     unstable_rethrow(error);
     logger.error("players.addFriend failed", error);
+    return { ok: false, error: "failed" };
+  }
+}
+
+/**
+ * The player marked "This is me": the existing one, else the unmarked player with the same
+ * name, else a new one; the latter two get the mark. Used to put the user in new groups.
+ */
+export async function ensureMePlayerAction(
+  input: unknown,
+): Promise<AddPlayerResult> {
+  try {
+    const { userId } = await auth();
+    if (!userId) return { ok: false, error: "unauthenticated" };
+    const parsed = ensureMeSchema.safeParse(input);
+    if (!parsed.success) return { ok: false, error: "invalid" };
+    const players = await listPlayers();
+    const me = players.find((p) => p.isMe);
+    if (me) return { ok: true, id: me.id };
+
+    const key = normalizePlayerName(parsed.data.name);
+    const same = players.find(
+      (p) => normalizePlayerName(p.name) === key && !p.friendId,
+    );
+    let id = same?.id;
+    if (!id) {
+      const added = await addPlayer(parsed.data.name);
+      if (added.outcome !== "ok") return { ok: false, error: added.outcome };
+      id = added.id;
+    }
+    const marked = await setMe(id);
+    revalidatePath("/", "layout");
+    if (marked !== "ok") return { ok: false, error: "failed" };
+    return { ok: true, id };
+  } catch (error) {
+    unstable_rethrow(error);
+    logger.error("players.ensureMe failed", error);
     return { ok: false, error: "failed" };
   }
 }

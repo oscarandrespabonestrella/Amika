@@ -105,7 +105,13 @@ test("create a group and choose its players", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("My groups");
   const sheet = await openNewGroup(page);
   await sheet.getByLabel("Name", { exact: true }).fill("Jueves");
+  // The user is in every new group by default (here, as a player still to be marked "me").
+  const me = sheet.getByRole("listitem").filter({ hasText: "You" });
+  await expect(me.getByRole("checkbox")).toBeChecked();
+  await expect(sheet.getByText("1 selected")).toBeVisible();
   await expect(sheet.getByText("Pick at least 2 players")).toBeVisible();
+  // Unticked here, so the group matches the match-form tests below.
+  await me.getByRole("checkbox").uncheck();
   await sheet.getByLabel("Ana", { exact: true }).check();
   await sheet.getByLabel("Bo", { exact: true }).check();
   await sheet.getByRole("button", { name: "Create group with 2" }).click();
@@ -124,7 +130,6 @@ test("a duplicate group name is refused", async ({ page }) => {
   const sheet = await openNewGroup(page);
   await sheet.getByLabel("Name", { exact: true }).fill("jueves ");
   await sheet.getByLabel("Ana", { exact: true }).check();
-  await sheet.getByLabel("Cy", { exact: true }).check();
   await sheet.getByRole("button", { name: "Create group with 2" }).click();
   await expect(
     sheet.getByText("You already have a group with that name."),
@@ -224,7 +229,7 @@ test("a group can be made from an empty roster by adding players by name", async
   await page.goto("/en/groups");
   const sheet = await openNewGroup(page);
   await sheet.getByLabel("Name", { exact: true }).fill("Viernes");
-  await expect(sheet.getByText("No players yet")).toBeVisible();
+  await expect(sheet.getByText("No other players yet")).toBeVisible();
   const search = sheet.getByLabel("Search or add a player");
   await search.fill("Eva");
   await sheet
@@ -238,10 +243,23 @@ test("a group can be made from an empty roster by adding players by name", async
   await search.fill("Fede");
   await search.press("Enter");
   await expect(sheet.getByLabel("Fede", { exact: true })).toBeChecked();
-  await sheet.getByRole("button", { name: "Create group with 2" }).click();
+  // With the user ticked by default: three players.
+  await sheet.getByRole("button", { name: "Create group with 3" }).click();
 
-  await expect(groupItem(page, "Viernes").getByText("2 players")).toBeVisible();
-  expect(await memberNames("Viernes")).toEqual(["Eva", "Fede"]);
+  await expect(groupItem(page, "Viernes").getByText("3 players")).toBeVisible();
+  // Saving created the user's own player and marked it "This is me".
+  const meName = await withDb(async (c) =>
+    (
+      await c.query<{ name: string }>(
+        `select name from public.players where owner_id = $1 and linked_user_id = $1`,
+        [userR],
+      )
+    ).rows.map((r) => r.name),
+  );
+  expect(meName).toHaveLength(1);
+  expect(await memberNames("Viernes")).toEqual(
+    [...meName, "Eva", "Fede"].sort(),
+  );
 });
 
 test("a friend can be added as a player straight into a group", async ({
@@ -269,8 +287,10 @@ test("a friend can be added as a player straight into a group", async ({
   await sheet.getByRole("button", { name: "Save", exact: true }).click();
   await expect(sheet).toBeHidden();
 
-  await expect(groupItem(page, "Viernes").getByText("3 players")).toBeVisible();
-  expect(await memberNames("Viernes")).toEqual(["Eva", "Fede", "Gina"]);
+  await expect(groupItem(page, "Viernes").getByText("4 players")).toBeVisible();
+  expect(await memberNames("Viernes")).toEqual(
+    expect.arrayContaining(["Eva", "Fede", "Gina"]),
+  );
   // The friend is asked to confirm the link, as when linking from My players.
   const requests = await withDb(async (c) =>
     (

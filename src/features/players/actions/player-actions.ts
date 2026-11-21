@@ -5,12 +5,14 @@ import { revalidatePath } from "next/cache";
 import { unstable_rethrow } from "next/navigation";
 import { logger } from "@/lib/logger";
 import {
+  addPlayerSchema,
   mergePlayersSchema,
   playerIdSchema,
   renamePlayerSchema,
   setMeSchema,
 } from "../schemas";
 import {
+  addPlayer,
   deletePlayer,
   mergePlayers,
   renamePlayer,
@@ -57,6 +59,33 @@ const done = (outcome: string): PlayerResult =>
         ok: false,
         error: outcome as Extract<PlayerResult, { ok: false }>["error"],
       };
+
+export type AddPlayerResult =
+  | { ok: true; id: string }
+  | {
+      ok: false;
+      error: "unauthenticated" | "invalid" | "exists" | "too_many" | "failed";
+    };
+
+/** Adds a named player to the roster (used where a group needs someone not yet played with). */
+export async function addPlayerAction(
+  input: unknown,
+): Promise<AddPlayerResult> {
+  try {
+    const { userId } = await auth();
+    if (!userId) return { ok: false, error: "unauthenticated" };
+    const parsed = addPlayerSchema.safeParse(input);
+    if (!parsed.success) return { ok: false, error: "invalid" };
+    const result = await addPlayer(parsed.data.name);
+    if (result.outcome !== "ok") return { ok: false, error: result.outcome };
+    revalidatePath("/", "layout");
+    return { ok: true, id: result.id };
+  } catch (error) {
+    unstable_rethrow(error);
+    logger.error("players.add failed", error);
+    return { ok: false, error: "failed" };
+  }
+}
 
 export async function renamePlayerAction(
   input: unknown,

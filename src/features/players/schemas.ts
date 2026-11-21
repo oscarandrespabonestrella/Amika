@@ -12,6 +12,8 @@ export const playerNameSchema = z
 
 export const playerIdSchema = z.uuid();
 
+export const addPlayerSchema = z.strictObject({ name: playerNameSchema });
+
 export const renamePlayerSchema = z.strictObject({
   playerId: z.uuid(),
   name: playerNameSchema,

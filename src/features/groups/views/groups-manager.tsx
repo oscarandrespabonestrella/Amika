@@ -6,7 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Player } from "@/features/players/client";
+import { addPlayerAction } from "@/features/players/actions/player-actions";
+import {
+  normalizePlayerName,
+  PLAYER_NAME_MAX,
+  type Player,
+} from "@/features/players/client";
 import {
   createGroupAction,
   deleteGroupAction,
@@ -17,13 +22,25 @@ import {
 import { GROUP_NAME_MAX } from "../schemas";
 import type { Group } from "../services/group-service";
 
-type ErrorCode = Extract<GroupResult, { ok: false }>["error"];
+type ErrorCode =
+  | Extract<GroupResult, { ok: false }>["error"]
+  | "playerExists"
+  | "playersFull";
 type Mode =
   | { kind: "rename"; id: string; name: string }
-  | { kind: "members"; id: string; selected: ReadonlySet<string> }
+  | {
+      kind: "members";
+      id: string;
+      selected: ReadonlySet<string>;
+      /** A new player's name, typed while choosing (the roster may be empty). */
+      draft: string;
+    }
   | { kind: "delete"; id: string };
 
-/** Groups: create, rename, choose members from the roster, delete (players are kept). */
+/**
+ * Groups: create, rename, choose members from the roster (or add a new player right
+ * there), delete (players are kept). A new group opens straight on its players.
+ */
 export function GroupsManager({
   groups,
   players,
@@ -38,14 +55,52 @@ export function GroupsManager({
   const [error, setError] = useState<ErrorCode | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function run(call: () => Promise<GroupResult>, then?: () => void) {
+  function run(
+    call: () => Promise<GroupResult>,
+    then?: (result: GroupResult & { ok: true }) => void,
+  ) {
     setError(null);
     startTransition(async () => {
       const result = await call();
       if (result.ok) {
         setMode(null);
-        then?.();
+        then?.(result);
       } else setError(result.error);
+    });
+  }
+
+  /** Selects the typed player, adding it to the roster first when it is new. */
+  function addMember(here: Extract<Mode, { kind: "members" }>) {
+    const name = here.draft.trim();
+    if (name === "") return;
+    setError(null);
+    const known = players.find(
+      (p) => normalizePlayerName(p.name) === normalizePlayerName(name),
+    );
+    if (known) {
+      setMode({
+        ...here,
+        draft: "",
+        selected: new Set(here.selected).add(known.id),
+      });
+      return;
+    }
+    startTransition(async () => {
+      const result = await addPlayerAction({ name });
+      if (result.ok) {
+        setMode({
+          ...here,
+          draft: "",
+          selected: new Set(here.selected).add(result.id),
+        });
+      } else
+        setError(
+          result.error === "exists"
+            ? "playerExists"
+            : result.error === "too_many"
+              ? "playersFull"
+              : result.error,
+        );
     });
   }
 
@@ -57,7 +112,16 @@ export function GroupsManager({
           event.preventDefault();
           run(
             () => createGroupAction({ name: newName }),
-            () => setNewName(""),
+            (result) => {
+              setNewName("");
+              if (result.id)
+                setMode({
+                  kind: "members",
+                  id: result.id,
+                  selected: new Set(),
+                  draft: "",
+                });
+            },
           );
         }}
       >
@@ -183,6 +247,43 @@ export function GroupsManager({
                       </li>
                     ))}
                   </ul>
+                  {players.length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      {t("noRoster")}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap items-end gap-3">
+                    <div className="flex min-w-0 flex-1 basis-48 flex-col gap-1.5">
+                      <Label htmlFor={`add-player-${group.id}`}>
+                        {t("addPlayerLabel")}
+                      </Label>
+                      <Input
+                        id={`add-player-${group.id}`}
+                        className="h-11"
+                        value={here.draft}
+                        maxLength={PLAYER_NAME_MAX}
+                        placeholder={t("addPlayerPlaceholder")}
+                        onChange={(event) =>
+                          setMode({ ...here, draft: event.target.value })
+                        }
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            event.preventDefault();
+                            addMember(here);
+                          }
+                        }}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-11 px-4"
+                      disabled={pending || here.draft.trim() === ""}
+                      onClick={() => addMember(here)}
+                    >
+                      {t("addPlayer")}
+                    </Button>
+                  </div>
                   <div className="flex flex-wrap gap-3">
                     <Button
                       type="button"
@@ -250,6 +351,7 @@ export function GroupsManager({
                         kind: "members",
                         id: group.id,
                         selected: new Set(group.members.map((m) => m.id)),
+                        draft: "",
                       })
                     }
                   >

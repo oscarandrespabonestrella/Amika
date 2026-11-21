@@ -1088,9 +1088,6 @@
   "Groups": {
     "title": "Mes groupes",
     "subtitle": "Enregistrez les personnes avec qui vous jouez toujours et ajoutez-les à une partie en un clic.",
-    "noPlayersTitle": "Aucun joueur pour l'instant",
-    "noPlayersDescription": "Les groupes sont faits de vos joueurs. Ajoutez d'abord des joueurs à une partie.",
-    "goToPlayers": "Aller à Mes joueurs",
     "empty": "Aucun groupe pour l'instant. Créez-en un ci-dessus, par exemple « Jeudi ».",
     "newLabel": "Nouveau groupe",
     "newPlaceholder": "p. ex. Jeudi",
@@ -1100,6 +1097,10 @@
     "noMembers": "Ce groupe n'a pas encore de joueurs.",
     "editMembers": "Choisir les joueurs",
     "membersLegend": "Joueurs de {name}",
+    "noRoster": "Pas encore de joueurs : ajoutez les premiers par leur nom ci-dessous.",
+    "addPlayerLabel": "Ajouter un nouveau joueur",
+    "addPlayerPlaceholder": "ex. Ana",
+    "addPlayer": "Ajouter",
     "rename": "Renommer",
     "renameLabel": "Nouveau nom pour {name}",
     "save": "Enregistrer",
@@ -1114,7 +1115,9 @@
       "not_found": "Ce groupe ou ce joueur n'est pas disponible.",
       "exists": "Vous avez déjà un groupe portant ce nom.",
       "too_many": "Vous avez atteint la limite de 50 groupes.",
-      "failed": "Une erreur s'est produite. Réessayez."
+      "failed": "Une erreur s'est produite. Réessayez.",
+      "playerExists": "Vous avez déjà un joueur avec ce nom.",
+      "playersFull": "Vous avez atteint la limite de 200 joueurs."
     }
   },
   "Pwa": {
@@ -1153,7 +1156,9 @@
       "minutes": "{minutes} min",
       "group": "Groupe",
       "noGroup": "Sans groupe",
-      "groupSetsPlayers": "Le nombre de joueurs vient du groupe."
+      "groupSetsPlayers": "Le nombre de joueurs vient du groupe.",
+      "createGroup": "Créer un groupe",
+      "manageGroups": "Gérer les groupes"
     },
     "shortlist": {
       "title": "Sélection",

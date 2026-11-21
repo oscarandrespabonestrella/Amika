@@ -1088,9 +1088,6 @@
   "Groups": {
     "title": "My groups",
     "subtitle": "Save the people you always play with and add them to a match with one click.",
-    "noPlayersTitle": "No players yet",
-    "noPlayersDescription": "Groups are made of your players. Add players to a match first.",
-    "goToPlayers": "Go to My players",
     "empty": "No groups yet. Create one above, for example “Thursday”.",
     "newLabel": "New group",
     "newPlaceholder": "e.g. Thursday",
@@ -1100,6 +1097,10 @@
     "noMembers": "No players in this group yet.",
     "editMembers": "Choose players",
     "membersLegend": "Players in {name}",
+    "noRoster": "No players yet: add the first ones by name below.",
+    "addPlayerLabel": "Add a new player",
+    "addPlayerPlaceholder": "e.g. Ana",
+    "addPlayer": "Add",
     "rename": "Rename",
     "renameLabel": "New name for {name}",
     "save": "Save",
@@ -1114,7 +1115,9 @@
       "not_found": "That group or player isn't available.",
       "exists": "You already have a group with that name.",
       "too_many": "You have reached the limit of 50 groups.",
-      "failed": "Something went wrong. Please try again."
+      "failed": "Something went wrong. Please try again.",
+      "playerExists": "You already have a player with that name.",
+      "playersFull": "You have reached the limit of 200 players."
     }
   },
   "Pwa": {
@@ -1153,7 +1156,9 @@
       "minutes": "{minutes} min",
       "group": "Group",
       "noGroup": "No group",
-      "groupSetsPlayers": "The number of players comes from the group."
+      "groupSetsPlayers": "The number of players comes from the group.",
+      "createGroup": "Create a group",
+      "manageGroups": "Manage groups"
     },
     "shortlist": {
       "title": "Shortlist",

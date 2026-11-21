@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/native-select";
 import type { Group } from "@/features/groups/client";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { createNightAction } from "../actions/night-actions";
 import { ReasonBadges } from "../components/reason-badges";
@@ -133,6 +133,14 @@ export function NightPicker({
               </option>
             ))}
           </NativeSelect>
+          <Link
+            href="/groups"
+            className="text-xs font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground"
+          >
+            {groups.length === 0
+              ? t("filters.createGroup")
+              : t("filters.manageGroups")}
+          </Link>
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="picker-players">{t("filters.players")}</Label>

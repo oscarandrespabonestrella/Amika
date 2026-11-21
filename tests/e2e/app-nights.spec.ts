@@ -14,8 +14,8 @@ test.skip(!canRunAppTests, "Clerk keys / database not configured");
 test.use({ storageState: STATE_FILE.s });
 test.describe.configure({ mode: "serial" });
 
-// Own reserved id range (9913) and own users: s hosts, t is the friend who votes.
-const PREFIX = "9913";
+// Own reserved id range (9914; 9913 is app-manuals) and own users: s hosts, t is the friend who votes.
+const PREFIX = "9914";
 const NAMES = {
   alpha: "Nights Alpha E2E", // 2-4 players, 30 min
   beta: "Nights Beta E2E", // 2-6 players, 60 min

@@ -98,9 +98,9 @@ test("create a group and choose its players", async ({ page }) => {
   await page.getByLabel("New group").fill("Jueves");
   await page.getByRole("button", { name: "Create group" }).click();
 
+  // A new group opens straight on its players.
   const item = groupItem(page, "Jueves");
   await expect(item).toBeVisible();
-  await item.getByRole("button", { name: "Choose players" }).click();
   await item.getByLabel("Ana", { exact: true }).check();
   await item.getByLabel("Bo", { exact: true }).check();
   await item.getByRole("button", { name: "Save", exact: true }).click();
@@ -198,4 +198,27 @@ test("groups stay reachable after the roster is emptied", async ({ page }) => {
   await expect(
     groupItem(page, "Huérfano").getByText("No players", { exact: true }),
   ).toBeVisible();
+});
+
+test("a group can be made from an empty roster by adding players by name", async ({
+  page,
+}) => {
+  // The previous test emptied the roster.
+  await page.goto("/en/groups");
+  await page.getByLabel("New group").fill("Viernes");
+  await page.getByRole("button", { name: "Create group" }).click();
+
+  const item = groupItem(page, "Viernes");
+  await expect(item.getByText("No players yet")).toBeVisible();
+  await item.getByLabel("Add a new player").fill("Eva");
+  await item.getByRole("button", { name: "Add", exact: true }).click();
+  await expect(item.getByLabel("Eva", { exact: true })).toBeChecked();
+  // The same name again picks the existing player instead of a duplicate.
+  await item.getByLabel("Add a new player").fill(" eva");
+  await item.getByLabel("Add a new player").press("Enter");
+  await expect(item.getByLabel("Add a new player")).toHaveValue("");
+  await item.getByRole("button", { name: "Save", exact: true }).click();
+
+  await expect(item.getByText("1 player")).toBeVisible();
+  expect(await memberNames("Viernes")).toEqual(["Eva"]);
 });

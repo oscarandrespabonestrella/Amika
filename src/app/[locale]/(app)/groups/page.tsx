@@ -1,12 +1,9 @@
-import { Users } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { EmptyState } from "@/components/empty-state";
 import { PeopleTabs } from "@/components/layout/people-tabs";
 import { listGroups } from "@/features/groups";
 import { GroupsManager } from "@/features/groups/views/groups-manager";
 import { listPlayers } from "@/features/players";
 import { assertLocale } from "@/i18n/locale";
-import { Link } from "@/i18n/navigation";
 
 export default async function GroupsPage({
   params,
@@ -29,27 +26,9 @@ export default async function GroupsPage({
         <p className="text-muted-foreground">{t("subtitle")}</p>
       </header>
 
-      {players.length === 0 && groups.length === 0 ? (
-        <>
-          <EmptyState
-            icon={Users}
-            title={t("noPlayersTitle")}
-            description={t("noPlayersDescription")}
-          />
-          <Link
-            href="/players"
-            className="text-center text-sm font-medium underline"
-          >
-            {t("goToPlayers")}
-          </Link>
-        </>
-      ) : (
-        <>
-          <GroupsManager groups={groups} players={players} />
-          {groups.length === 0 && (
-            <p className="text-sm text-muted-foreground">{t("empty")}</p>
-          )}
-        </>
+      <GroupsManager groups={groups} players={players} />
+      {groups.length === 0 && (
+        <p className="text-sm text-muted-foreground">{t("empty")}</p>
       )}
     </div>
   );

@@ -309,6 +309,35 @@ test("a friend can be added as a player straight into a group", async ({
   await expect(page.getByLabel("Add a friend as a player")).toBeVisible();
 });
 
+test("a friend with the same name as a player is listed once", async ({
+  page,
+}) => {
+  // The previous test made a player "Gina" whose link to the friend Gina is still pending.
+  await page.goto("/en/groups");
+  const sheet = await openNewGroup(page);
+  await sheet.getByLabel("Name", { exact: true }).fill("Sábado");
+  const gina = sheet.getByLabel("Gina", { exact: true });
+  await expect(gina).toHaveCount(1);
+  await expect(
+    sheet.getByRole("listitem").filter({ hasText: "Gina" }),
+  ).toContainText("Friend");
+  await gina.check();
+  await sheet.getByRole("button", { name: "Create group with 2" }).click();
+  await expect(sheet).toBeHidden();
+
+  const ginas = await withDb(
+    async (c) =>
+      (
+        await c.query<{ n: number }>(
+          `select count(*)::int n from public.players where owner_id = $1 and name = 'Gina'`,
+          [userR],
+        )
+      ).rows[0].n,
+  );
+  expect(ginas).toBe(1);
+  expect(await memberNames("Sábado")).toEqual(expect.arrayContaining(["Gina"]));
+});
+
 test("the group sheet has no accessibility violations", async ({ page }) => {
   await page.goto("/en/groups");
   await openNewGroup(page);

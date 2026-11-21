@@ -85,6 +85,8 @@ type Row = {
   key: string;
   name: string;
   tag: "me" | "friend" | null;
+  /** A friend to link this player to when saving (same name, not linked yet). */
+  linkFriend?: string;
 };
 
 /**
@@ -127,6 +129,14 @@ export function GroupSheet({
   const [pending, startTransition] = useTransition();
 
   const linked = new Set(players.map((p) => p.friendId).filter(Boolean));
+  const friendName = (f: Friend) =>
+    (f.displayName.trim() || tf("unnamed")).slice(0, PLAYER_NAME_MAX);
+  // A friend whose name is exactly an unlinked player's is that player, not a second row.
+  const friendByName = new Map<string, Friend>();
+  for (const f of friends)
+    if (!linked.has(f.userId))
+      friendByName.set(normalizePlayerName(friendName(f)), f);
+  const merged = new Set<string>();
   const rows: Row[] = [
     ...(mePlayer
       ? [{ key: mePlayer.id, name: mePlayer.name, tag: "me" as const }]
@@ -139,16 +149,24 @@ export function GroupSheet({
         ]),
     ...players
       .filter((p) => !p.isMe)
-      .map((p) => ({
-        key: p.id,
-        name: p.name,
-        tag: p.friendId ? ("friend" as const) : null,
-      })),
+      .map((p): Row => {
+        if (p.friendId) return { key: p.id, name: p.name, tag: "friend" };
+        const friend = friendByName.get(normalizePlayerName(p.name));
+        if (!friend || merged.has(friend.userId))
+          return { key: p.id, name: p.name, tag: null };
+        merged.add(friend.userId);
+        return {
+          key: p.id,
+          name: p.name,
+          tag: "friend",
+          linkFriend: friend.userId,
+        };
+      }),
     ...friends
-      .filter((f) => !linked.has(f.userId))
+      .filter((f) => !linked.has(f.userId) && !merged.has(f.userId))
       .map((f) => ({
         key: `friend:${f.userId}`,
-        name: (f.displayName.trim() || tf("unnamed")).slice(0, PLAYER_NAME_MAX),
+        name: friendName(f),
         tag: "friend" as const,
       })),
   ];
@@ -236,13 +254,17 @@ export function GroupSheet({
           playerIds.push(me.id);
           continue;
         }
-        if (!key.startsWith("friend:")) {
+        const row = rows.find((r) => r.key === key);
+        const friendId = key.startsWith("friend:")
+          ? key.slice("friend:".length)
+          : row?.linkFriend;
+        if (!friendId) {
           playerIds.push(key);
           continue;
         }
-        const row = rows.find((r) => r.key === key);
+        // Reuses the same-name player and asks the friend to confirm the link.
         const added = await addFriendPlayerAction({
-          friendId: key.slice("friend:".length),
+          friendId,
           name: row?.name ?? "",
         });
         if (!added.ok) {

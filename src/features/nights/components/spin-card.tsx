@@ -16,9 +16,15 @@ const TICK_MS = 90;
 export function SpinCard({
   candidates,
   groupId,
+  votes,
+  playHref: playHrefFor,
 }: {
   candidates: Ranked[];
   groupId?: string;
+  /** Votes per game id: they weigh in the draw (saved nights). */
+  votes?: Record<string, number>;
+  /** Overrides the "Play this" target; return null to hide the link. */
+  playHref?: (gameId: string) => string | null;
 }) {
   const t = useTranslations("Nights.spin");
   const [pickedId, setPickedId] = useState<string | null>(null);
@@ -39,7 +45,11 @@ export function SpinCard({
 
   function run() {
     const winner = spin(
-      candidates.map((c) => ({ id: c.gameId, score: c.score, votes: 0 })),
+      candidates.map((c) => ({
+        id: c.gameId,
+        score: c.score,
+        votes: votes?.[c.gameId] ?? 0,
+      })),
       Math.random,
     );
     if (winner === null) return;
@@ -69,9 +79,11 @@ export function SpinCard({
   }
 
   const display = spinning ? shown : picked;
-  const playHref = `/games/${picked?.gameId}/plays/new${
-    groupId ? `?group=${groupId}` : ""
-  }`;
+  const playHref = picked
+    ? playHrefFor
+      ? playHrefFor(picked.gameId)
+      : `/games/${picked.gameId}/plays/new${groupId ? `?group=${groupId}` : ""}`
+    : null;
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5">
@@ -122,7 +134,7 @@ export function SpinCard({
         >
           {spinning ? t("spinning") : picked ? t("again") : t("action")}
         </Button>
-        {picked && !spinning && (
+        {playHref && !spinning && (
           <Link
             href={playHref}
             className={cn(buttonVariants({ size: "lg" }), "h-11 px-5")}

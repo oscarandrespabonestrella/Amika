@@ -1009,7 +1009,10 @@
       "custom_game": "Matches of your own games cannot be shared.",
       "already_invited": "That person is already in this match.",
       "closed": "This match is closed."
-    }
+    },
+    "nightInvitesTitle": "Night invitations",
+    "nightInvite": "{who} invited you to “{title}” on {date}.",
+    "viewNight": "View night"
   },
   "Live": {
     "title": "Live match",
@@ -1209,6 +1212,72 @@
       "not_owned": "That game is not in your library.",
       "link_invalid": "This link is no longer valid.",
       "rate_limited": "Too many attempts. Wait a moment."
+    },
+    "detail": {
+      "someone": "Someone",
+      "hostedBy": "Hosted by {host}",
+      "players": "{count, plural, one {# player} other {# players}}",
+      "closedNotice": "This night is closed: votes can no longer change.",
+      "gamesTitle": "Games",
+      "noGames": "There are no games on this night.",
+      "pinned": "Pinned",
+      "played": "Played",
+      "suggested": "Suggested",
+      "votedBy": "{count, plural, one {# vote} other {# votes}}: {names}",
+      "noVotes": "No votes yet",
+      "voteFor": "Vote for {name}",
+      "actionFor": "{action}: {name}",
+      "playThis": "Play this",
+      "pin": "Pin",
+      "unpin": "Unpin",
+      "markPlayed": "Mark played",
+      "unmarkPlayed": "Unmark played",
+      "remove": "Remove",
+      "spinTitle": "Let luck decide",
+      "spinHint": "Games with more votes are more likely to come up.",
+      "keep": "Keep",
+      "close": {
+        "action": "Close night",
+        "confirm": "Close this night? Nobody can vote afterwards.",
+        "yes": "Yes, close"
+      },
+      "leave": {
+        "action": "Leave night",
+        "confirm": "Leave this night? You will lose your votes.",
+        "yes": "Yes, leave"
+      },
+      "invite": {
+        "title": "Friends",
+        "action": "Invite",
+        "inviteName": "Invite {name}",
+        "invited": "Invited",
+        "accepted": "Going",
+        "declined": "Declined",
+        "noFriends": "You have no friends to invite yet.",
+        "allInvited": "All your friends are already invited."
+      },
+      "suggest": {
+        "title": "Suggest a game",
+        "hint": "Pick one from your library to add it to the list.",
+        "trigger": "Choose a game",
+        "search": "Search your library",
+        "empty": "No games found.",
+        "none": "You have no catalog games in your library to suggest."
+      },
+      "share": {
+        "title": "Public link",
+        "hint": "Paste it in your chat so people without an account can vote.",
+        "warning": "Anyone with the link will see the names of those who vote.",
+        "create": "Create link",
+        "regenerate": "Regenerate link",
+        "regenerateHint": "Regenerating makes the previous link stop working.",
+        "revoke": "Revoke link",
+        "copy": "Copy link",
+        "copied": "Copied",
+        "share": "Share",
+        "urlLabel": "Public link of the night",
+        "active": "Link active until the end of {date} (UTC)."
+      }
     }
   }
 }

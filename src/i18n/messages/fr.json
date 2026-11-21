@@ -1009,7 +1009,10 @@
       "custom_game": "Les parties de vos propres jeux ne peuvent pas être partagées.",
       "already_invited": "Cette personne est déjà dans cette partie.",
       "closed": "Cette partie est terminée."
-    }
+    },
+    "nightInvitesTitle": "Invitations à des soirées",
+    "nightInvite": "{who} vous a invité à « {title} » le {date}.",
+    "viewNight": "Voir la soirée"
   },
   "Live": {
     "title": "Partie en direct",
@@ -1209,6 +1212,72 @@
       "not_owned": "Ce jeu n’est pas dans votre bibliothèque.",
       "link_invalid": "Ce lien n’est plus valide.",
       "rate_limited": "Trop de tentatives. Patientez un instant."
+    },
+    "detail": {
+      "someone": "Quelqu’un",
+      "hostedBy": "Organisé par {host}",
+      "players": "{count, plural, one {# joueur} other {# joueurs}}",
+      "closedNotice": "Cette soirée est close : les votes ne peuvent plus changer.",
+      "gamesTitle": "Jeux",
+      "noGames": "Il n’y a aucun jeu pour cette soirée.",
+      "pinned": "Épinglé",
+      "played": "Joué",
+      "suggested": "Suggéré",
+      "votedBy": "{count, plural, one {# vote} other {# votes}} : {names}",
+      "noVotes": "Pas encore de votes",
+      "voteFor": "Voter pour {name}",
+      "actionFor": "{action} : {name}",
+      "playThis": "Jouer à celui-ci",
+      "pin": "Épingler",
+      "unpin": "Désépingler",
+      "markPlayed": "Marquer comme joué",
+      "unmarkPlayed": "Retirer « joué »",
+      "remove": "Retirer",
+      "spinTitle": "Laissez faire le hasard",
+      "spinHint": "Les jeux avec plus de votes ont plus de chances de sortir.",
+      "keep": "Garder",
+      "close": {
+        "action": "Clore la soirée",
+        "confirm": "Clore cette soirée ? Plus personne ne pourra voter.",
+        "yes": "Oui, clore"
+      },
+      "leave": {
+        "action": "Quitter la soirée",
+        "confirm": "Quitter cette soirée ? Vous perdrez vos votes.",
+        "yes": "Oui, quitter"
+      },
+      "invite": {
+        "title": "Amis",
+        "action": "Inviter",
+        "inviteName": "Inviter {name}",
+        "invited": "Invité",
+        "accepted": "Vient",
+        "declined": "Refusé",
+        "noFriends": "Vous n’avez pas encore d’amis à inviter.",
+        "allInvited": "Tous vos amis sont déjà invités."
+      },
+      "suggest": {
+        "title": "Suggérer un jeu",
+        "hint": "Choisissez-en un de votre bibliothèque pour l’ajouter à la liste.",
+        "trigger": "Choisir un jeu",
+        "search": "Chercher dans votre bibliothèque",
+        "empty": "Aucun jeu trouvé.",
+        "none": "Vous n’avez aucun jeu du catalogue à suggérer dans votre bibliothèque."
+      },
+      "share": {
+        "title": "Lien public",
+        "hint": "Collez-le dans votre discussion pour que ceux qui n’ont pas de compte puissent voter.",
+        "warning": "Toute personne ayant le lien verra les noms de ceux qui votent.",
+        "create": "Créer le lien",
+        "regenerate": "Régénérer le lien",
+        "regenerateHint": "Régénérer le lien désactive le précédent.",
+        "revoke": "Révoquer le lien",
+        "copy": "Copier le lien",
+        "copied": "Copié",
+        "share": "Partager",
+        "urlLabel": "Lien public de la soirée",
+        "active": "Lien actif jusqu’à la fin du {date} (UTC)."
+      }
     }
   }
 }

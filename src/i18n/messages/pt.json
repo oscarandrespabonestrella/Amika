@@ -1009,7 +1009,10 @@
       "custom_game": "As partidas dos seus próprios jogos não podem ser compartilhadas.",
       "already_invited": "Essa pessoa já está nesta partida.",
       "closed": "Esta partida está encerrada."
-    }
+    },
+    "nightInvitesTitle": "Convites para noites",
+    "nightInvite": "{who} convidou-o para «{title}» em {date}.",
+    "viewNight": "Ver noite"
   },
   "Live": {
     "title": "Partida ao vivo",
@@ -1209,6 +1212,72 @@
       "not_owned": "Esse jogo não está na sua biblioteca.",
       "link_invalid": "Este link não é mais válido.",
       "rate_limited": "Muitas tentativas. Aguarde um momento."
+    },
+    "detail": {
+      "someone": "Alguém",
+      "hostedBy": "Organizado por {host}",
+      "players": "{count, plural, one {# jogador} other {# jogadores}}",
+      "closedNotice": "Esta noite está encerrada: os votos já não podem mudar.",
+      "gamesTitle": "Jogos",
+      "noGames": "Não há jogos nesta noite.",
+      "pinned": "Fixado",
+      "played": "Jogado",
+      "suggested": "Sugerido",
+      "votedBy": "{count, plural, one {# voto} other {# votos}}: {names}",
+      "noVotes": "Ainda sem votos",
+      "voteFor": "Votar em {name}",
+      "actionFor": "{action}: {name}",
+      "playThis": "Jogar este",
+      "pin": "Fixar",
+      "unpin": "Desafixar",
+      "markPlayed": "Marcar como jogado",
+      "unmarkPlayed": "Tirar jogado",
+      "remove": "Remover",
+      "spinTitle": "Deixe a sorte decidir",
+      "spinHint": "Os jogos com mais votos têm mais probabilidade de sair.",
+      "keep": "Manter",
+      "close": {
+        "action": "Encerrar noite",
+        "confirm": "Encerrar esta noite? Ninguém poderá votar depois.",
+        "yes": "Sim, encerrar"
+      },
+      "leave": {
+        "action": "Sair da noite",
+        "confirm": "Sair desta noite? Perderá os seus votos.",
+        "yes": "Sim, sair"
+      },
+      "invite": {
+        "title": "Amigos",
+        "action": "Convidar",
+        "inviteName": "Convidar {name}",
+        "invited": "Convidado",
+        "accepted": "Vai",
+        "declined": "Recusou",
+        "noFriends": "Ainda não tem amigos para convidar.",
+        "allInvited": "Todos os seus amigos já estão convidados."
+      },
+      "suggest": {
+        "title": "Sugerir um jogo",
+        "hint": "Escolha um da sua biblioteca para o juntar à lista.",
+        "trigger": "Escolher um jogo",
+        "search": "Pesquisar na sua biblioteca",
+        "empty": "Nenhum jogo encontrado.",
+        "none": "Não tem jogos do catálogo na biblioteca para sugerir."
+      },
+      "share": {
+        "title": "Ligação pública",
+        "hint": "Cole-a na conversa para que quem não tem conta possa votar.",
+        "warning": "Quem tiver a ligação verá os nomes de quem vota.",
+        "create": "Criar ligação",
+        "regenerate": "Regenerar ligação",
+        "regenerateHint": "Ao regenerar, a ligação anterior deixa de funcionar.",
+        "revoke": "Revogar ligação",
+        "copy": "Copiar ligação",
+        "copied": "Copiado",
+        "share": "Partilhar",
+        "urlLabel": "Ligação pública da noite",
+        "active": "Ligação ativa até ao fim de {date} (UTC)."
+      }
     }
   }
 }

@@ -359,7 +359,9 @@ export function GuestNight({ token }: { token: string }) {
                       {g.votes > 0
                         ? t("votedBy", {
                             count: g.votes,
-                            names: g.voters.join(", "),
+                            names: g.voters
+                              .map((n) => n || t("someone"))
+                              .join(", "),
                           })
                         : t("noVotes")}
                     </span>

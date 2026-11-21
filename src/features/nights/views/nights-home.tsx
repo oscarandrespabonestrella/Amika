@@ -22,14 +22,12 @@ export function NightsHome({
   groups,
   initial,
   query,
-  today,
 }: {
   invites: NightInvite[];
   nights: NightSummary[];
   groups: Group[];
   initial: Ranked[];
   query: PickerQuery;
-  today: string;
 }) {
   const t = useTranslations("Nights");
   const router = useRouter();
@@ -79,7 +77,9 @@ export function NightsHome({
                   <span className="truncate font-medium">{invite.title}</span>
                   <span className="text-sm text-muted-foreground">
                     {invite.startsOn} ·{" "}
-                    {t("invites.from", { host: invite.hostName })}
+                    {t("invites.from", {
+                      host: invite.hostName || t("detail.someone"),
+                    })}
                   </span>
                 </div>
                 <div className="flex gap-2">
@@ -128,7 +128,6 @@ export function NightsHome({
           groups={groups}
           initial={initial}
           query={query}
-          today={today}
         />
       </section>
 

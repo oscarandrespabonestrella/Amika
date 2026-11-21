@@ -3,12 +3,9 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { respondNightInviteAction } from "@/features/nights/actions/night-actions";
-import { toNightError } from "@/features/nights/error-codes";
-import type { NightInvite } from "@/features/nights/client";
+import { toNightError, type NightInvite } from "@/features/nights/client";
 import { toFriendError } from "../error-codes";
 import {
   respondPlayerLinkAction,
@@ -73,8 +70,11 @@ export function FriendsPanel({
     setNightError(null);
     startTransition(async () => {
       const result = await respondNightInviteAction(nightId, accept);
-      if (result.ok) router.refresh();
-      else setNightError(toNightError(result.error));
+      if (result.ok) {
+        // An accepted night is now visible to me: go to it.
+        if (accept) router.push(`/nights/${nightId}`);
+        else router.refresh();
+      } else setNightError(toNightError(result.error));
     });
   }
 
@@ -166,14 +166,6 @@ export function FriendsPanel({
                   })}
                 </span>
                 <span className="flex flex-wrap gap-2">
-                  <Link
-                    href={`/nights/${n.nightId}`}
-                    className={cn(
-                      buttonVariants({ variant: "ghost", size: "sm" }),
-                    )}
-                  >
-                    {t("viewNight")}
-                  </Link>
                   <Button
                     size="sm"
                     disabled={pending}

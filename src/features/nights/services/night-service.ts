@@ -152,7 +152,7 @@ export async function getNight(id: string): Promise<NightDetail | null> {
   if (!night) return null;
 
   const isOwner = night.owner_id === me;
-  const [games, members, votes, voters, friends, profile] = await Promise.all([
+  const [games, members, voters, friends, profile] = await Promise.all([
     supabase
       .from("game_night_games")
       .select(
@@ -168,12 +168,11 @@ export async function getNight(id: string): Promise<NightDetail | null> {
           .eq("night_id", id)
           .order("invited_at")
       : Promise.resolve({ data: [], error: null }),
-    supabase.from("game_night_votes").select("night_game_id, user_id"),
     supabase.rpc("night_votes", { p_night: id }),
     supabase.rpc("list_friends"),
     supabase.from("profiles").select("display_name").eq("id", me).maybeSingle(),
   ]);
-  for (const r of [games, members, votes, voters, friends, profile]) {
+  for (const r of [games, members, voters, friends, profile]) {
     if (r.error) throw r.error;
   }
 
@@ -182,11 +181,19 @@ export async function getNight(id: string): Promise<NightDetail | null> {
   for (const f of friends.data ?? []) names.set(f.user_id, f.display_name);
   names.set(me, profile.data?.display_name ?? "");
 
-  const gameIds = new Set((games.data ?? []).map((g) => g.id));
+  const gameIds = (games.data ?? []).map((g) => g.id);
+  // Only this night's votes (the policy shows every visible vote).
+  const votes =
+    gameIds.length === 0
+      ? { data: [] as { night_game_id: string; user_id: string }[] }
+      : await supabase
+          .from("game_night_votes")
+          .select("night_game_id, user_id")
+          .in("night_game_id", gameIds);
+  if ("error" in votes && votes.error) throw votes.error;
   const count = new Map<string, number>();
   const mine = new Set<string>();
   for (const v of votes.data ?? []) {
-    if (!gameIds.has(v.night_game_id)) continue;
     count.set(v.night_game_id, (count.get(v.night_game_id) ?? 0) + 1);
     if (v.user_id === me) mine.add(v.night_game_id);
   }

@@ -180,3 +180,13 @@ Pendientes: vistas de estadísticas (6).
 - Realtime: `plays`, `play_participants`, `play_scores`, `play_members` en la publicación `supabase_realtime`, con `replica identity full`.
 
 `20261118100000_player_groups` (grupos de jugadores y sus miembros; `merge_players` traslada la pertenencia a grupos).
+
+## Fase 8d: noche de juegos (migraciones 20261121100000 a 20261121130000, ADR-049)
+- `game_nights(id, owner_id, title, starts_on, players, max_minutes, group_id, status, ...)`: la noche del anfitrión (`open | closed`). RLS: la ve el dueño y sus miembros aceptados.
+- `game_night_games(night_id, game_id, added_by, source, pinned, played, name_snapshot, cover_snapshot)`: juegos de la lista (`host | suggested`); nombre y portada copiados para que el invitado no lea la ficha. `unique (night_id, game_id)`.
+- `game_night_members(night_id, user_id, status)`: amigos invitados (`invited | accepted | declined`); nadie escribe directamente, lo hacen las funciones. Salir de la noche conserva los votos.
+- `game_night_votes(night_game_id, user_id | guest_id)`: un voto por persona y juego (`num_nonnulls(user_id, guest_id) = 1`, índices únicos parciales). Los votos de invitado caen con el invitado.
+- `game_night_links(night_id, token_hash, expires_at, revoked_at)`: enlace público; solo el sha256 del token, un enlace activo por noche.
+- `game_night_guests(link_id, key_hash, display_name)`: invitado sin cuenta; solo el hash de su clave. `unique (link_id, key_hash)`.
+- `game_night_requests(link_id, guest_id, created_at)`: registro de frecuencia del route handler (límite blando).
+- Las tres últimas tablas no tienen políticas ni permisos para `anon`/`authenticated`: solo `service_role` mediante las funciones `guest_*`. Función `picker_candidates` (`security invoker`, solo lectura) para el selector.

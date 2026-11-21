@@ -2,7 +2,7 @@
 
 import { Dices } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useState, useSyncExternalStore, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,15 @@ import type { NightErrorCode } from "../error-codes";
 import type { Ranked } from "../rank";
 import type { PickerQuery } from "../schemas";
 
+const subscribeNothing = () => () => {};
+
+/** The viewer's own date as YYYY-MM-DD. */
+function localToday(): string {
+  const d = new Date();
+  const pad = (v: number) => String(v).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 const MINUTE_PRESETS = [30, 60, 90, 120, 180];
 
 /**
@@ -29,14 +38,11 @@ export function NightPicker({
   groups,
   initial,
   query,
-  today,
 }: {
   mode: "now" | "plan";
   groups: Group[];
   initial: Ranked[];
   query: PickerQuery;
-  /** Default date of a planned night, `YYYY-MM-DD`. */
-  today: string;
 }) {
   const t = useTranslations("Nights");
   const router = useRouter();
@@ -45,7 +51,10 @@ export function NightPicker({
     query.players === undefined ? "" : String(query.players),
   );
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState(today);
+  // The default date is the viewer's own today, known only on the client.
+  const [pickedDate, setDate] = useState("");
+  const localDay = useSyncExternalStore(subscribeNothing, localToday, () => "");
+  const date = pickedDate !== "" ? pickedDate : localDay;
   const [removed, setRemoved] = useState<ReadonlySet<string>>(new Set());
   const [error, setError] = useState<NightErrorCode | null>(null);
   const [pending, startTransition] = useTransition();

@@ -24,7 +24,8 @@ import { logger } from "@/lib/logger";
  * Public, unauthenticated surface of a game night: a guest with the shared link reads the
  * night and votes. The browser talks only to this route; the route checks the token shape,
  * the guest cookie and the rate limit, then calls SQL functions that only service_role can
- * run. Neither the token, the guest key nor their hashes are ever logged.
+ * run. The app never logs the token, the guest key or their hashes (the token does travel
+ * in the URL path, so hosting access logs may record it: inherent to link-based access).
  */
 
 const bodySchema = z.discriminatedUnion("action", [

@@ -1243,7 +1243,7 @@
       },
       "leave": {
         "action": "Leave night",
-        "confirm": "Leave this night? You will lose your votes.",
+        "confirm": "Leave this night? Your votes will stay on the list.",
         "yes": "Yes, leave"
       },
       "invite": {
@@ -1281,7 +1281,6 @@
     },
     "guest": {
       "metaTitle": "Game night",
-      "title": "Game night",
       "hostedBy": "Hosted by {host}",
       "someone": "Someone",
       "what": "What is Amika?",

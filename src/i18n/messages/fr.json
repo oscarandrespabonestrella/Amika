@@ -1243,7 +1243,7 @@
       },
       "leave": {
         "action": "Quitter la soirée",
-        "confirm": "Quitter cette soirée ? Vous perdrez vos votes.",
+        "confirm": "Quitter cette soirée ? Vos votes resteront dans la liste.",
         "yes": "Oui, quitter"
       },
       "invite": {
@@ -1281,7 +1281,6 @@
     },
     "guest": {
       "metaTitle": "Soirée jeux",
-      "title": "Soirée jeux",
       "hostedBy": "Organisée par {host}",
       "someone": "Quelqu’un",
       "what": "Qu’est-ce qu’Amika ?",

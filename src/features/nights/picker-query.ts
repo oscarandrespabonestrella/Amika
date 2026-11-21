@@ -29,7 +29,11 @@ export function parsePickerQuery(
   return out;
 }
 
-/** Today as `YYYY-MM-DD` (UTC). */
+/**
+ * Today as `YYYY-MM-DD` (UTC). Only used server-side for ranking, where being
+ * off by a day near midnight is acceptable; the night date default is the
+ * viewer's local date (see night-picker).
+ */
 export function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }

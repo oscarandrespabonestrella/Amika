@@ -18,6 +18,7 @@ export default async function NightsPage({
   setRequestLocale(locale);
 
   const query = parsePickerQuery(await searchParams);
+  // UTC date: only ranks games; a day of drift near midnight is acceptable.
   const today = todayIso();
   const [invites, nights, groups, initial] = await Promise.all([
     listNightInvites(),
@@ -33,7 +34,6 @@ export default async function NightsPage({
       groups={groups}
       initial={initial}
       query={query}
-      today={today}
     />
   );
 }

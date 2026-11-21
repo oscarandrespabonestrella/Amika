@@ -172,7 +172,8 @@ Construidas en `src/lib/security-headers.ts` (puro, con tests) y aplicadas a tod
 
 ## 22. Noche de juegos: ruta pública del invitado (`/n/:token`, `/api/nights/guest/[token]`)
 Es la única superficie pública de la función; toda la lógica pasa por **un** route handler de Next (ADR-049).
-- **Token y clave hasheados**: el token del enlace (32 bytes aleatorios, base64url) solo se muestra una vez; en la BD queda su sha256 (`game_night_links.token_hash`). La clave del invitado (aleatoria) vive en su cookie y en la BD solo su hash (`game_night_guests.guest_key_hash`). Una filtración de la base de datos no da enlaces ni identidades de invitado utilizables.
+- **Token y clave hasheados**: el token del enlace (32 bytes aleatorios, base64url) solo se muestra una vez; en la BD queda su sha256 (`game_night_links.token_hash`). La clave del invitado (aleatoria) vive en su cookie y en la BD solo su hash (`game_night_guests.key_hash`). Una filtración de la base de datos no da enlaces ni identidades de invitado utilizables.
+- **El token no se registra en la aplicación, pero viaja en la ruta de la URL**: los registros de acceso del alojamiento (hosting) pueden anotarlo; es inherente al acceso por enlace. Por eso el enlace caduca y se puede revocar.
 - **Solo `service_role`**: las funciones `guest_*` no tienen `grant execute` para `anon` ni `authenticated`; el navegador no habla con Supabase. Se prueba en los tests SQL.
 - **Un enlace expone una noche, nada más**: título, fecha, nombre visible del anfitrión, juegos (nombre, portada, jugadores, duración) y votos con los nombres de quien votó. Ni bibliotecas, ni partidas, ni perfiles, ni fichas de juegos propios (solo `name_snapshot`/`cover_snapshot`).
 - **CSRF** (el invitado usa cookie): el POST exige `Content-Type: application/json`, rechaza `Sec-Fetch-Site` distinto de `same-origin`/`none` y comprueba que `Origin`, si viene, sea el de la aplicación. Cuerpo máximo 1 KiB.

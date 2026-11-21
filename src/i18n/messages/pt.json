@@ -1243,7 +1243,7 @@
       },
       "leave": {
         "action": "Sair da noite",
-        "confirm": "Sair desta noite? Perderá os seus votos.",
+        "confirm": "Sair desta noite? Os seus votos ficarão na lista.",
         "yes": "Sim, sair"
       },
       "invite": {
@@ -1281,7 +1281,6 @@
     },
     "guest": {
       "metaTitle": "Noite de jogos",
-      "title": "Noite de jogos",
       "hostedBy": "Organizada por {host}",
       "someone": "Alguém",
       "what": "O que é o Amika?",

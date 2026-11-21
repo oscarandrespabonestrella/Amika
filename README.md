@@ -12,7 +12,7 @@ and see who really wins the most.
 [![CI](https://github.com/oscarandrespabonestrella/Amika/actions/workflows/ci.yml/badge.svg)](https://github.com/oscarandrespabonestrella/Amika/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support-FFDD00?logo=buymeacoffee&logoColor=black)](https://www.buymeacoffee.com/YOUR_USERNAME)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/oscarandrespabon)
 
 </div>
 
@@ -138,9 +138,9 @@ Found a security issue? Please don't open a public issue: see [SECURITY.md](SECU
 ## Support the project
 
 Amika is free and built in spare time. If it makes your game nights better, you can
-[**buy me a coffee ☕**](https://www.buymeacoffee.com/YOUR_USERNAME).
+[**buy me a coffee ☕**](https://buymeacoffee.com/oscarandrespabon).
 
-<a href="https://www.buymeacoffee.com/YOUR_USERNAME" target="_blank">
+<a href="https://buymeacoffee.com/oscarandrespabon" target="_blank">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="48" />
 </a>
 

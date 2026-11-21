@@ -32,7 +32,8 @@
     "friends": "Amigos",
     "people": "Personas",
     "logMatch": "Registrar partida",
-    "account": "Cuenta"
+    "account": "Cuenta",
+    "tools": "Herramientas"
   },
   "Home": {
     "title": "Te damos la bienvenida",
@@ -42,7 +43,175 @@
     "browse": "Explorar juegos",
     "libraryTitle": "Tu biblioteca",
     "libraryCount": "{count, plural, one {# juego} other {# juegos}} en tu biblioteca.",
-    "openLibrary": "Abrir biblioteca"
+    "openLibrary": "Abrir biblioteca",
+    "statsTitle": "Tus estadísticas",
+    "statsBody": "Porcentaje de victorias, cara a cara y tus juegos más jugados.",
+    "statsOpen": "Abrir estadísticas"
+  },
+  "Tools": {
+    "title": "Herramientas",
+    "subtitle": "Pequeños ayudantes para la mesa",
+    "back": "Volver a herramientas",
+    "help": "Cómo funciona",
+    "menu": "Más opciones",
+    "reset": "Reiniciar",
+    "fullscreen": "Pantalla completa",
+    "exitFullscreen": "Salir de pantalla completa",
+    "categories": {
+      "randomizers": "Aleatorios",
+      "timers": "Temporizadores",
+      "other": "Otras herramientas"
+    },
+    "stats": {
+      "title": "¿Buscas tus estadísticas?",
+      "body": "Ahora están en Inicio y en el menú de tu avatar"
+    },
+    "names": {
+      "clear": "Vaciar",
+      "add": "Añadir",
+      "remove": "Quitar a {name}",
+      "empty": "Aún no hay nombres. Escribe algunos abajo o elige de tus jugadores.",
+      "full": "Ese es el máximo de {max} nombres.",
+      "fromRoster": "De tus jugadores",
+      "group": "{name} ({count})"
+    },
+    "items": {
+      "dice": {
+        "name": "Dados",
+        "description": "Varios dados, modificadores y caras a medida",
+        "help": "Elige un dado (o un número de caras a medida), cuántos tirar y un modificador; luego toca la mesa o el botón Tirar. Tus ajustes se recuerdan en este dispositivo."
+      },
+      "finger": {
+        "name": "Selector de dedo",
+        "description": "Todos tocan la pantalla y se elige uno",
+        "help": "Cada persona pone un dedo en la pantalla y lo mantiene. Tras tres segundos quietos se elige un dedo. Levanta todos los dedos para repetir. Necesita una pantalla táctil con varios puntos de contacto."
+      },
+      "wheel": {
+        "name": "Ruleta",
+        "description": "Tus propias opciones, un ganador al azar",
+        "help": "Añade al menos dos nombres u opciones y gira. El puntero de arriba señala al ganador. Puedes quitar al ganador y volver a girar. Las opciones se recuerdan en este dispositivo."
+      },
+      "countdown": {
+        "name": "Cuenta atrás",
+        "description": "Pon un límite de tiempo con sonido y vibración",
+        "help": "Elige una duración y empieza. Al acabar el tiempo suena una alarma y vibra (si tu dispositivo lo permite). Mantén la pantalla encendida: el navegador puede pausar los temporizadores en segundo plano."
+      },
+      "teams": {
+        "name": "Generador de equipos",
+        "description": "Reparte a los jugadores en equipos al azar",
+        "help": "Escribe los jugadores y elige cuántos equipos. Los nombres se reparten al azar y los equipos difieren como mucho en uno. La lista de jugadores se comparte con el número oculto."
+      },
+      "hidden": {
+        "name": "Número oculto",
+        "description": "Un número secreto para cada jugador",
+        "help": "Elige un rango y sortea. Cada jugador toca su carta para ver su número y la toca otra vez para ocultarlo antes de pasar el móvil."
+      },
+      "coin": {
+        "name": "Cara o cruz",
+        "description": "Cara o cruz, resuelto con un toque",
+        "help": "Toca la moneda o el botón. El recuento bajo la moneda cuenta las tiradas desde el último reinicio."
+      }
+    },
+    "dice": {
+      "rollTable": "Tirar los dados",
+      "rolling": "Tirando…",
+      "tapToRoll": "Toca la mesa para tirar",
+      "last": "Últimas tiradas",
+      "type": "Tipo de dado",
+      "custom": "A medida",
+      "sides": "Caras por dado",
+      "fewerSides": "Menos caras",
+      "moreSides": "Más caras",
+      "count": "Número de dados",
+      "fewer": "Menos dados",
+      "more": "Más dados",
+      "modifier": "Modificador",
+      "modifierHint": "Se suma al total",
+      "lower": "Bajar modificador",
+      "raise": "Subir modificador",
+      "roll": "Tirar {formula}"
+    },
+    "coin": {
+      "flip": "Lanzar la moneda",
+      "heads": "Cara",
+      "tails": "Cruz",
+      "tapToFlip": "Toca la moneda para lanzarla",
+      "score": "Cara {heads} · Cruz {tails}",
+      "history": "Lanzamientos anteriores"
+    },
+    "finger": {
+      "prompt": "Todos, toquen y mantengan la pantalla",
+      "needMore": "Esperando más dedos…",
+      "hold": "No se muevan…",
+      "liftToReset": "Levanta los dedos para jugar de nuevo",
+      "picked": "Se eligió un dedo."
+    },
+    "wheel": {
+      "winner": "La ruleta dice",
+      "removeWinner": "Quitar a {name}",
+      "needTwo": "Añade al menos dos opciones para girar.",
+      "options": "Opciones",
+      "placeholder": "Añade una opción (o varias, separadas por comas)",
+      "spin": "Girar",
+      "spinning": "Girando…"
+    },
+    "countdown": {
+      "remaining": "Tiempo restante",
+      "timesUp": "¡Se acabó el tiempo!",
+      "duration": "Duración",
+      "minutes": "Minutos",
+      "seconds": "Segundos",
+      "fewerMinutes": "Menos minutos",
+      "moreMinutes": "Más minutos",
+      "fewerSeconds": "Menos segundos",
+      "moreSeconds": "Más segundos",
+      "alerts": "Alertas",
+      "sound": "Sonido",
+      "vibration": "Vibración",
+      "vibrationHint": "No disponible en todos los dispositivos",
+      "warn": "Pitido al quedar {seconds} segundos",
+      "resetTimer": "Reiniciar",
+      "pause": "Pausar",
+      "resume": "Continuar",
+      "start": "Empezar"
+    },
+    "teams": {
+      "result": "Equipos",
+      "team": "Equipo {number}",
+      "count": "Número de equipos",
+      "fewer": "Menos equipos",
+      "more": "Más equipos",
+      "players": "Jugadores",
+      "placeholder": "Añade un jugador (o varios, separados por comas)",
+      "again": "Mezclar de nuevo",
+      "make": "Crear equipos"
+    },
+    "hidden": {
+      "player": "Jugador {number}",
+      "result": "Números secretos",
+      "hideAll": "Ocultar todos",
+      "revealAll": "Mostrar todos",
+      "tapToReveal": "Toca para ver",
+      "range": "Rango",
+      "min": "Número más bajo",
+      "max": "Número más alto",
+      "lowerMin": "Bajar el número más bajo",
+      "raiseMin": "Subir el número más bajo",
+      "lowerMax": "Bajar el número más alto",
+      "raiseMax": "Subir el número más alto",
+      "players": "Jugadores",
+      "playersHint": "O añade nombres abajo",
+      "fewer": "Menos jugadores",
+      "more": "Más jugadores",
+      "unique": "Todos distintos",
+      "uniqueHint": "Dos jugadores no reciben el mismo número",
+      "badRange": "El número más bajo debe ser entero y no mayor que el más alto.",
+      "tooSmall": "Ese rango es demasiado pequeño para dar un número distinto a cada uno.",
+      "names": "Jugadores",
+      "placeholder": "Añade un jugador (o varios, separados por comas)",
+      "again": "Sortear de nuevo",
+      "draw": "{count, plural, one {Sortear un número} other {Sortear # números}}"
+    }
   },
   "Settings": {
     "title": "Ajustes",

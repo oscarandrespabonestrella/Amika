@@ -26,7 +26,7 @@ Gestor de paquetes: **npm** (ya disponible; sin pnpm instalado). Ver ADR-004.
 src/
   app/[locale]/           rutas y layouts (solo composición, sin lógica de negocio)
     (public)/ (auth)/ (app)/ admin/
-  features/<módulo>/      auth, profiles, catalog, library, game-center, manuals, plays, scoring, stats, admin, ai*
+  features/<módulo>/      auth, profiles, catalog, library, game-center, manuals, plays, scoring, stats, tools, admin, ai*
     views/                cuerpo de pantalla que renderiza una página (ADR-047)
     components/           piezas reutilizables del módulo
     actions/              Server Actions (validan con Zod y delegan en services)

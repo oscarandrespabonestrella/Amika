@@ -1,5 +1,5 @@
 import { assertLocale } from "@/i18n/locale";
-import { BookMarked, Dices, Library } from "lucide-react";
+import { BarChart3, BookMarked, Dices, Library } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EmptyState } from "@/components/empty-state";
 import { buttonVariants } from "@/components/ui/button";
@@ -115,6 +115,26 @@ export default async function HomePage({
           )}
         >
           {tn("homeOpen")}
+        </Link>
+      </section>
+
+      <section
+        aria-labelledby="stats-card"
+        className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5"
+      >
+        <h2 id="stats-card" className="flex items-center gap-2 font-semibold">
+          <BarChart3 className="size-5 text-primary" aria-hidden />
+          {t("statsTitle")}
+        </h2>
+        <p className="text-muted-foreground">{t("statsBody")}</p>
+        <Link
+          href="/stats"
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "h-11 w-fit px-6",
+          )}
+        >
+          {t("statsOpen")}
         </Link>
       </section>
 

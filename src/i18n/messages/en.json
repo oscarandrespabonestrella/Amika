@@ -32,7 +32,8 @@
     "friends": "Friends",
     "people": "People",
     "logMatch": "Log a match",
-    "account": "Account"
+    "account": "Account",
+    "tools": "Tools"
   },
   "Home": {
     "title": "Welcome back",
@@ -42,7 +43,175 @@
     "browse": "Browse games",
     "libraryTitle": "Your library",
     "libraryCount": "{count, plural, one {# game} other {# games}} in your library.",
-    "openLibrary": "Open library"
+    "openLibrary": "Open library",
+    "statsTitle": "Your stats",
+    "statsBody": "Win rates, head-to-heads and your most played games.",
+    "statsOpen": "Open statistics"
+  },
+  "Tools": {
+    "title": "Tools",
+    "subtitle": "Little helpers for the table",
+    "back": "Back to tools",
+    "help": "How it works",
+    "menu": "More options",
+    "reset": "Reset",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "categories": {
+      "randomizers": "Randomizers",
+      "timers": "Timers",
+      "other": "Other tools"
+    },
+    "stats": {
+      "title": "Looking for your stats?",
+      "body": "They're on Home and in your avatar menu now"
+    },
+    "names": {
+      "clear": "Clear",
+      "add": "Add",
+      "remove": "Remove {name}",
+      "empty": "No names yet. Type some below, or pick from your players.",
+      "full": "That's the maximum of {max} names.",
+      "fromRoster": "From your players",
+      "group": "{name} ({count})"
+    },
+    "items": {
+      "dice": {
+        "name": "Dice roller",
+        "description": "Several dice, modifiers and custom sides",
+        "help": "Pick a die (or a custom number of sides), how many to roll and a modifier, then tap the table or the Roll button. Your settings are remembered on this device."
+      },
+      "finger": {
+        "name": "Finger selector",
+        "description": "Everyone touches the screen, one is picked",
+        "help": "Everyone puts one finger on the screen and keeps it there. After three still seconds, one finger is chosen. Lift all fingers to play again. It needs a touch screen with several touch points."
+      },
+      "wheel": {
+        "name": "Spin the wheel",
+        "description": "Your own options, one random winner",
+        "help": "Add at least two names or options, then spin. The pointer at the top shows the winner. You can remove the winner and spin again. Options are remembered on this device."
+      },
+      "countdown": {
+        "name": "Countdown",
+        "description": "Set a time limit with sound and vibration",
+        "help": "Choose a duration, then start. When time is up you get a sound and a vibration (if your device supports it). Keep the screen on while it runs; browsers may pause timers in the background."
+      },
+      "teams": {
+        "name": "Team generator",
+        "description": "Split players into random, even teams",
+        "help": "List the players and choose how many teams. Names are dealt out at random so team sizes differ by at most one. The player list is shared with the hidden number tool."
+      },
+      "hidden": {
+        "name": "Hidden number",
+        "description": "A secret number for each player",
+        "help": "Choose a range and draw. Each player taps their own card to see their number and taps again to hide it before passing the phone on."
+      },
+      "coin": {
+        "name": "Coin flip",
+        "description": "Heads or tails, settled in a tap",
+        "help": "Tap the coin or the button. The tally under the coin counts the flips since the last reset."
+      }
+    },
+    "dice": {
+      "rollTable": "Roll the dice",
+      "rolling": "Rolling…",
+      "tapToRoll": "Tap the table to roll",
+      "last": "Last rolls",
+      "type": "Die type",
+      "custom": "Custom",
+      "sides": "Sides per die",
+      "fewerSides": "Fewer sides",
+      "moreSides": "More sides",
+      "count": "Number of dice",
+      "fewer": "Fewer dice",
+      "more": "More dice",
+      "modifier": "Modifier",
+      "modifierHint": "Added to the total",
+      "lower": "Lower modifier",
+      "raise": "Raise modifier",
+      "roll": "Roll {formula}"
+    },
+    "coin": {
+      "flip": "Flip the coin",
+      "heads": "Heads",
+      "tails": "Tails",
+      "tapToFlip": "Tap the coin to flip",
+      "score": "Heads {heads} · Tails {tails}",
+      "history": "Previous flips"
+    },
+    "finger": {
+      "prompt": "Everyone, touch and hold the screen",
+      "needMore": "Waiting for more fingers…",
+      "hold": "Hold still…",
+      "liftToReset": "Lift your fingers to play again",
+      "picked": "A finger was picked."
+    },
+    "wheel": {
+      "winner": "The wheel says",
+      "removeWinner": "Remove {name}",
+      "needTwo": "Add at least two options to spin.",
+      "options": "Options",
+      "placeholder": "Add an option (or several, separated by commas)",
+      "spin": "Spin",
+      "spinning": "Spinning…"
+    },
+    "countdown": {
+      "remaining": "Time left",
+      "timesUp": "Time's up!",
+      "duration": "Duration",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "fewerMinutes": "Fewer minutes",
+      "moreMinutes": "More minutes",
+      "fewerSeconds": "Fewer seconds",
+      "moreSeconds": "More seconds",
+      "alerts": "Alerts",
+      "sound": "Sound",
+      "vibration": "Vibration",
+      "vibrationHint": "Not available on every device",
+      "warn": "Beep at {seconds} seconds left",
+      "resetTimer": "Reset",
+      "pause": "Pause",
+      "resume": "Resume",
+      "start": "Start"
+    },
+    "teams": {
+      "result": "Teams",
+      "team": "Team {number}",
+      "count": "Number of teams",
+      "fewer": "Fewer teams",
+      "more": "More teams",
+      "players": "Players",
+      "placeholder": "Add a player (or several, separated by commas)",
+      "again": "Shuffle again",
+      "make": "Make teams"
+    },
+    "hidden": {
+      "player": "Player {number}",
+      "result": "Secret numbers",
+      "hideAll": "Hide all",
+      "revealAll": "Reveal all",
+      "tapToReveal": "Tap to reveal",
+      "range": "Range",
+      "min": "Lowest number",
+      "max": "Highest number",
+      "lowerMin": "Lower the lowest number",
+      "raiseMin": "Raise the lowest number",
+      "lowerMax": "Lower the highest number",
+      "raiseMax": "Raise the highest number",
+      "players": "Players",
+      "playersHint": "Or add names below",
+      "fewer": "Fewer players",
+      "more": "More players",
+      "unique": "All different",
+      "uniqueHint": "No two players get the same number",
+      "badRange": "The lowest number must be a whole number not above the highest.",
+      "tooSmall": "That range is too small to give everyone a different number.",
+      "names": "Players",
+      "placeholder": "Add a player (or several, separated by commas)",
+      "again": "Draw again",
+      "draw": "{count, plural, one {Draw a number} other {Draw # numbers}}"
+    }
   },
   "Settings": {
     "title": "Settings",

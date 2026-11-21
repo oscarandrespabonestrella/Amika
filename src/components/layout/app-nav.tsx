@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, BookMarked, Home, Plus, Users } from "lucide-react";
+import { BookMarked, Dice5, Home, Plus, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 /** `also`: other sections that belong to the item (the games catalog is reached from "Add" in the library). */
 const ITEMS: readonly {
   href: string;
-  key: "home" | "people" | "library" | "stats" | "logMatch";
+  key: "home" | "people" | "library" | "tools" | "logMatch";
   icon: typeof Home;
   also?: readonly string[];
   /** The centre action: logging a match is the main job of the app. */
@@ -17,7 +17,7 @@ const ITEMS: readonly {
   { href: "/home", key: "home", icon: Home },
   { href: "/library", key: "library", icon: BookMarked, also: ["/games"] },
   { href: "/log", key: "logMatch", icon: Plus, primary: true },
-  { href: "/stats", key: "stats", icon: BarChart3 },
+  { href: "/tools", key: "tools", icon: Dice5 },
   {
     href: "/friends",
     key: "people",

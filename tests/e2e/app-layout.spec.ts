@@ -53,6 +53,28 @@ test("navigation marks the current page and reaches settings from the account me
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Settings");
 });
 
+test("statistics is reached from the avatar menu and from Home", async ({
+  page,
+}) => {
+  await page.goto("/en/home");
+  const nav = page.locator("nav[aria-label='Main navigation']:visible");
+  // It is no longer a navigation item: Tools took its place.
+  await expect(nav.getByRole("link", { name: "Statistics" })).toHaveCount(0);
+  await expect(nav.getByRole("link", { name: "Tools" })).toBeVisible();
+
+  await page.getByRole("link", { name: "Open statistics" }).click();
+  await expect(page).toHaveURL(/\/en\/stats$/);
+
+  await page
+    .locator(
+      "button.cl-userButtonTrigger:visible, button[aria-label='Open user menu']:visible",
+    )
+    .first()
+    .click();
+  await page.getByRole("button", { name: "Statistics", exact: true }).click();
+  await expect(page).toHaveURL(/\/en\/stats$/);
+});
+
 test("the centre Log action opens the game picker for a new match", async ({
   page,
 }) => {
@@ -106,16 +128,16 @@ test("the five-item bottom bar fits a 375 px phone in every language", async ({
     isMobile: true,
   });
   const page = await context.newPage();
-  for (const [locale, stats] of [
-    ["en", "Statistics"],
-    ["es", "Estadísticas"],
-    ["fr", "Statistiques"],
+  for (const [locale, tools] of [
+    ["en", "Tools"],
+    ["es", "Herramientas"],
+    ["fr", "Outils"],
   ] as const) {
     await page.goto(`/${locale}/home`);
     const links = page.locator("nav[aria-label]:visible a");
     await expect(links).toHaveCount(5);
     await expect(
-      page.locator("nav:visible").getByRole("link", { name: stats }),
+      page.locator("nav:visible").getByRole("link", { name: tools }),
     ).toBeVisible();
     for (const link of await links.all()) {
       const box = (await link.boundingBox())!;

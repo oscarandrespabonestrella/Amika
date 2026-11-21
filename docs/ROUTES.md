@@ -34,3 +34,5 @@ Pages live in `src/app/[locale]/**/page.tsx`. The URL is the folder path without
 | `/sign-in/*` | `[locale]/(auth)/sign-in/[[...sign-in]]/page.tsx` | — |
 | `/sign-up/*` | `[locale]/(auth)/sign-up/[[...sign-up]]/page.tsx` | — |
 | `/stats` | `[locale]/(app)/stats/page.tsx` | `stats/views/my-stats.tsx` |
+| `/tools` | `[locale]/(app)/tools/page.tsx` | `tools/views/tools-hub.tsx` |
+| `/tools/:tool` | `[locale]/(app)/tools/[tool]/page.tsx` | `tools/views/tool-view.tsx` |

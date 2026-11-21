@@ -32,7 +32,8 @@
     "friends": "Amis",
     "people": "Personnes",
     "logMatch": "Enregistrer une partie",
-    "account": "Compte"
+    "account": "Compte",
+    "tools": "Outils"
   },
   "Home": {
     "title": "Bon retour",
@@ -42,7 +43,175 @@
     "browse": "Parcourir les jeux",
     "libraryTitle": "Votre bibliothèque",
     "libraryCount": "{count, plural, one {# jeu} other {# jeux}} dans votre bibliothèque.",
-    "openLibrary": "Ouvrir la bibliothèque"
+    "openLibrary": "Ouvrir la bibliothèque",
+    "statsTitle": "Vos statistiques",
+    "statsBody": "Taux de victoire, face-à-face et vos jeux les plus joués.",
+    "statsOpen": "Ouvrir les statistiques"
+  },
+  "Tools": {
+    "title": "Outils",
+    "subtitle": "De petits assistants pour la table",
+    "back": "Retour aux outils",
+    "help": "Comment ça marche",
+    "menu": "Plus d'options",
+    "reset": "Réinitialiser",
+    "fullscreen": "Plein écran",
+    "exitFullscreen": "Quitter le plein écran",
+    "categories": {
+      "randomizers": "Aléatoire",
+      "timers": "Minuteurs",
+      "other": "Autres outils"
+    },
+    "stats": {
+      "title": "Vous cherchez vos statistiques ?",
+      "body": "Elles sont maintenant sur Accueil et dans le menu de votre avatar"
+    },
+    "names": {
+      "clear": "Vider",
+      "add": "Ajouter",
+      "remove": "Retirer {name}",
+      "empty": "Aucun nom pour l'instant. Saisissez-en ci-dessous ou choisissez parmi vos joueurs.",
+      "full": "C'est le maximum de {max} noms.",
+      "fromRoster": "Parmi vos joueurs",
+      "group": "{name} ({count})"
+    },
+    "items": {
+      "dice": {
+        "name": "Dés",
+        "description": "Plusieurs dés, modificateurs et faces au choix",
+        "help": "Choisissez un dé (ou un nombre de faces personnalisé), combien en lancer et un modificateur, puis touchez la table ou le bouton Lancer. Vos réglages sont mémorisés sur cet appareil."
+      },
+      "finger": {
+        "name": "Sélecteur de doigt",
+        "description": "Tout le monde touche l'écran, un doigt est choisi",
+        "help": "Chacun pose un doigt sur l'écran et le garde. Après trois secondes sans bouger, un doigt est choisi. Levez tous les doigts pour recommencer. Il faut un écran tactile multipoint."
+      },
+      "wheel": {
+        "name": "Roue",
+        "description": "Vos propres options, un gagnant au hasard",
+        "help": "Ajoutez au moins deux noms ou options, puis lancez la roue. Le repère en haut désigne le gagnant. Vous pouvez retirer le gagnant et relancer. Les options sont mémorisées sur cet appareil."
+      },
+      "countdown": {
+        "name": "Compte à rebours",
+        "description": "Fixez une limite de temps avec son et vibration",
+        "help": "Choisissez une durée puis démarrez. Quand le temps est écoulé, vous entendez un son et l'appareil vibre (s'il le permet). Gardez l'écran allumé : le navigateur peut suspendre les minuteurs en arrière-plan."
+      },
+      "teams": {
+        "name": "Générateur d'équipes",
+        "description": "Répartit les joueurs en équipes au hasard",
+        "help": "Listez les joueurs et choisissez le nombre d'équipes. Les noms sont distribués au hasard, les équipes diffèrent d'un joueur au plus. La liste des joueurs est partagée avec le nombre caché."
+      },
+      "hidden": {
+        "name": "Nombre caché",
+        "description": "Un nombre secret pour chaque joueur",
+        "help": "Choisissez une plage et tirez. Chaque joueur touche sa carte pour voir son nombre, puis la touche à nouveau pour le cacher avant de passer le téléphone."
+      },
+      "coin": {
+        "name": "Pile ou face",
+        "description": "Pile ou face, réglé d'un geste",
+        "help": "Touchez la pièce ou le bouton. Le décompte sous la pièce compte les lancers depuis la dernière réinitialisation."
+      }
+    },
+    "dice": {
+      "rollTable": "Lancer les dés",
+      "rolling": "Lancer en cours…",
+      "tapToRoll": "Touchez la table pour lancer",
+      "last": "Derniers lancers",
+      "type": "Type de dé",
+      "custom": "Perso",
+      "sides": "Faces par dé",
+      "fewerSides": "Moins de faces",
+      "moreSides": "Plus de faces",
+      "count": "Nombre de dés",
+      "fewer": "Moins de dés",
+      "more": "Plus de dés",
+      "modifier": "Modificateur",
+      "modifierHint": "Ajouté au total",
+      "lower": "Baisser le modificateur",
+      "raise": "Augmenter le modificateur",
+      "roll": "Lancer {formula}"
+    },
+    "coin": {
+      "flip": "Lancer la pièce",
+      "heads": "Face",
+      "tails": "Pile",
+      "tapToFlip": "Touchez la pièce pour la lancer",
+      "score": "Face {heads} · Pile {tails}",
+      "history": "Lancers précédents"
+    },
+    "finger": {
+      "prompt": "Tout le monde, touchez et gardez l'écran",
+      "needMore": "En attente d'autres doigts…",
+      "hold": "Ne bougez plus…",
+      "liftToReset": "Levez les doigts pour rejouer",
+      "picked": "Un doigt a été choisi."
+    },
+    "wheel": {
+      "winner": "La roue dit",
+      "removeWinner": "Retirer {name}",
+      "needTwo": "Ajoutez au moins deux options pour lancer.",
+      "options": "Options",
+      "placeholder": "Ajoutez une option (ou plusieurs, séparées par des virgules)",
+      "spin": "Lancer la roue",
+      "spinning": "La roue tourne…"
+    },
+    "countdown": {
+      "remaining": "Temps restant",
+      "timesUp": "Le temps est écoulé !",
+      "duration": "Durée",
+      "minutes": "Minutes",
+      "seconds": "Secondes",
+      "fewerMinutes": "Moins de minutes",
+      "moreMinutes": "Plus de minutes",
+      "fewerSeconds": "Moins de secondes",
+      "moreSeconds": "Plus de secondes",
+      "alerts": "Alertes",
+      "sound": "Son",
+      "vibration": "Vibration",
+      "vibrationHint": "Indisponible sur certains appareils",
+      "warn": "Bip à {seconds} secondes de la fin",
+      "resetTimer": "Réinitialiser",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "start": "Démarrer"
+    },
+    "teams": {
+      "result": "Équipes",
+      "team": "Équipe {number}",
+      "count": "Nombre d'équipes",
+      "fewer": "Moins d'équipes",
+      "more": "Plus d'équipes",
+      "players": "Joueurs",
+      "placeholder": "Ajoutez un joueur (ou plusieurs, séparés par des virgules)",
+      "again": "Mélanger à nouveau",
+      "make": "Former les équipes"
+    },
+    "hidden": {
+      "player": "Joueur {number}",
+      "result": "Nombres secrets",
+      "hideAll": "Tout cacher",
+      "revealAll": "Tout révéler",
+      "tapToReveal": "Touchez pour voir",
+      "range": "Plage",
+      "min": "Nombre le plus bas",
+      "max": "Nombre le plus haut",
+      "lowerMin": "Baisser le nombre le plus bas",
+      "raiseMin": "Augmenter le nombre le plus bas",
+      "lowerMax": "Baisser le nombre le plus haut",
+      "raiseMax": "Augmenter le nombre le plus haut",
+      "players": "Joueurs",
+      "playersHint": "Ou ajoutez des noms ci-dessous",
+      "fewer": "Moins de joueurs",
+      "more": "Plus de joueurs",
+      "unique": "Tous différents",
+      "uniqueHint": "Deux joueurs n'ont jamais le même nombre",
+      "badRange": "Le nombre le plus bas doit être entier et ne pas dépasser le plus haut.",
+      "tooSmall": "Cette plage est trop petite pour donner un nombre différent à chacun.",
+      "names": "Joueurs",
+      "placeholder": "Ajoutez un joueur (ou plusieurs, séparés par des virgules)",
+      "again": "Tirer à nouveau",
+      "draw": "{count, plural, one {Tirer un nombre} other {Tirer # nombres}}"
+    }
   },
   "Settings": {
     "title": "Réglages",

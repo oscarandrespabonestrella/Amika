@@ -1,16 +1,21 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { Settings } from "lucide-react";
+import { BarChart3, Settings } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
-/** Clerk's avatar menu with Settings added (it is no longer a navigation item). */
+/** Clerk's avatar menu with Statistics and Settings added (neither is a navigation item). */
 export function AccountMenu() {
   const t = useTranslations("Nav");
   const locale = useLocale();
   return (
     <UserButton>
       <UserButton.MenuItems>
+        <UserButton.Link
+          label={t("stats")}
+          href={`/${locale}/stats`}
+          labelIcon={<BarChart3 className="size-4" aria-hidden />}
+        />
         <UserButton.Link
           label={t("settings")}
           href={`/${locale}/settings`}

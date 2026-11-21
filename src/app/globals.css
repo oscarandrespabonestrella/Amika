@@ -166,3 +166,32 @@
     }
   }
 }
+
+/* Table tools (features/tools): short feedback animations. */
+@keyframes tools-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes tools-shake {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(5deg);
+  }
+}
+@keyframes tools-pop {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

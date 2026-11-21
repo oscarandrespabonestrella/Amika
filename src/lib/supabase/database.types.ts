@@ -1756,6 +1756,10 @@ export type Database = {
         }[];
       };
       i_use_sheet: { Args: { p_sheet: string }; Returns: boolean };
+      invite_to_night: {
+        Args: { p_friend: string; p_night: string };
+        Returns: undefined;
+      };
       invite_to_play: {
         Args: { p_friend: string; p_play: string; p_seat: number };
         Returns: string;
@@ -1764,6 +1768,7 @@ export type Database = {
       is_night_member: { Args: { p_night: string }; Returns: boolean };
       is_play_member: { Args: { p_play: string }; Returns: boolean };
       is_play_owner: { Args: { p_play: string }; Returns: boolean };
+      leave_night: { Args: { p_night: string }; Returns: undefined };
       leave_play: { Args: { p_play: string }; Returns: undefined };
       link_player_to_friend: {
         Args: { p_friend: string; p_player: string };
@@ -1827,9 +1832,26 @@ export type Database = {
           wins: number;
         }[];
       };
+      night_invites: {
+        Args: never;
+        Returns: {
+          host_name: string;
+          night_id: string;
+          starts_on: string;
+          title: string;
+        }[];
+      };
       night_is_open: {
         Args: { n: Database["public"]["Tables"]["game_nights"]["Row"] };
         Returns: boolean;
+      };
+      night_votes: {
+        Args: { p_night: string };
+        Returns: {
+          is_guest: boolean;
+          night_game_id: string;
+          voter_name: string;
+        }[];
       };
       normalize_player_name: { Args: { p: string }; Returns: string };
       picker_candidates: {
@@ -1862,6 +1884,10 @@ export type Database = {
       publish_manual_suggestion: { Args: { p_id: string }; Returns: string };
       redeem_friend_invite: { Args: { p_code: string }; Returns: string };
       remove_friend: { Args: { p_friend: string }; Returns: undefined };
+      respond_night_invite: {
+        Args: { p_accept: boolean; p_night: string };
+        Returns: undefined;
+      };
       respond_play_invite: {
         Args: { p_accept: boolean; p_member: string };
         Returns: undefined;
@@ -1956,6 +1982,11 @@ export type Database = {
           visibility: string;
         }[];
       };
+      suggest_night_game: {
+        Args: { p_game: string; p_night: string };
+        Returns: string;
+      };
+      toggle_night_vote: { Args: { p_night_game: string }; Returns: boolean };
       transfer_or_delete_plays: {
         Args: { p_user: string };
         Returns: undefined;

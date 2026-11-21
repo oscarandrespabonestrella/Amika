@@ -163,6 +163,88 @@ describe.skipIf(!hasDb)("RLS: game nights", () => {
     expect(res).toBe("GN004");
   });
 
+  const fillTo19 = async (c: Client) => {
+    await c.query(
+      `insert into public.game_nights (owner_id, title, starts_on)
+       select $1, 'n' || n, '2099-03-01' from generate_series(1, 18) n`,
+      [A],
+    );
+  };
+
+  it("twenty-first open night fails", async () => {
+    // fixtures already hold 1 open night; 18 more make 19; the 20th is ok, the 21st fails
+    const code = await asA(async (c) => {
+      await c.query(
+        `insert into public.game_nights (owner_id, title, starts_on) values ($1,'20th','2099-02-01')`,
+        [A],
+      );
+      return pgErrorCode(
+        c.query(
+          `insert into public.game_nights (owner_id, title, starts_on) values ($1,'21st','2099-02-01')`,
+          [A],
+        ),
+      );
+    }, fillTo19);
+    expect(code).toBe("GN004");
+  });
+
+  it("reopening an expired night via starts_on at the cap fails", async () => {
+    const code = await asA(
+      (c) =>
+        pgErrorCode(
+          c.query(
+            `update public.game_nights set starts_on = '2099-05-01' where title = 'old'`,
+          ),
+        ),
+      async (c) => {
+        await fillTo19(c);
+        await c.query(
+          `insert into public.game_nights (owner_id, title, starts_on) values ($1,'20th','2099-02-01'), ($1,'old','2020-01-01')`,
+          [A],
+        );
+      },
+    );
+    expect(code).toBe("GN004");
+  });
+
+  it("editing an expired night at the cap is allowed", async () => {
+    const code = await asA(
+      (c) =>
+        pgErrorCode(
+          c.query(
+            `update public.game_nights set starts_on = '2020-01-02' where title = 'old'`,
+          ),
+        ),
+      async (c) => {
+        await fillTo19(c);
+        await c.query(
+          `insert into public.game_nights (owner_id, title, starts_on) values ($1,'20th','2099-02-01'), ($1,'old','2020-01-01')`,
+          [A],
+        );
+      },
+    );
+    expect(code).toBeNull();
+  });
+
+  it("night_is_open false after starts_on + 2 days", async () => {
+    const res = await asA(async (c) => {
+      const isOpen = async () =>
+        (
+          await c.query<{ o: boolean }>(
+            `select public.night_is_open(n) o from public.game_nights n where id = $1`,
+            [N1],
+          )
+        ).rows[0].o;
+      const open = await isOpen();
+      await c.query(
+        `update public.game_nights set starts_on = current_date - 3 where id = $1`,
+        [N1],
+      );
+      return { open, closed: await isOpen() };
+    });
+    expect(res).toEqual({ open: true, closed: false });
+  });
+
   it("library removal keeps night game", async () => {
     const left = await asA(async (c) => {
       await c.query(`delete from public.library_items where game_id = $1`, [

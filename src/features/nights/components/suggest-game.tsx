@@ -64,6 +64,7 @@ export function SuggestGame({
               type="button"
               role="combobox"
               aria-haspopup="listbox"
+              aria-label={t("trigger")}
               aria-expanded={open}
               aria-controls={open ? "suggest-list" : undefined}
               disabled={disabled || pending}

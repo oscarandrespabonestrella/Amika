@@ -41,6 +41,9 @@ export const TEST_USERS = {
   q: { email: "bglib-e2e-q+clerk_test@example.com", firstName: "E2E Quinn" },
   // Player groups (app-groups.spec.ts).
   r: { email: "bglib-e2e-r+clerk_test@example.com", firstName: "E2E Rosa" },
+  // Game nights (app-nights.spec.ts): the host and an invited friend.
+  s: { email: "bglib-e2e-s+clerk_test@example.com", firstName: "E2E Sam" },
+  t: { email: "bglib-e2e-t+clerk_test@example.com", firstName: "E2E Tina" },
 } as const;
 
 export const STATE_FILE = {
@@ -62,6 +65,8 @@ export const STATE_FILE = {
   p: "playwright/.clerk/user-p.json",
   q: "playwright/.clerk/user-q.json",
   r: "playwright/.clerk/user-r.json",
+  s: "playwright/.clerk/user-s.json",
+  t: "playwright/.clerk/user-t.json",
 } as const;
 
 function clerk() {

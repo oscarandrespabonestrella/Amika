@@ -33,6 +33,8 @@ for (const key of [
   "p",
   "q",
   "r",
+  "s",
+  "t",
 ] as const) {
   const user = TEST_USERS[key];
   setup(`sign in test user ${key.toUpperCase()}`, async ({ page }) => {

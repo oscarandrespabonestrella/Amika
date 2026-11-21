@@ -389,6 +389,73 @@ export type Database = {
           },
         ];
       };
+      game_night_guests: {
+        Row: {
+          created_at: string;
+          display_name: string;
+          id: string;
+          key_hash: string;
+          link_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          display_name: string;
+          id?: string;
+          key_hash: string;
+          link_id: string;
+        };
+        Update: {
+          created_at?: string;
+          display_name?: string;
+          id?: string;
+          key_hash?: string;
+          link_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_night_guests_link_id_fkey";
+            columns: ["link_id"];
+            isOneToOne: false;
+            referencedRelation: "game_night_links";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_night_links: {
+        Row: {
+          created_at: string;
+          expires_at: string;
+          id: string;
+          night_id: string;
+          revoked_at: string | null;
+          token_hash: string;
+        };
+        Insert: {
+          created_at?: string;
+          expires_at: string;
+          id?: string;
+          night_id: string;
+          revoked_at?: string | null;
+          token_hash: string;
+        };
+        Update: {
+          created_at?: string;
+          expires_at?: string;
+          id?: string;
+          night_id?: string;
+          revoked_at?: string | null;
+          token_hash?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_night_links_night_id_fkey";
+            columns: ["night_id"];
+            isOneToOne: false;
+            referencedRelation: "game_nights";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       game_night_members: {
         Row: {
           invited_at: string;
@@ -428,6 +495,42 @@ export type Database = {
           },
         ];
       };
+      game_night_requests: {
+        Row: {
+          created_at: string;
+          guest_id: string | null;
+          id: number;
+          link_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          guest_id?: string | null;
+          id?: never;
+          link_id: string;
+        };
+        Update: {
+          created_at?: string;
+          guest_id?: string | null;
+          id?: never;
+          link_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_night_requests_guest_id_fkey";
+            columns: ["guest_id"];
+            isOneToOne: false;
+            referencedRelation: "game_night_guests";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_night_requests_link_id_fkey";
+            columns: ["link_id"];
+            isOneToOne: false;
+            referencedRelation: "game_night_links";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       game_night_votes: {
         Row: {
           created_at: string;
@@ -451,6 +554,13 @@ export type Database = {
           user_id?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "game_night_votes_guest_fk";
+            columns: ["guest_id"];
+            isOneToOne: false;
+            referencedRelation: "game_night_guests";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "game_night_votes_night_game_id_fkey";
             columns: ["night_game_id"];
@@ -1709,6 +1819,10 @@ export type Database = {
       can_write_scores: { Args: { p_participant: string }; Returns: boolean };
       close_play: { Args: { p: Json; p_play: string }; Returns: undefined };
       create_friend_invite: { Args: never; Returns: string };
+      create_night_link: {
+        Args: { p_night: string; p_token_hash: string };
+        Returns: string;
+      };
       current_user_id: { Args: never; Returns: string };
       delete_play: { Args: { p_play: string }; Returns: undefined };
       f_unaccent: { Args: { "": string }; Returns: string };
@@ -1743,6 +1857,34 @@ export type Database = {
           last_played_on: string;
           plays: number;
         }[];
+      };
+      guest_join_night: {
+        Args: {
+          p_guest_key_hash: string;
+          p_name: string;
+          p_token_hash: string;
+        };
+        Returns: string;
+      };
+      guest_night_state: {
+        Args: { p_guest_key_hash?: string; p_token_hash: string };
+        Returns: Json;
+      };
+      guest_rename: {
+        Args: {
+          p_guest_key_hash: string;
+          p_name: string;
+          p_token_hash: string;
+        };
+        Returns: undefined;
+      };
+      guest_toggle_vote: {
+        Args: {
+          p_guest_key_hash: string;
+          p_night_game: string;
+          p_token_hash: string;
+        };
+        Returns: boolean;
       };
       head_to_head: {
         Args: never;
@@ -1799,6 +1941,13 @@ export type Database = {
           player_name: string;
           plays: number;
           request_id: string;
+        }[];
+      };
+      log_night_request: {
+        Args: { p_guest_key_hash: string; p_token_hash: string };
+        Returns: {
+          last_hour: number;
+          last_minute: number;
         }[];
       };
       merge_players: {
@@ -1884,6 +2033,23 @@ export type Database = {
       publish_manual_suggestion: { Args: { p_id: string }; Returns: string };
       redeem_friend_invite: { Args: { p_code: string }; Returns: string };
       remove_friend: { Args: { p_friend: string }; Returns: undefined };
+      resolve_night_link: {
+        Args: { p_token_hash: string };
+        Returns: {
+          created_at: string;
+          expires_at: string;
+          id: string;
+          night_id: string;
+          revoked_at: string | null;
+          token_hash: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "game_night_links";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       respond_night_invite: {
         Args: { p_accept: boolean; p_night: string };
         Returns: undefined;
@@ -1897,6 +2063,7 @@ export type Database = {
         Returns: number;
       };
       revoke_friend_invite: { Args: { p_code: string }; Returns: undefined };
+      revoke_night_link: { Args: { p_night: string }; Returns: undefined };
       save_my_scores: {
         Args: { p_play: string; p_scores: Json };
         Returns: undefined;

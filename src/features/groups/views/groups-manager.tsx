@@ -6,12 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { Friend } from "@/features/friends";
 import { addPlayerAction } from "@/features/players/actions/player-actions";
 import {
   normalizePlayerName,
   PLAYER_NAME_MAX,
   type Player,
 } from "@/features/players/client";
+import { AddFriendPlayer } from "@/features/players/components/add-friend-player";
 import {
   createGroupAction,
   deleteGroupAction,
@@ -44,9 +46,11 @@ type Mode =
 export function GroupsManager({
   groups,
   players,
+  friends = [],
 }: {
   groups: Group[];
   players: Player[];
+  friends?: Friend[];
 }) {
   const t = useTranslations("Groups");
   const te = useTranslations("Groups.errors");
@@ -284,6 +288,18 @@ export function GroupsManager({
                       {t("addPlayer")}
                     </Button>
                   </div>
+                  <AddFriendPlayer
+                    friends={friends}
+                    players={players}
+                    disabled={pending}
+                    onAdded={(playerId) =>
+                      setMode((m) =>
+                        m?.kind === "members" && m.id === group.id
+                          ? { ...m, selected: new Set(m.selected).add(playerId) }
+                          : m,
+                      )
+                    }
+                  />
                   <div className="flex flex-wrap gap-3">
                     <Button
                       type="button"

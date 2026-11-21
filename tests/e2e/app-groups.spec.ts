@@ -20,6 +20,8 @@ const PREFIX = "9912";
 const GAME_NAME = "Groups Game E2E";
 
 let userR: string;
+// A friend who never signs in here: only a profile row and the friendship.
+const FRIEND_ID = "e2e_groups_friend_9912";
 let gameId: string;
 
 const wipe = async () => {
@@ -29,6 +31,7 @@ const wipe = async () => {
       userR,
     ]);
     await c.query(`delete from public.players where owner_id = $1`, [userR]);
+    await c.query(`delete from public.profiles where id = $1`, [FRIEND_ID]);
   });
 };
 
@@ -221,4 +224,49 @@ test("a group can be made from an empty roster by adding players by name", async
 
   await expect(item.getByText("1 player")).toBeVisible();
   expect(await memberNames("Viernes")).toEqual(["Eva"]);
+});
+
+test("a friend can be added as a player straight into a group", async ({
+  page,
+}) => {
+  await withDb(async (c) => {
+    await c.query(
+      `insert into public.profiles (id, display_name) values ($1, 'Gina')
+       on conflict (id) do update set display_name = excluded.display_name`,
+      [FRIEND_ID],
+    );
+    await c.query(
+      `insert into public.friendships (user_a, user_b)
+       values (least($1::text,$2::text), greatest($1::text,$2::text))
+       on conflict do nothing`,
+      [userR, FRIEND_ID],
+    );
+  });
+  await page.goto("/en/groups");
+  const item = groupItem(page, "Viernes");
+  await item.getByRole("button", { name: "Choose players" }).click();
+  await item.getByLabel("Add a friend as a player").selectOption("Gina");
+  await item.getByRole("button", { name: "Add friend" }).click();
+  await expect(item.getByText(/Gina was added/)).toBeVisible();
+  await expect(item.getByLabel("Gina", { exact: true })).toBeChecked();
+  await item.getByRole("button", { name: "Save", exact: true }).click();
+
+  await expect(item.getByText("2 players")).toBeVisible();
+  expect(await memberNames("Viernes")).toEqual(["Eva", "Gina"]);
+  // The friend is asked to confirm the link, as when linking from My players.
+  const requests = await withDb(async (c) =>
+    (
+      await c.query<{ name: string }>(
+        `select p.name from public.player_link_requests r
+           join public.players p on p.id = r.player_id
+          where r.owner_id = $1 and r.friend_id = $2 and r.status = 'pending'`,
+        [userR, FRIEND_ID],
+      )
+    ).rows.map((r) => r.name),
+  );
+  expect(requests).toEqual(["Gina"]);
+
+  // My players offers the same control.
+  await page.goto("/en/players");
+  await expect(page.getByLabel("Add a friend as a player")).toBeVisible();
 });

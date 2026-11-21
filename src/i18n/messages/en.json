@@ -1120,6 +1120,21 @@
       "playersFull": "You have reached the limit of 200 players."
     }
   },
+  "AddFriendPlayer": {
+    "label": "Add a friend as a player",
+    "pick": "Choose a friend",
+    "allAdded": "All your friends are already players",
+    "add": "Add friend",
+    "pending": "{name} was added. They will see a request and be linked to this player when they accept.",
+    "linked": "{name} is already one of your players.",
+    "errors": {
+      "exists": "Another player already uses that name. Rename it or link it from My players.",
+      "too_many": "You have reached the limit of 200 players.",
+      "not_friend": "You are not friends with that person.",
+      "invalid": "That isn't valid.",
+      "failed": "Something went wrong. Please try again."
+    }
+  },
   "Pwa": {
     "banner": {
       "label": "Install Amika",

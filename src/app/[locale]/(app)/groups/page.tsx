@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PeopleTabs } from "@/components/layout/people-tabs";
+import { listFriends } from "@/features/friends";
 import { listGroups } from "@/features/groups";
 import { GroupsManager } from "@/features/groups/views/groups-manager";
 import { listPlayers } from "@/features/players";
@@ -12,10 +13,11 @@ export default async function GroupsPage({
   const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [t, groups, players] = await Promise.all([
+  const [t, groups, players, friends] = await Promise.all([
     getTranslations("Groups"),
     listGroups(),
     listPlayers(),
+    listFriends(),
   ]);
 
   return (
@@ -26,7 +28,7 @@ export default async function GroupsPage({
         <p className="text-muted-foreground">{t("subtitle")}</p>
       </header>
 
-      <GroupsManager groups={groups} players={players} />
+      <GroupsManager groups={groups} players={players} friends={friends} />
       {groups.length === 0 && (
         <p className="text-sm text-muted-foreground">{t("empty")}</p>
       )}

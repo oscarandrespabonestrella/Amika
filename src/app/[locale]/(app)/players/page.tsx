@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EmptyState } from "@/components/empty-state";
 import { listFriends } from "@/features/friends";
 import { listPlayers } from "@/features/players";
+import { AddFriendPlayer } from "@/features/players/components/add-friend-player";
 import { PlayersManager } from "@/features/players/views/players-manager";
 import { PeopleTabs } from "@/components/layout/people-tabs";
 import { assertLocale } from "@/i18n/locale";
@@ -27,6 +28,8 @@ export default async function PlayersPage({
         <h1 className="text-3xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground">{t("subtitle")}</p>
       </header>
+
+      <AddFriendPlayer friends={friends} players={players} />
 
       {players.length === 0 ? (
         <EmptyState

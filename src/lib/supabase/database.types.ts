@@ -328,6 +328,199 @@ export type Database = {
           },
         ];
       };
+      game_night_games: {
+        Row: {
+          added_by: string | null;
+          cover_snapshot: string | null;
+          created_at: string;
+          game_id: string;
+          id: string;
+          name_snapshot: string;
+          night_id: string;
+          pinned: boolean;
+          played: boolean;
+          source: string;
+        };
+        Insert: {
+          added_by?: string | null;
+          cover_snapshot?: string | null;
+          created_at?: string;
+          game_id: string;
+          id?: string;
+          name_snapshot: string;
+          night_id: string;
+          pinned?: boolean;
+          played?: boolean;
+          source: string;
+        };
+        Update: {
+          added_by?: string | null;
+          cover_snapshot?: string | null;
+          created_at?: string;
+          game_id?: string;
+          id?: string;
+          name_snapshot?: string;
+          night_id?: string;
+          pinned?: boolean;
+          played?: boolean;
+          source?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_night_games_added_by_fkey";
+            columns: ["added_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_night_games_game_id_fkey";
+            columns: ["game_id"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_night_games_night_id_fkey";
+            columns: ["night_id"];
+            isOneToOne: false;
+            referencedRelation: "game_nights";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_night_members: {
+        Row: {
+          invited_at: string;
+          night_id: string;
+          responded_at: string | null;
+          status: string;
+          user_id: string;
+        };
+        Insert: {
+          invited_at?: string;
+          night_id: string;
+          responded_at?: string | null;
+          status?: string;
+          user_id: string;
+        };
+        Update: {
+          invited_at?: string;
+          night_id?: string;
+          responded_at?: string | null;
+          status?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_night_members_night_id_fkey";
+            columns: ["night_id"];
+            isOneToOne: false;
+            referencedRelation: "game_nights";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_night_members_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_night_votes: {
+        Row: {
+          created_at: string;
+          guest_id: string | null;
+          id: string;
+          night_game_id: string;
+          user_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          guest_id?: string | null;
+          id?: string;
+          night_game_id: string;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          guest_id?: string | null;
+          id?: string;
+          night_game_id?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_night_votes_night_game_id_fkey";
+            columns: ["night_game_id"];
+            isOneToOne: false;
+            referencedRelation: "game_night_games";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_night_votes_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      game_nights: {
+        Row: {
+          created_at: string;
+          group_id: string | null;
+          id: string;
+          max_minutes: number | null;
+          owner_id: string;
+          players: number | null;
+          starts_on: string;
+          status: string;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          group_id?: string | null;
+          id?: string;
+          max_minutes?: number | null;
+          owner_id?: string;
+          players?: number | null;
+          starts_on: string;
+          status?: string;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          group_id?: string | null;
+          id?: string;
+          max_minutes?: number | null;
+          owner_id?: string;
+          players?: number | null;
+          starts_on?: string;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_nights_group_id_fkey";
+            columns: ["group_id"];
+            isOneToOne: false;
+            referencedRelation: "player_groups";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_nights_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       game_photos: {
         Row: {
           created_at: string;
@@ -1568,6 +1761,7 @@ export type Database = {
         Returns: string;
       };
       is_admin: { Args: never; Returns: boolean };
+      is_night_member: { Args: { p_night: string }; Returns: boolean };
       is_play_member: { Args: { p_play: string }; Returns: boolean };
       is_play_owner: { Args: { p_play: string }; Returns: boolean };
       leave_play: { Args: { p_play: string }; Returns: undefined };
@@ -1633,7 +1827,28 @@ export type Database = {
           wins: number;
         }[];
       };
+      night_is_open: {
+        Args: { n: Database["public"]["Tables"]["game_nights"]["Row"] };
+        Returns: boolean;
+      };
       normalize_player_name: { Args: { p: string }; Returns: string };
+      picker_candidates: {
+        Args: { p_max_minutes?: number; p_players?: number };
+        Returns: {
+          cover_url: string;
+          game_id: string;
+          is_custom: boolean;
+          is_favorite: boolean;
+          last_played_on: string;
+          max_players: number;
+          max_playtime: number;
+          min_players: number;
+          min_playtime: number;
+          name: string;
+          play_count: number;
+          rating: number;
+        }[];
+      };
       play_sheet: {
         Args: { p_play: string };
         Returns: {

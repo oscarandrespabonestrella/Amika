@@ -1,8 +1,7 @@
 import { assertLocale } from "@/i18n/locale";
-import { Plus, SearchX, Library } from "lucide-react";
+import { SearchX, Library } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EmptyState } from "@/components/empty-state";
-import { buttonVariants } from "@/components/ui/button";
 import {
   ExternalSearch,
   findExpansionParents,
@@ -20,8 +19,6 @@ import {
   LibraryBadges,
   libraryStatusesAction,
 } from "@/features/library";
-import { Link } from "@/i18n/navigation";
-import { cn } from "@/lib/utils";
 
 export default async function GamesPage({
   params,
@@ -56,16 +53,6 @@ export default async function GamesPage({
           </h1>
           <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
-        <Link
-          href="/games/new"
-          className={cn(
-            buttonVariants({ variant: "outline", size: "lg" }),
-            "h-11",
-          )}
-        >
-          <Plus aria-hidden />
-          {t("create")}
-        </Link>
       </header>
 
       <SearchMemory />

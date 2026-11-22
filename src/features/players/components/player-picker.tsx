@@ -132,9 +132,12 @@ export function PlayerPicker({
             value={query}
             onValueChange={setQuery}
             maxLength={PLAYER_NAME_MAX}
+            aria-describedby={`${id}-hint`}
           />
           <CommandList id={`${id}-list`}>
-            <CommandEmpty>{t("empty")}</CommandEmpty>
+            {/* cmdk does not count force-mounted items: "nothing found" would show
+                next to "Add". */}
+            {!canCreate && <CommandEmpty>{t("empty")}</CommandEmpty>}
             {options.length > 0 && (
               <CommandGroup heading={t("roster")}>
                 {options.map((player) => (
@@ -156,7 +159,9 @@ export function PlayerPicker({
               </CommandGroup>
             )}
             {canCreate && (
-              <CommandGroup>
+              // The group must be force-mounted too: cmdk hides a group whose
+              // (registered) items match nothing, and a forced item never registers.
+              <CommandGroup forceMount>
                 <CommandItem
                   // Always listed, whatever the search text matches.
                   forceMount
@@ -171,6 +176,13 @@ export function PlayerPicker({
               </CommandGroup>
             )}
           </CommandList>
+          {/* Always visible: someone who is not a friend only needs a typed name. */}
+          <p
+            id={`${id}-hint`}
+            className="border-t border-border px-3 py-2 text-xs text-muted-foreground"
+          >
+            {t("createHint")}
+          </p>
         </Command>
       </PopoverContent>
     </Popover>

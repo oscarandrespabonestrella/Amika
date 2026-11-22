@@ -248,7 +248,6 @@
   "Games": {
     "title": "Games",
     "subtitle": "Search the catalog, or add a game you own.",
-    "create": "Create a game",
     "search": {
       "label": "Search games",
       "placeholder": "Search by name…",
@@ -874,6 +873,8 @@
       "live": "Start as a live match",
       "liveHint": "Friends you invite can watch it live and fill in their own points.",
       "scores": "Scores",
+      "noSheet": "This game has no scoring system yet.",
+      "createSheet": "Create one",
       "categoriesLabel": "Score categories",
       "decrease": "Decrease {label}",
       "increase": "Increase {label}",
@@ -998,6 +999,7 @@
       "choose": "Choose a player",
       "search": "Search or add a player…",
       "create": "Add “{name}”",
+      "createHint": "Not among your friends? Type their name and press “Enter” to create a player without linking them to a friend.",
       "empty": "No players found.",
       "roster": "Your players",
       "meSuffix": "(me)"

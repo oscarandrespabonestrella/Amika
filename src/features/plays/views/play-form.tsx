@@ -48,6 +48,8 @@ type Props = {
   initialPlayerIds?: string[];
   /** Present when editing a saved match. */
   initial?: PlayDetail;
+  /** The game's player count: a match never offers more rows than it allows. */
+  maxPlayers?: number | null;
 };
 
 /**
@@ -80,7 +82,8 @@ const newRow = (
 });
 
 /**
- * Rows of a new match: two empty ones, then the group (through `groupFill`) and the extra
+ * Rows of a new match: two empty ones, filled first with the user (their "me" player),
+ * then the group (through `groupFill`) and the extra
  * roster players. Ids that are not in `groups` / `roster` are ignored.
  */
 function prefilledRows(
@@ -88,23 +91,24 @@ function prefilledRows(
   groups: Group[],
   groupId: string | undefined,
   playerIds: string[] | undefined,
+  maxRows: number,
 ): Row[] {
-  let rows = [newRow(), newRow()];
+  let rows = maxRows < 2 ? [newRow()] : [newRow(), newRow()];
   const members: { id: string; name: string }[] = [];
+  const add = (member: { id: string; name: string }) => {
+    if (!members.some((m) => m.id === member.id)) members.push(member);
+  };
+  // Whoever logs the match goes first, so they never have to pick themselves.
+  const me = roster.find((p) => p.isMe);
+  if (me) add({ id: me.id, name: me.name });
   const group = groupId ? groups.find((g) => g.id === groupId) : undefined;
-  if (group) members.push(...group.members);
+  group?.members.forEach(add);
   for (const id of playerIds ?? []) {
     const player = roster.find((p) => p.id === id);
-    if (player && !members.some((m) => m.id === player.id)) {
-      members.push({ id: player.id, name: player.name });
-    }
+    if (player) add({ id: player.id, name: player.name });
   }
   if (members.length === 0) return rows;
-  const { fillIndexes, append } = groupFill(
-    rows,
-    members,
-    PLAY_LIMITS.maxParticipants,
-  );
+  const { fillIndexes, append } = groupFill(rows, members, maxRows);
   rows = rows.map((row, index) => {
     const fill = fillIndexes.find((f) => f.rowIndex === index);
     return fill
@@ -155,12 +159,18 @@ export function PlayForm({
   initialGroupId,
   initialPlayerIds,
   initial,
+  maxPlayers,
 }: Props) {
   const t = useTranslations("Plays.form");
   const te = useTranslations("Plays.errors");
   const ts = useTranslations("Scoring");
   const router = useRouter();
   const editing = initial !== undefined;
+  // The game's own maximum (a 2-player game takes 2), never above the app-wide cap.
+  const maxRows =
+    maxPlayers && maxPlayers > 0
+      ? Math.min(maxPlayers, PLAY_LIMITS.maxParticipants)
+      : PLAY_LIMITS.maxParticipants;
 
   const [start] = useState<State>(() => ({
     playedOn: initial?.playedOn ?? "",
@@ -176,7 +186,13 @@ export function PlayForm({
       ? initial.entries.map((e) =>
           newRow(e.name, e.values, e.manualTotal ?? undefined, e.playerId),
         )
-      : prefilledRows(roster, groups, initialGroupId, initialPlayerIds),
+      : prefilledRows(
+          roster,
+          groups,
+          initialGroupId,
+          initialPlayerIds,
+          maxRows,
+        ),
   }));
   const [playedOn, setPlayedOn] = useState(start.playedOn);
   // Today is the viewer's, not the server's: "" while hydrating, then the local date.
@@ -269,11 +285,7 @@ export function PlayForm({
   // A group only fills in rows of THIS match; the group itself is never touched.
   function addGroup(group: Group) {
     setRows((cur) => {
-      const { fillIndexes, append } = groupFill(
-        cur,
-        group.members,
-        PLAY_LIMITS.maxParticipants,
-      );
+      const { fillIndexes, append } = groupFill(cur, group.members, maxRows);
       const next = cur.map((row, index) => {
         const fill = fillIndexes.find((f) => f.rowIndex === index);
         return fill
@@ -560,7 +572,7 @@ export function PlayForm({
             type="button"
             variant="outline"
             className="h-11 px-4"
-            disabled={rows.length >= PLAY_LIMITS.maxParticipants}
+            disabled={rows.length >= maxRows}
             onClick={() => setRows((cur) => [...cur, newRow()])}
           >
             <Plus className="size-4" aria-hidden />
@@ -596,18 +608,35 @@ export function PlayForm({
           >
             {t("managePlayers")}
           </Link>
-          {rows.length >= PLAY_LIMITS.maxParticipants && (
+          {rows.length >= maxRows && (
             <p className="text-sm text-muted-foreground">
-              {t("maxPlayers", { max: PLAY_LIMITS.maxParticipants })}
+              {t("maxPlayers", { max: maxRows })}
             </p>
           )}
         </div>
       </section>
 
       <section aria-labelledby="scores-title" className="flex flex-col gap-3">
-        <h2 id="scores-title" className="text-lg font-semibold tracking-tight">
-          {t("scores")}
-        </h2>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h2
+            id="scores-title"
+            className="text-lg font-semibold tracking-tight"
+          >
+            {t("scores")}
+          </h2>
+          {/* No sheet of anyone's for this game yet: point to where one is made. */}
+          {!editing && sheets.length === 0 && (
+            <p className="text-sm text-muted-foreground">
+              {t("noSheet")}{" "}
+              <Link
+                href={`/games/${gameId}/sheets/new`}
+                className="font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                {t("createSheet")}
+              </Link>
+            </p>
+          )}
+        </div>
         <ScoreBoard
           key={sheetId}
           definition={definition}

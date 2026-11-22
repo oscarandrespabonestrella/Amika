@@ -61,6 +61,7 @@ export default async function NewPlayPage({
         expansions={expansions}
         roster={roster}
         groups={groups}
+        maxPlayers={game.maxPlayers}
         initialGroupId={initialGroupId}
         initialPlayerIds={initialPlayerIds}
       />

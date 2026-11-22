@@ -48,7 +48,12 @@ export function ScoreBoard({ definition, rows, onValue, onManual }: Props) {
             key={row.uid}
             className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card p-3"
           >
-            <span className="min-w-0 truncate font-medium">{row.label}</span>
+            <span
+              title={row.label}
+              className="min-w-0 flex-1 basis-0 truncate font-medium"
+            >
+              {row.label}
+            </span>
             <Stepper
               label={t("manualFor", { player: row.label })}
               decreaseLabel={t("decrease", { label: row.label })}
@@ -134,7 +139,14 @@ export function ScoreBoard({ definition, rows, onValue, onManual }: Props) {
                     : "flex flex-wrap items-center justify-between gap-3",
                 )}
               >
-                <span className="min-w-0 truncate font-medium">
+                <span
+                  title={row.label}
+                  className={cn(
+                    "min-w-0 truncate font-medium",
+                    // Never pushes the counter to a second line: a long name is cut.
+                    !stacked && "flex-1 basis-0",
+                  )}
+                >
                   {row.label}
                 </span>
                 <CategoryInput

@@ -248,7 +248,6 @@
   "Games": {
     "title": "Jogos",
     "subtitle": "Busque no catálogo ou adicione um jogo que você tem.",
-    "create": "Criar um jogo",
     "search": {
       "label": "Buscar jogos",
       "placeholder": "Buscar por nome…",
@@ -874,6 +873,8 @@
       "live": "Começar como partida ao vivo",
       "liveHint": "Os amigos que você convidar poderão vê-la ao vivo e preencher seus próprios pontos.",
       "scores": "Pontuação",
+      "noSheet": "Este jogo ainda não tem sistema de pontuação.",
+      "createSheet": "Criar um",
       "categoriesLabel": "Categorias de pontuação",
       "decrease": "Diminuir {label}",
       "increase": "Aumentar {label}",
@@ -998,6 +999,7 @@
       "choose": "Escolha um jogador",
       "search": "Busque ou adicione um jogador…",
       "create": "Adicionar «{name}»",
+      "createHint": "Não está entre os seus amigos? Digite o nome e clique em «Enter» para criar um jogador sem vinculá-lo a um amigo.",
       "empty": "Nenhum jogador encontrado.",
       "roster": "Seus jogadores",
       "meSuffix": "(eu)"

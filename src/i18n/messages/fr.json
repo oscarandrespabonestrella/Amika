@@ -248,7 +248,6 @@
   "Games": {
     "title": "Jeux",
     "subtitle": "Recherchez dans le catalogue ou ajoutez un jeu que vous possédez.",
-    "create": "Créer un jeu",
     "search": {
       "label": "Rechercher des jeux",
       "placeholder": "Rechercher par nom…",
@@ -874,6 +873,8 @@
       "live": "Commencer en direct",
       "liveHint": "Les amis que vous invitez peuvent la suivre en direct et saisir leurs propres points.",
       "scores": "Scores",
+      "noSheet": "Ce jeu n’a pas encore de système de score.",
+      "createSheet": "En créer un",
       "categoriesLabel": "Catégories de score",
       "decrease": "Diminuer {label}",
       "increase": "Augmenter {label}",
@@ -998,6 +999,7 @@
       "choose": "Choisissez un joueur",
       "search": "Cherchez ou ajoutez un joueur…",
       "create": "Ajouter « {name} »",
+      "createHint": "Pas parmi vos amis ? Tapez son nom et cliquez sur « Ajouter » pour créer un joueur sans le lier à un ami.",
       "empty": "Aucun joueur trouvé.",
       "roster": "Vos joueurs",
       "meSuffix": "(moi)"

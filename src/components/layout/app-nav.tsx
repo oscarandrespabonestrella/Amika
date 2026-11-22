@@ -31,6 +31,11 @@ type AppNavProps = { variant: "sidebar" | "bottom" };
 export function AppNav({ variant }: AppNavProps) {
   const t = useTranslations("Nav");
   const pathname = usePathname();
+  // The bottom bar keeps the action in the centre; the sidebar lists it last.
+  const items =
+    variant === "sidebar"
+      ? [...ITEMS.filter((i) => !i.primary), ...ITEMS.filter((i) => i.primary)]
+      : ITEMS;
 
   return (
     <nav
@@ -41,7 +46,7 @@ export function AppNav({ variant }: AppNavProps) {
           "fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 items-center border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden",
       )}
     >
-      {ITEMS.map(({ href, key, icon: Icon, also, primary }) => {
+      {items.map(({ href, key, icon: Icon, also, primary }) => {
         const active = [href, ...(also ?? [])].some(
           (base) => pathname === base || pathname.startsWith(`${base}/`),
         );
@@ -71,7 +76,7 @@ export function AppNav({ variant }: AppNavProps) {
                 "gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
               variant === "sidebar" &&
                 (primary
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  ? "mt-2 bg-primary text-primary-foreground hover:bg-primary/90"
                   : active
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
                     : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"),

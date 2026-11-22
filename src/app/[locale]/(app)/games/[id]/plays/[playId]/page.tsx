@@ -48,6 +48,7 @@ export default async function EditPlayPage({
         expansions={expansions}
         roster={roster}
         groups={groups}
+        maxPlayers={game.maxPlayers}
         initial={play}
       />
       {canVote && play.sheet && (

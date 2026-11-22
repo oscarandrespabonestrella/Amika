@@ -127,7 +127,8 @@ describe("verifyOrb (OpenCV.js, ORB + RANSAC homography)", () => {
         verifyOrb(cv, frame, cover, { stats });
     expect(stats.tracked).toBeGreaterThan(100);
     expect(stats.deleted).toBe(stats.tracked);
-  });
+    // 80 ORB runs: ~6 s on the CI runner, over Vitest's 5 s default.
+  }, 30_000);
 
   it("every OpenCV allocation in orb.ts goes through the tracker (static guard)", () => {
     const source = readFileSync(
